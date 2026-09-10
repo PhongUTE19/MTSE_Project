@@ -1,0 +1,166 @@
+.board-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.board-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 16px;
+}
+
+.board-title {
+  margin: 0;
+  color: #172b4d;
+  font-size: 22px;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.btn-add-task {
+  background: #0052cc;
+  color: #fff;
+  padding: 8px 16px;
+  text-decoration: none;
+  border-radius: 3px;
+  font-weight: bold;
+}
+
+.board-columns {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  align-items: flex-start;
+  flex: 1;
+  padding-bottom: 16px;
+}
+
+.board-column {
+  background: #f1f2f4;
+  border-radius: 12px;
+  width: 300px;
+  min-width: 300px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.column-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 4px;
+}
+
+.column-title {
+  margin: 0;
+  font-size: 14px;
+  color: #172b4d;
+  font-weight: 600;
+}
+
+.column-count {
+  color: #44546f;
+  font-size: 12px;
+  font-weight: 500;
+  background: #091e420f;
+  padding: 2px 6px;
+  border-radius: 12px;
+}
+
+.column-tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.task-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 10px 12px;
+  text-decoration: none;
+  color: #172b4d;
+  box-shadow: 0px 1px 1px #091e4240, 0px 0px 1px #091e424f;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.task-labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.task-label {
+  color: #1d2125;
+  font-size: 12px;
+  padding: 0px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+  min-height: 16px;
+  display: inline-block;
+}
+
+.task-title {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.task-badges {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: #44546f;
+  align-items: center;
+}
+
+.task-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 3px;
+}
+
+.task-badge.done {
+  background: #e3fcef;
+  color: #216e4e;
+  padding: 2px 4px;
+  font-weight: 500;
+}
+
+.task-badge.overdue {
+  background: #ffeaeb;
+  color: #c9372c;
+  padding: 2px 4px;
+  font-weight: 500;
+}
+
+.task-badge.all-checked {
+  background: #e3fcef;
+  color: #216e4e;
+  padding: 2px 4px;
+}
+
+.btn-add-card {
+  background: transparent;
+  border: none;
+  text-align: left;
+  padding: 8px;
+  color: #44546f;
+  cursor: pointer;
+  border-radius: 8px;
+  font-weight: 500;
+  text-decoration: none;
+  display: block;
+}
+
+.btn-add-card:hover {
+  background: #091e420f;
+  color: #172b4d;
+}

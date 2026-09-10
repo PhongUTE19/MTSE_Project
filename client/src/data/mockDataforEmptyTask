@@ -1,0 +1,102 @@
+// ========================================
+// 1. STUDENTS
+// ========================================
+
+export const students = [
+    {
+        id: "student-1",
+        name: "Bùi Duy Phong",
+        mssv: "19110131",
+        email: "BuiDuyPhong@gmail.com",
+    },
+    {
+        id: "student-2",
+        name: "Trần Thị Tố Như",
+        mssv: "23110051",
+        email: "NhuTran@gmail.com",
+    },
+    {
+        id: "student-3",
+        name: "Văn Phạm Thảo Nhi",
+        mssv: "23110049",
+        email: "NhiVan@gmail.com",
+    },
+];
+// ========================================
+// 2. PROJECTS
+// Mỗi project tương ứng bài tập nhóm / môn học
+// ========================================
+export const projects = [
+    {
+        id: "project-1",
+
+        name: "Student Task & Deadline Manager",
+
+        courseName: "New Technology",
+
+        description:
+            "Ứng dụng hỗ trợ sinh viên quản lý công việc nhóm, thành viên và deadline trong các project môn học.",
+
+        deadline: "2026-09-30T23:59:00+07:00",
+
+        memberIds: [
+            "student-1",
+            "student-2",
+            "student-3",
+        ],
+
+        createdBy: "student-3",
+
+        status: "active",
+
+        createdAt: "2026-09-07T08:00:00+07:00",
+    },
+];
+// ========================================
+// 3. TASKS
+// status: todo | in_progress | done
+// priority: low | medium | high
+// ========================================
+
+export const tasks = [];
+
+
+// ========================================
+// 4. CALENDAR EVENTS
+// ========================================
+
+export const calendarEvents = [];
+
+
+// ========================================
+// 5. UI STATES
+// Loading / Success / Empty / Error
+// ========================================
+
+export const taskListStates = {
+    loading: {
+        status: "loading",
+        data: null,
+        error: null,
+    },
+
+    success: {
+        status: "success",
+        data: tasks,
+        error: null,
+    },
+
+    empty: {
+        status: "success",
+        data: [],
+        error: null,
+    },
+
+    error: {
+        status: "error",
+        data: null,
+        error: {
+            message: "Unable to load tasks.",
+        },
+    },
+};
