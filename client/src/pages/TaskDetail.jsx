@@ -1,13 +1,19 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
-import { tasks, students } from "../data/mockData";
+import { useParams, Link, useLocation } from "react-router-dom";
+import { tasks, students, projects } from "../data/mockData";
 import "../styles/TaskDetail.css";
 
 export default function TaskDetail() {
   const { taskId } = useParams();
+  const location = useLocation();
   
   // Lấy task ban đầu từ mock data
   const initialTask = tasks.find((t) => t.id === taskId);
+  const project = initialTask
+    ? projects.find((item) => item.id === initialTask.projectId)
+    : null;
+  const projectId = location.state?.projectId || initialTask?.projectId;
+  const projectName = location.state?.projectName || project?.name;
   
   // Dùng state để quản lý dữ liệu trên form, cho phép edit
   const [task, setTask] = useState(initialTask);
@@ -61,7 +67,11 @@ export default function TaskDetail() {
         
         {/* Close/Back button */}
         <div className="btn-close-container">
-           <Link to="/tasks" className="btn-close">
+           <Link
+             to="/tasks"
+             state={{ projectId, projectName }}
+             className="btn-close"
+           >
              ✕
            </Link>
         </div>

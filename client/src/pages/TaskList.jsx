@@ -130,6 +130,7 @@ export default function TaskList() {
                     <Link
                       key={task.id}
                       to={`/tasks/${task.id}`}
+                      state={{ projectId, projectName }}
                       className="task-card"
                     >
                       {/* Labels */}
