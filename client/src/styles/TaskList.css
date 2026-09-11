@@ -164,3 +164,49 @@
   background: #091e420f;
   color: #172b4d;
 }
+
+@media (max-width: 768px) {
+  .board-container {
+    min-height: calc(100vh - 76px);
+    padding: 20px 16px 0;
+    box-sizing: border-box;
+  }
+
+  .board-header {
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .board-title {
+    font-size: 20px;
+  }
+
+  .btn-add-task {
+    padding: 8px 12px;
+    white-space: nowrap;
+  }
+
+  .board-columns {
+    margin-right: -16px;
+    padding-right: 16px;
+    gap: 12px;
+  }
+
+  .board-column {
+    width: min(82vw, 300px);
+    min-width: min(82vw, 300px);
+  }
+}
+
+@media (max-width: 420px) {
+  .board-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .btn-add-task {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+  }
+}

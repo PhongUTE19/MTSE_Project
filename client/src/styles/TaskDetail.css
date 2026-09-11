@@ -348,3 +348,48 @@
   border: 1px solid #ccc;
   width: 100%;
 }
+
+@media (max-width: 768px) {
+  .task-detail-container {
+    padding: 16px;
+  }
+
+  .task-detail-modal {
+    padding: 24px 16px;
+    min-height: 0;
+    border-radius: 8px;
+  }
+
+  .header-section {
+    gap: 8px;
+  }
+
+  .title-input {
+    font-size: 18px;
+    max-width: calc(100% - 8px);
+    box-sizing: border-box;
+  }
+
+  .two-column-layout {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .sidebar-column {
+    width: 100%;
+  }
+
+  .sidebar-buttons {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .quick-info {
+    gap: 20px;
+  }
+
+  .desc-textarea,
+  .metadata-input {
+    box-sizing: border-box;
+  }
+}

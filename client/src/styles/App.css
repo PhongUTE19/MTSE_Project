@@ -10,3 +10,16 @@
   overflow-y: auto;
   background: #fff;
 }
+
+@media (max-width: 768px) {
+  .app-container {
+    min-height: 100vh;
+    height: auto;
+    flex-direction: column;
+  }
+
+  .app-main {
+    min-width: 0;
+    padding: 0;
+  }
+}

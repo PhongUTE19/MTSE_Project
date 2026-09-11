@@ -42,3 +42,33 @@
   background: #0052cc;
   text-align: center;
 }
+
+@media (max-width: 768px) {
+  .navbar {
+    width: auto;
+    height: auto;
+    min-height: 0;
+    padding: 12px 16px;
+    border-right: none;
+    border-bottom: 1px solid #dfe1e6;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px 12px;
+    align-items: center;
+  }
+
+  .navbar-brand {
+    margin: 0;
+    grid-row: span 2;
+  }
+
+  .btn-create {
+    margin: 0;
+    padding: 8px 12px;
+  }
+
+  .nav-link {
+    margin: 0;
+    padding: 8px 12px;
+  }
+}

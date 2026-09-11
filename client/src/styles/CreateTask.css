@@ -133,3 +133,29 @@
 .btn-submit:hover {
   background: #0047b3;
 }
+
+@media (max-width: 768px) {
+  .create-task-container {
+    padding: 16px;
+  }
+
+  .create-task-modal {
+    padding: 24px 16px;
+    min-height: 0;
+    border-radius: 8px;
+  }
+
+  .create-task-title {
+    padding-right: 28px;
+    font-size: 20px;
+    flex-wrap: wrap;
+  }
+
+  .create-task-form {
+    max-width: none;
+  }
+
+  .btn-submit {
+    width: 100%;
+  }
+}
