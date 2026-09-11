@@ -22,12 +22,6 @@ export default function Navbar() {
       >
         Dashboard
       </NavLink>
-      <NavLink 
-        to="/tasks" 
-        className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
-      >
-        Task List
-      </NavLink>
     </nav>
   );
 }

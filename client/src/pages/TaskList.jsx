@@ -8,6 +8,7 @@ import "../styles/TaskList.css";
 export default function TaskList() {
   const navigate = useNavigate();
   const location = useLocation();
+  const projectId = location.state?.projectId;
   const projectName = location.state?.projectName || "Team Workboard";
 
   const [state, setState] = useState({
@@ -21,7 +22,10 @@ export default function TaskList() {
     const timer = setTimeout(() => {
       
       try {
-        setState({ status: "success", data: mockTasks, error: null });
+        const projectTasks = projectId
+          ? mockTasks.filter((task) => task.projectId === projectId)
+          : mockTasks;
+        setState({ status: "success", data: projectTasks, error: null });
       } catch (error) {
         setState({
           status: "error",
@@ -32,7 +36,7 @@ export default function TaskList() {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [projectId]);
 
   // ----- Loading -----
   if (state.status === "loading") {
@@ -51,7 +55,11 @@ export default function TaskList() {
 
   // ----- Empty -----
   if (state.data.length === 0) {
-    return <EmptyState onCreate={() => navigate("/tasks/new")} />;
+    return (
+      <EmptyState
+        onCreate={() => navigate("/tasks/new", { state: { projectId, projectName } })}
+      />
+    );
   }
 
   // ----- Success -----
@@ -91,7 +99,13 @@ export default function TaskList() {
     <div className="board-container">
       <div className="board-header">
         <h1 className="board-title">{projectName}</h1>
-        <Link to="/tasks/new" className="btn-add-task">+ Add Task</Link>
+        <Link
+          to="/tasks/new"
+          state={{ projectId, projectName }}
+          className="btn-add-task"
+        >
+          + Add Task
+        </Link>
       </div>
       
       <div className="board-columns">
@@ -151,7 +165,11 @@ export default function TaskList() {
               </div>
 
               {/* Add Card Button */}
-              <Link to="/tasks/new" state={{ status: colKey }} className="btn-add-card">
+              <Link
+                to="/tasks/new"
+                state={{ status: colKey, projectId, projectName }}
+                className="btn-add-card"
+              >
                 + Add a card
               </Link>
             </div>

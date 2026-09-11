@@ -11,6 +11,8 @@ export default function CreateTask() {
   
   // Get default status if navigated from a specific column, else 'todo'
   const defaultStatus = location.state?.status || "todo";
+  const projectId = location.state?.projectId || "project-1";
+  const projectName = location.state?.projectName;
 
   // State cho form values, errors, touched
   const [values, setValues] = useState({
@@ -54,7 +56,7 @@ export default function CreateTask() {
     // Thêm vào mockData in-memory để hiển thị ngay trên UI
     const newTask = {
       id: `task-${Date.now()}`,
-      projectId: "project-1",
+      projectId,
       title: values.title,
       description: values.description,
       status: defaultStatus,
@@ -69,16 +71,16 @@ export default function CreateTask() {
     tasks.push(newTask);
 
     alert("Task created! (mock)");
-    navigate("/tasks");
+    navigate("/tasks", { state: { projectId, projectName } });
   };
 
-  // Render form in a modal-like layout to match Trello vibe
+  // Render form in a modal-like layout 
   return (
     <div className="create-task-container">
       <div className="create-task-modal">
         
         <div className="btn-close-container">
-           <Link to="/tasks" className="btn-close">
+           <Link to="/tasks" state={{ projectId, projectName }} className="btn-close">
              ✕
            </Link>
         </div>

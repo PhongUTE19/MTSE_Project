@@ -64,7 +64,11 @@ export default function Dashboard() {
                       {p.deadline ? new Date(p.deadline).toLocaleDateString() : "-"}
                     </td>
                     <td className="right">
-                      <Link to="/tasks" state={{ projectName: p.name }} className="btn-view-board">
+                      <Link
+                        to="/tasks"
+                        state={{ projectId: p.id, projectName: p.name }}
+                        className="btn-view-board"
+                      >
                         View Board
                       </Link>
                     </td>

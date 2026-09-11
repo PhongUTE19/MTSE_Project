@@ -51,6 +51,29 @@ export const projects = [
 
         createdAt: "2026-09-07T08:00:00+07:00",
     },
+    {
+        id: "project-2",
+
+        name: "Campus Event Planner",
+
+        courseName: "Software Engineering",
+
+        description:
+            "Ứng dụng hỗ trợ lập kế hoạch, phân công và theo dõi tiến độ tổ chức sự kiện trong trường.",
+
+        deadline: "2026-10-15T23:59:00+07:00",
+
+        memberIds: [
+            "student-1",
+            "student-2",
+        ],
+
+        createdBy: "student-1",
+
+        status: "active",
+
+        createdAt: "2026-09-08T09:00:00+07:00",
+    },
 ];
 // ========================================
 // 3. TASKS
@@ -825,6 +848,168 @@ export const tasks = [
         createdAt: "2026-09-10T13:00:00+07:00",
 
         updatedAt: "2026-09-10T13:00:00+07:00",
+
+        completedAt: null,
+    },
+
+
+    // ========================================
+    // PROJECT 2 TASKS
+    // ========================================
+    {
+        id: "task-12",
+
+        projectId: "project-2",
+
+        title: "Xác định quy mô sự kiện",
+
+        description:
+            "Xác định mục tiêu, đối tượng tham gia và quy mô dự kiến của sự kiện.",
+
+        assigneeIds: [
+            "student-1",
+        ],
+
+        status: "done",
+
+        priority: "high",
+
+        startAt: "2026-09-08T09:00:00+07:00",
+
+        dueAt: "2026-09-10T23:59:00+07:00",
+
+        labels: [
+            "Planning",
+            "Event",
+        ],
+
+        checklist: [
+            {
+                id: "check-12-1",
+                title: "Xác định mục tiêu sự kiện",
+                completed: true,
+            },
+            {
+                id: "check-12-2",
+                title: "Ước tính số lượng người tham gia",
+                completed: true,
+            },
+        ],
+
+        reminderMinutesBefore: [
+            1440,
+        ],
+
+        createdBy: "student-1",
+
+        createdAt: "2026-09-08T09:00:00+07:00",
+
+        updatedAt: "2026-09-10T18:00:00+07:00",
+
+        completedAt: "2026-09-10T18:00:00+07:00",
+    },
+    {
+        id: "task-13",
+
+        projectId: "project-2",
+
+        title: "Lên danh sách địa điểm phù hợp",
+
+        description:
+            "Khảo sát và so sánh các địa điểm có thể tổ chức sự kiện.",
+
+        assigneeIds: [
+            "student-2",
+        ],
+
+        status: "in_progress",
+
+        priority: "medium",
+
+        startAt: "2026-09-11T09:00:00+07:00",
+
+        dueAt: "2026-09-18T23:59:00+07:00",
+
+        labels: [
+            "Research",
+            "Logistics",
+        ],
+
+        checklist: [
+            {
+                id: "check-13-1",
+                title: "Khảo sát hội trường A",
+                completed: true,
+            },
+            {
+                id: "check-13-2",
+                title: "Khảo sát phòng đa năng",
+                completed: false,
+            },
+        ],
+
+        reminderMinutesBefore: [
+            1440,
+        ],
+
+        createdBy: "student-2",
+
+        createdAt: "2026-09-11T09:00:00+07:00",
+
+        updatedAt: "2026-09-11T09:00:00+07:00",
+
+        completedAt: null,
+    },
+    {
+        id: "task-14",
+
+        projectId: "project-2",
+
+        title: "Chuẩn bị kế hoạch truyền thông",
+
+        description:
+            "Lập kế hoạch nội dung và các kênh truyền thông cho sự kiện.",
+
+        assigneeIds: [
+            "student-1",
+            "student-2",
+        ],
+
+        status: "todo",
+
+        priority: "high",
+
+        startAt: "2026-09-19T09:00:00+07:00",
+
+        dueAt: "2026-09-25T23:59:00+07:00",
+
+        labels: [
+            "Marketing",
+            "Content",
+        ],
+
+        checklist: [
+            {
+                id: "check-14-1",
+                title: "Chọn kênh truyền thông",
+                completed: false,
+            },
+            {
+                id: "check-14-2",
+                title: "Soạn nội dung giới thiệu",
+                completed: false,
+            },
+        ],
+
+        reminderMinutesBefore: [
+            1440,
+        ],
+
+        createdBy: "student-1",
+
+        createdAt: "2026-09-11T10:00:00+07:00",
+
+        updatedAt: "2026-09-11T10:00:00+07:00",
 
         completedAt: null,
     },
