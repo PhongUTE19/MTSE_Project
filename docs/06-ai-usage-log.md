@@ -234,3 +234,76 @@
 - Không có warning trong Console
 
 **Trạng thái:** ✅ Đã test
+
+---
+
+## Task 5.1 — Xây dựng Mock API Service & Quản lý Cấu hình
+
+**AI tool:** Antigravity (Gemini 3.8 Flash)
+
+**AI Generated:**
+- `client/src/services/mockApi.js` — Service mô phỏng REST API với cơ chế đồng bộ `localStorage`, hỗ trợ CRUD đầy đủ cho Tasks/Projects/Students/DashboardStats
+- `client/src/config/index.js` — Quản lý cấu hình tập trung
+- `client/.env.example`, `client/.env` — Biến môi trường
+
+**Human review:** [Bùi Duy Phong]
+- Kiểm tra tính bất đồng bộ (Promise/async/await) và cơ chế fallback khi chạy trong môi trường không có localStorage
+- Xác nhận các method: getProjects, getTasks, getTaskById, createTask, updateTask, deleteTask, getDashboardStats
+- Không lưu credentials nhạy cảm vào repository
+
+**Trạng thái:** ✅ Đã review
+
+---
+
+## Task 5.2 — Hoàn thiện Luồng Người Dùng & Nâng cấp Giao diện
+
+**AI tool:** Antigravity (Gemini 3.8 Flash)
+
+**AI Generated:**
+- `client/src/pages/TaskDetail.jsx` — Thêm nút "🗑️ Delete Task", liên kết `mockApi`, sửa cảnh báo ESLint về cascading renders
+- `client/src/pages/TaskList.jsx` — Thêm các nút chuyển nhanh cột Kanban trực tiếp trên task card ("Start →", "Done →", "← Reopen")
+- `client/src/pages/CreateTask.jsx` — Tích hợp `mockApi.createTask`, thêm trạng thái disabled khi đang submit
+- `client/src/pages/Dashboard.jsx` — Tải và cập nhật thống kê động thông qua `mockApi.getDashboardStats()`
+- `client/src/styles/TaskList.css`, `client/src/styles/TaskDetail.css` — Bổ sung CSS cho nút chuyển trạng thái và nút delete
+
+**Human review:** [Trần Thị Tố Như]
+- Kiểm tra luồng thao tác: tạo task mới → hiển thị trên To Do → bấm "Start →" chuyển sang In Progress → bấm "Done →" chuyển sang Done → mở chi tiết bấm "Delete Task" xóa sạch
+- Kiểm tra responsive trên mobile/tablet không bị vỡ layout
+- Chạy `npm run lint` đạt 0 errors, 0 warnings
+
+**Trạng thái:** ✅ Đã review & test
+
+---
+
+## Task 5.3 — Kiểm thử Tự động (Automated Tests) & Kịch bản Chấp nhận (Acceptance Tests)
+
+**AI tool:** Antigravity (Gemini 3.8 Flash)
+
+**AI Generated:**
+- `client/src/tests/validators.test.js` — 6 unit tests kiểm tra validation rules
+- `client/src/tests/mockApi.test.js` — 5 unit tests kiểm tra CRUD và tính toán metrics
+- `client/src/tests/workflow.test.js` — 1 integration test kiểm tra trọn vẹn vòng đời task
+- `docs/08-acceptance-tests.md` — Tài liệu hóa 5 kịch bản kiểm thử chấp nhận thủ công với các bước thực hiện chi tiết
+
+**Human review:** [Văn Phạm Thảo Nhi]
+- Chạy `npm test` bằng Vitest: 12/12 tests đều PASS
+- Thực hiện kiểm thử thủ công theo 5 kịch bản trong tài liệu, đối chiếu kết quả thực tế với mong đợi
+
+**Trạng thái:** ✅ Đã review & test
+
+---
+
+## Task 5.4 — Đặc tả API Contract & Tài liệu Hướng dẫn Chạy
+
+**AI tool:** Antigravity (Gemini 3.8 Flash)
+
+**AI Generated:**
+- `docs/07-api-endpoints.md` — Đặc tả 8 REST endpoints với sample request/response JSON và HTTP status codes
+- Cập nhật `client/README.md` & `README.md` — Bổ sung hướng dẫn chạy, kiểm thử và vị trí cấu hình cho bài 3B
+
+**Human review:** [Bùi Duy Phong]
+- Kiểm tra tính tương thích giữa API Contract và yêu cầu Backend tuần 4
+- Kiểm tra các liên kết tài liệu markdown hoạt động chính xác
+
+**Trạng thái:** ✅ Đã review
+

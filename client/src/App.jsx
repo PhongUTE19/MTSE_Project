@@ -5,6 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import TaskList from "./pages/TaskList";
 import TaskDetail from "./pages/TaskDetail";
 import CreateTask from "./pages/CreateTask";
+import CreateProject from "./pages/CreateProject";
 import "./styles/App.css";
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
 
             {/* Các route chính */}
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/projects/new" element={<CreateProject />} />
             <Route path="/tasks" element={<TaskList />} />
             <Route path="/tasks/new" element={<CreateTask />} />
             <Route path="/tasks/:taskId" element={<TaskDetail />} />

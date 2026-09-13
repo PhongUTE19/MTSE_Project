@@ -1,7 +1,9 @@
 // src/pages/TaskList.jsx
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { tasks as mockTasks } from "../data/mockData";
+import { mockApi } from "../services/mockApi";
+import { PREDEFINED_MEMBERS, getLabelColor } from "../utils/constants";
+import Toast from "../components/Toast";
 import { LoadingState, EmptyState, ErrorState } from "../components/TaskListStates";
 import "../styles/TaskList.css";
 
@@ -16,27 +18,67 @@ export default function TaskList() {
     data: null,
     error: null,
   });
+  const [students, setStudents] = useState(PREDEFINED_MEMBERS);
+  const [toast, setToast] = useState(location.state?.toast || null);
 
-  // Giả lập fetch API
+  // Fetch tasks and student members from mock API
   useEffect(() => {
-    const timer = setTimeout(() => {
-      
-      try {
-        const projectTasks = projectId
-          ? mockTasks.filter((task) => task.projectId === projectId)
-          : mockTasks;
-        setState({ status: "success", data: projectTasks, error: null });
-      } catch (error) {
-        setState({
-          status: "error",
-          data: null,
-          error: { message: "Unable to load tasks." },
-        });
-      }
-    }, 500);
+    let isMounted = true;
+    Promise.all([
+      mockApi.getTasks(projectId),
+      mockApi.getStudents().catch(() => []),
+    ])
+      .then(([tasks, studentsData]) => {
+        if (isMounted) {
+          if (studentsData && studentsData.length > 0) {
+            setStudents(studentsData);
+          }
+          setState({ status: "success", data: tasks, error: null });
+        }
+      })
+      .catch((err) => {
+        if (isMounted) {
+          setState({
+            status: "error",
+            data: null,
+            error: { message: err.message || "Unable to load tasks." },
+          });
+        }
+      });
 
-    return () => clearTimeout(timer);
+    return () => {
+      isMounted = false;
+    };
   }, [projectId]);
+
+  // Quick move status directly from board
+  const handleMoveStatus = async (e, taskId, nextStatus) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      const updated = await mockApi.updateTask(taskId, { status: nextStatus });
+      setState((prev) => ({
+        ...prev,
+        data: prev.data.map((t) => (t.id === taskId ? updated : t)),
+      }));
+    } catch (err) {
+      setToast({
+        message: "Failed to update status: " + err.message,
+        type: "error",
+      });
+    }
+  };
+
+  // Helper to find student details
+  const getStudent = (id) => {
+    return (
+      students.find((s) => s.id === id) ||
+      PREDEFINED_MEMBERS.find((s) => s.id === id) || {
+        id,
+        name: id,
+      }
+    );
+  };
 
   // ----- Loading -----
   if (state.status === "loading") {
@@ -46,19 +88,35 @@ export default function TaskList() {
   // ----- Error -----
   if (state.status === "error") {
     return (
-      <ErrorState
-        message={state.error.message}
-        onRetry={() => window.location.reload()}
-      />
+      <>
+        <ErrorState
+          message={state.error.message}
+          onRetry={() => window.location.reload()}
+        />
+        <Toast
+          message={toast?.message}
+          type={toast?.type}
+          onClose={() => setToast(null)}
+        />
+      </>
     );
   }
 
   // ----- Empty -----
   if (state.data.length === 0) {
     return (
-      <EmptyState
-        onCreate={() => navigate("/tasks/new", { state: { projectId, projectName } })}
-      />
+      <>
+        <EmptyState
+          onCreate={() =>
+            navigate("/tasks/new", { state: { projectId, projectName } })
+          }
+        />
+        <Toast
+          message={toast?.message}
+          type={toast?.type}
+          onClose={() => setToast(null)}
+        />
+      </>
     );
   }
 
@@ -87,14 +145,6 @@ export default function TaskList() {
     return `${completed}/${task.checklist.length}`;
   };
 
-  // Helper to get color for labels
-  const getLabelColor = (label) => {
-    const colors = ["#4bce97", "#e2b203", "#f87168", "#9f8fef", "#579dff"];
-    let hash = 0;
-    for (let i = 0; i < label.length; i++) hash += label.charCodeAt(i);
-    return colors[hash % colors.length];
-  };
-
   return (
     <div className="board-container">
       <div className="board-header">
@@ -107,7 +157,7 @@ export default function TaskList() {
           + Add Task
         </Link>
       </div>
-      
+
       <div className="board-columns">
         {Object.keys(columns).map((colKey) => {
           const col = columns[colKey];
@@ -123,8 +173,12 @@ export default function TaskList() {
               <div className="column-tasks">
                 {col.tasks.map((task) => {
                   const checklistText = getChecklistText(task);
-                  const isAllChecked = task.checklist && task.checklist.length > 0 && checklistText.split('/')[0] === checklistText.split('/')[1];
-                  const isOverdue = new Date(task.dueAt) < new Date();
+                  const isAllChecked =
+                    task.checklist &&
+                    task.checklist.length > 0 &&
+                    checklistText.split("/")[0] === checklistText.split("/")[1];
+                  const isOverdue =
+                    task.dueAt && new Date(task.dueAt) < new Date();
 
                   return (
                     <Link
@@ -137,7 +191,11 @@ export default function TaskList() {
                       {task.labels && task.labels.length > 0 && (
                         <div className="task-labels">
                           {task.labels.map((l) => (
-                            <span key={l} className="task-label" style={{ background: getLabelColor(l) }}>
+                            <span
+                              key={l}
+                              className="task-label"
+                              style={{ background: getLabelColor(l) }}
+                            >
                               {l}
                             </span>
                           ))}
@@ -147,17 +205,112 @@ export default function TaskList() {
                       {/* Title */}
                       <strong className="task-title">{task.title}</strong>
 
-                      {/* Badges */}
-                      <div className="task-badges">
-                        {task.dueAt && (
-                          <span className={`task-badge ${task.status === "done" ? "done" : (isOverdue ? "overdue" : "")}`}>
-                            📅 {new Date(task.dueAt).toLocaleDateString("en-GB").slice(0, 5)}
-                          </span>
+                      {/* Assigned Members */}
+                      {task.assigneeIds && task.assigneeIds.length > 0 && (
+                        <div className="task-members">
+                          {task.assigneeIds.map((id) => {
+                            const student = getStudent(id);
+                            const initial = student.name
+                              ? student.name.split(" ").pop().charAt(0)
+                              : id.charAt(0).toUpperCase();
+                            return (
+                              <div
+                                key={id}
+                                className="task-member-avatar"
+                                title={`${student.name}${
+                                  student.mssv ? ` (${student.mssv})` : ""
+                                }`}
+                              >
+                                {initial}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+
+                      {/* Badges Footer */}
+                      <div className="task-card-footer">
+                        <div className="task-badges">
+                          {task.dueAt && (
+                            <span
+                              className={`task-badge ${
+                                task.status === "done"
+                                  ? "done"
+                                  : isOverdue
+                                  ? "overdue"
+                                  : ""
+                              }`}
+                            >
+                              📅{" "}
+                              {new Date(task.dueAt)
+                                .toLocaleDateString("en-GB")
+                                .slice(0, 5)}
+                            </span>
+                          )}
+                          {checklistText && (
+                            <span
+                              className={`task-badge ${
+                                isAllChecked ? "all-checked" : ""
+                              }`}
+                            >
+                              ☑️ {checklistText}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Quick Move Status */}
+                      <div
+                        className="task-quick-actions"
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        {task.status === "todo" && (
+                          <button
+                            type="button"
+                            className="btn-quick-move"
+                            title="Move to In Progress"
+                            onClick={(e) =>
+                              handleMoveStatus(e, task.id, "in_progress")
+                            }
+                          >
+                            Start →
+                          </button>
                         )}
-                        {checklistText && (
-                          <span className={`task-badge ${isAllChecked ? "all-checked" : ""}`}>
-                            ☑️ {checklistText}
-                          </span>
+                        {task.status === "in_progress" && (
+                          <div style={{ display: "flex", gap: "4px" }}>
+                            <button
+                              type="button"
+                              className="btn-quick-move"
+                              title="Move back to To Do"
+                              onClick={(e) =>
+                                handleMoveStatus(e, task.id, "todo")
+                              }
+                            >
+                              ← Todo
+                            </button>
+                            <button
+                              type="button"
+                              className="btn-quick-move success"
+                              title="Mark as Done"
+                              onClick={(e) =>
+                                handleMoveStatus(e, task.id, "done")
+                              }
+                            >
+                              Done →
+                            </button>
+                          </div>
+                        )}
+                        {task.status === "done" && (
+                          <button
+                            type="button"
+                            className="btn-quick-move"
+                            title="Reopen to In Progress"
+                            onClick={(e) =>
+                              handleMoveStatus(e, task.id, "in_progress")
+                            }
+                          >
+                            ← Reopen
+                          </button>
                         )}
                       </div>
                     </Link>
@@ -177,6 +330,12 @@ export default function TaskList() {
           );
         })}
       </div>
+
+      <Toast
+        message={toast?.message}
+        type={toast?.type}
+        onClose={() => setToast(null)}
+      />
     </div>
   );
 }

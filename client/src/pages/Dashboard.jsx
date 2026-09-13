@@ -1,15 +1,70 @@
 // src/pages/Dashboard.jsx
-import { projects, tasks } from "../data/mockData";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { mockApi } from "../services/mockApi";
+import Toast from "../components/Toast";
 import "../styles/Dashboard.css";
 
 export default function Dashboard() {
-  // Calculate statistics
-  const totalProjects = projects.length;
-  const totalTasks = tasks.length;
-  const doneTasks = tasks.filter(t => t.status === "done").length;
-  const now = new Date();
-  const overdueTasks = tasks.filter(t => t.status !== "done" && t.dueAt && new Date(t.dueAt) < now).length;
+  const location = useLocation();
+  const [projectsList, setProjectsList] = useState([]);
+  const [stats, setStats] = useState({
+    totalProjects: 0,
+    totalTasks: 0,
+    doneTasks: 0,
+    overdueTasks: 0,
+  });
+  const [loading, setLoading] = useState(true);
+  const [toast, setToast] = useState(location.state?.toast || null);
+  const [projectToDelete, setProjectToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    Promise.all([mockApi.getProjects(), mockApi.getDashboardStats()])
+      .then(([projectsData, statsData]) => {
+        if (isMounted) {
+          setProjectsList(projectsData);
+          setStats(statsData);
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        if (isMounted) setLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const handleConfirmDelete = async () => {
+    if (!projectToDelete) return;
+    const target = projectToDelete;
+    setIsDeleting(true);
+    try {
+      await mockApi.deleteProject(target.id);
+      // Immediately refresh Dashboard data
+      const [updatedProjects, updatedStats] = await Promise.all([
+        mockApi.getProjects(),
+        mockApi.getDashboardStats(),
+      ]);
+      setProjectsList(updatedProjects);
+      setStats(updatedStats);
+      setProjectToDelete(null);
+      setToast({
+        message: `Project "${target.name}" and its tasks were deleted successfully.`,
+        type: "success",
+      });
+    } catch (err) {
+      setToast({
+        message: "Failed to delete project: " + err.message,
+        type: "error",
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
     <div className="dashboard-container">
@@ -19,19 +74,19 @@ export default function Dashboard() {
       <div className="dashboard-stats">
         <div className="stat-card">
           <h3 className="stat-title">Total Projects</h3>
-          <div className="stat-value primary">{totalProjects}</div>
+          <div className="stat-value primary">{loading ? "..." : stats.totalProjects}</div>
         </div>
         <div className="stat-card">
           <h3 className="stat-title">Total Tasks</h3>
-          <div className="stat-value default">{totalTasks}</div>
+          <div className="stat-value default">{loading ? "..." : stats.totalTasks}</div>
         </div>
         <div className="stat-card">
           <h3 className="stat-title">Tasks Done</h3>
-          <div className="stat-value success">{doneTasks}</div>
+          <div className="stat-value success">{loading ? "..." : stats.doneTasks}</div>
         </div>
         <div className="stat-card">
           <h3 className="stat-title">Overdue Tasks</h3>
-          <div className="stat-value danger">{overdueTasks}</div>
+          <div className="stat-value danger">{loading ? "..." : stats.overdueTasks}</div>
         </div>
       </div>
 
@@ -50,8 +105,8 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody>
-              {projects.length > 0 ? (
-                projects.map(p => (
+              {projectsList.length > 0 ? (
+                projectsList.map((p) => (
                   <tr key={p.id}>
                     <td className="project-name">{p.name}</td>
                     <td className="project-course">{p.courseName}</td>
@@ -64,20 +119,30 @@ export default function Dashboard() {
                       {p.deadline ? new Date(p.deadline).toLocaleDateString() : "-"}
                     </td>
                     <td className="right">
-                      <Link
-                        to="/tasks"
-                        state={{ projectId: p.id, projectName: p.name }}
-                        className="btn-view-board"
-                      >
-                        View Board
-                      </Link>
+                      <div className="project-actions">
+                        <Link
+                          to="/tasks"
+                          state={{ projectId: p.id, projectName: p.name }}
+                          className="btn-view-board"
+                        >
+                          View Board
+                        </Link>
+                        <button
+                          type="button"
+                          className="btn-delete-project"
+                          onClick={() => setProjectToDelete(p)}
+                          title={`Delete project ${p.name}`}
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
                   <td colSpan="5" className="empty-row">
-                    No projects found.
+                    {loading ? "Loading projects..." : "No projects found."}
                   </td>
                 </tr>
               )}
@@ -85,6 +150,55 @@ export default function Dashboard() {
           </table>
         </div>
       </div>
+
+      {/* In-app confirmation dialog for deleting project */}
+      {projectToDelete && (
+        <div
+          className="confirm-dialog-overlay"
+          onClick={() => !isDeleting && setProjectToDelete(null)}
+        >
+          <div
+            className="confirm-dialog-content"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="confirm-delete-title"
+          >
+            <h3 id="confirm-delete-title" className="confirm-dialog-title">
+              <span>⚠️</span> Delete Project
+            </h3>
+            <p className="confirm-dialog-body">
+              Are you sure you want to delete <strong>"{projectToDelete.name}"</strong>?
+              All tasks belonging to this project will be permanently deleted. This action cannot be undone.
+            </p>
+            <div className="confirm-dialog-actions">
+              <button
+                type="button"
+                className="btn-confirm-cancel"
+                onClick={() => setProjectToDelete(null)}
+                disabled={isDeleting}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn-confirm-danger"
+                onClick={handleConfirmDelete}
+                disabled={isDeleting}
+              >
+                {isDeleting ? "Deleting..." : "Delete Project"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <Toast
+        message={toast?.message}
+        type={toast?.type}
+        onClose={() => setToast(null)}
+      />
     </div>
   );
 }
+

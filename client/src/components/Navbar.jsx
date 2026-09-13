@@ -10,9 +10,9 @@ export default function Navbar() {
         MANA
       </strong>
 
-      {/* Button Create (Giống Jira) */}
-      <NavLink to="/tasks/new" className="btn-create">
-        + Create
+      {/* Button Create Project */}
+      <NavLink to="/projects/new" className="btn-create">
+        + Create Project
       </NavLink>
 
       {/* Các link điều hướng */}

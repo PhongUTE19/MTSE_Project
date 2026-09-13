@@ -399,3 +399,69 @@ useEffect(() => {
 - **Trạng thái:** ✅ Đã review | ✏️ Đã chỉnh sửa | ⏳ Chưa review
 
 # Đọc thư mục docs cho chi tiết sử dụng AI và Human Review
+
+---
+
+## 8. Bài tập 3B — Complete Frontend Prototype ✅
+
+### 8.1. Tóm tắt kết quả đạt được theo yêu cầu 3B
+
+| Yêu cầu 3B | Cách triển khai | Vị trí minh chứng |
+|---|---|---|
+| **1. Complete main workflow with mock data/API** | Hoàn thiện trọn vẹn luồng người dùng: Xem Dashboard thống kê → Kanban Board theo Project → Tạo Task mới (modal form) → Chuyển trạng thái nhanh trên thẻ Kanban hoặc chỉnh sửa trong chi tiết → Quản lý checklist tiêu chí chấp nhận → Xóa Task (CRUD trọn vẹn). Tích hợp `mockApi` đồng bộ vào `localStorage` giúp lưu trữ bền vững qua các lần reload trang. | `client/src/services/mockApi.js`<br>`client/src/pages/TaskList.jsx`<br>`client/src/pages/TaskDetail.jsx`<br>`client/src/pages/CreateTask.jsx`<br>`client/src/pages/Dashboard.jsx` |
+| **2. Define API endpoints with sample request/response** | Định nghĩa chi tiết 8 REST endpoints gồm HTTP methods, URL params, Query params, Headers, JSON Request body mẫu, JSON Response body mẫu và các mã trạng thái HTTP chuẩn (`200 OK`, `201 Created`, `204 No Content`, `400 Bad Request`, `404 Not Found`). | [`docs/07-api-endpoints.md`](docs/07-api-endpoints.md) |
+| **3. Automated tests & documented acceptance tests** | Cài đặt Vitest và viết 12 automated unit/integration tests bao quát validator, service CRUD và luồng end-to-end (`npm test`). Bổ sung tài liệu 5 kịch bản kiểm thử chấp nhận thủ công (manual acceptance tests). | [`docs/08-acceptance-tests.md`](docs/08-acceptance-tests.md)<br>`client/src/tests/` |
+| **4. Document how to run frontend & config storage** | Hướng dẫn chi tiết cách chạy, vị trí lưu trữ cấu hình (`.env`, `.env.example`, `src/config/index.js`), lệnh test và build production. | Mục 8.2, 8.3 dưới đây & [`client/README.md`](client/README.md) |
+| **5. Responsive UI & maintain existing structure** | Giữ nguyên toàn bộ cấu trúc giao diện và hệ thống style CSS hiện tại, đảm bảo hiển thị mượt mà trên desktop/mobile, đồng thời xử lý triệt để các lỗi ESLint. | `client/src/styles/*.css` |
+
+### 8.2. Cấu hình & Vị trí lưu trữ cấu hình
+
+Cấu hình dự án được lưu trữ tập trung tại:
+- **`client/.env.example`**: File mẫu khai báo các biến môi trường cần thiết.
+- **`client/.env`**: File cấu hình hoạt động cục bộ (được nạp tự động bởi Vite).
+- **`client/src/config/index.js`**: Module JavaScript đọc các biến môi trường từ `import.meta.env` và cung cấp giá trị mặc định an toàn.
+
+**Các biến môi trường chính:**
+- `VITE_APP_NAME`: Tên ứng dụng hiển thị (`MANA - Student Task & Deadline Manager`).
+- `VITE_API_BASE_URL`: URL gốc của backend API (mặc định `http://localhost:5000/api/v1` chuẩn bị cho Tuần 4).
+- `VITE_USE_MOCK_DATA`: Cờ bật/tắt chế độ mock data (`true` cho bài 3B; chuyển thành `false` khi tích hợp backend thực tế).
+
+### 8.3. Hướng dẫn chạy và kiểm thử
+
+#### Cài đặt dependencies:
+```bash
+cd client
+npm install
+```
+
+#### Chạy development server:
+```bash
+npm run dev
+```
+Mở trình duyệt tại: [http://localhost:5173](http://localhost:5173)
+
+#### Chạy kiểm thử tự động (Automated Tests):
+```bash
+npm test
+```
+*Kết quả:* 12/12 tests PASS trên 3 test suite:
+- `src/tests/validators.test.js` (6 tests)
+- `src/tests/mockApi.test.js` (5 tests)
+- `src/tests/workflow.test.js` (1 test)
+
+#### Kiểm tra cú pháp (Linting):
+```bash
+npm run lint
+```
+*Kết quả:* 0 errors, 0 warnings.
+
+#### Build production:
+```bash
+npm run build
+npm run preview
+```
+
+### 8.4. Tài liệu liên quan
+- [📡 Đặc tả API Contract (Sample Request & Response)](docs/07-api-endpoints.md)
+- [🧪 Kịch bản kiểm thử chấp nhận (Acceptance Tests)](docs/08-acceptance-tests.md)
+- [📝 Nhật ký sử dụng AI (AI Usage Log)](docs/06-ai-usage-log.md)

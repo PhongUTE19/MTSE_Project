@@ -118,6 +118,13 @@
   color: #44546f;
 }
 
+.project-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  align-items: center;
+}
+
 .btn-view-board {
   text-decoration: none;
   color: #0052cc;
@@ -134,10 +141,112 @@
   background: #cce0ff;
 }
 
+.btn-delete-project {
+  background: #ffebe6;
+  color: #ae2e24;
+  border: 1px solid #ffbdad;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+}
+
+.btn-delete-project:hover {
+  background: #ffbdad;
+  color: #5d1f1a;
+}
+
 .empty-row {
   padding: 32px;
   text-align: center;
   color: #626f86;
+}
+
+/* In-app confirmation dialog */
+.confirm-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(9, 30, 66, 0.54);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+  animation: fadeIn 0.15s ease-out;
+}
+
+.confirm-dialog-content {
+  background: #ffffff;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 440px;
+  padding: 24px;
+  box-shadow: 0 8px 24px rgba(9, 30, 66, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+.confirm-dialog-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #bf2600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.confirm-dialog-body {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #172b4d;
+  margin: 0;
+}
+
+.confirm-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.btn-confirm-cancel {
+  background: #f4f5f7;
+  color: #172b4d;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-confirm-cancel:hover {
+  background: #ebecf0;
+}
+
+.btn-confirm-danger {
+  background: #de350b;
+  color: #ffffff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.15s ease;
+}
+
+.btn-confirm-danger:hover {
+  background: #bf2600;
 }
 
 @media (max-width: 768px) {
