@@ -1,3 +1,4 @@
+import { ChevronDown, ClipboardList, Plus, Settings, Tags, Users, X } from "lucide-react";
 // src/pages/CreateTask.jsx
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
@@ -6,7 +7,7 @@ import { mockApi } from "../services/mockApi";
 import { getLabelColor } from "../utils/constants";
 import Toast from "../components/Toast";
 import LabelsPopup from "../components/LabelsPopup";
-import { Plus, X } from "lucide-react";
+
 import "../styles/CreateTask.css";
 
 export default function CreateTask() {
@@ -170,14 +171,14 @@ export default function CreateTask() {
           <Link
             to="/tasks"
             state={{ projectId, projectName }}
-            className="btn-close"
+            className="btn-close" aria-label="Close"
           >
             <X size={18} aria-hidden="true" />
           </Link>
         </div>
 
         <h1 className="create-task-title">
-          <span>📝</span> Create New Task
+          <ClipboardList size={18} aria-hidden="true" /> Create New Task
           <span className="create-task-status-badge">
             in{" "}
             {defaultStatus === "todo"
@@ -247,11 +248,11 @@ export default function CreateTask() {
                   setShowLabelsPopup(false);
                 }}
               >
-                <span>👤 Assign Members</span>
+                <span><Users size={18} aria-hidden="true" /> Assign Members</span>
                 <span className="picker-count">
                   {values.assigneeIds.length > 0
                     ? `(${values.assigneeIds.length} selected)`
-                    : "▾"}
+                    : <ChevronDown size={16} aria-hidden="true" />}
                 </span>
               </button>
 
@@ -261,10 +262,10 @@ export default function CreateTask() {
                     <span className="popover-title">Assign Members</span>
                     <button
                       type="button"
-                      className="popover-close"
+                      className="popover-close" aria-label="Close picker"
                       onClick={() => setShowMembersPopup(false)}
                     >
-                      ✕
+                      <X size={18} aria-hidden="true" />
                     </button>
                   </div>
                   <div className="popover-list">
@@ -298,9 +299,9 @@ export default function CreateTask() {
                         </div>
                       );
                     })}
-                    <div className="popover-footer" style={{ borderTop: "1px solid #dfe1e6", padding: "8px", textAlign: "center" }}>
-                      <Link to={`/settings?project=${projectId}`} state={{ tab: "members" }} style={{ textDecoration: "none", color: "#0052cc", fontSize: "14px", fontWeight: "500" }}>
-                        ⚙️ Manage Members
+                    <div className="popover-footer" style={{ borderTop: "1px solid var(--border-soft)", padding: "8px", textAlign: "center" }}>
+                      <Link to={`/settings?project=${projectId}`} state={{ tab: "members" }} style={{ textDecoration: "none", color: "var(--atlantis)", fontSize: "14px", fontWeight: "500" }}>
+                        <Settings size={18} aria-hidden="true" /> Manage Members
                       </Link>
                     </div>
                   </div>
@@ -324,11 +325,11 @@ export default function CreateTask() {
                       <span className="chip-label">{member.name}</span>
                       <button
                         type="button"
-                        className="chip-remove-btn"
+                        className="chip-remove-btn" aria-label="Remove selection"
                         onClick={() => handleToggleMember(id)}
                         title="Remove member"
                       >
-                        ✕
+                        <X size={18} aria-hidden="true" />
                       </button>
                     </span>
                   );
@@ -353,11 +354,11 @@ export default function CreateTask() {
                   setShowMembersPopup(false);
                 }}
               >
-                <span>🏷️ Select Labels</span>
+                <span><Tags size={18} aria-hidden="true" /> Select Labels</span>
                 <span className="picker-count">
                   {values.labels.length > 0
                     ? `(${values.labels.length} selected)`
-                    : "▾"}
+                    : <ChevronDown size={16} aria-hidden="true" />}
                 </span>
               </button>
 
@@ -381,16 +382,16 @@ export default function CreateTask() {
                   <span
                     key={l}
                     className="selected-label-chip"
-                    style={{ background: labelObj?.color || getLabelColor(l) }}
+                    style={{ "--label-color": labelObj?.color || getLabelColor(l) }}
                   >
                     <span className="chip-label">{l}</span>
                     <button
                       type="button"
-                      className="chip-remove-btn"
+                      className="chip-remove-btn" aria-label="Remove selection"
                       onClick={() => handleToggleLabel(l)}
                       title="Remove label"
                     >
-                      ✕
+                      <X size={18} aria-hidden="true" />
                     </button>
                   </span>
                 )})

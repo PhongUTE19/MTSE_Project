@@ -1,3 +1,4 @@
+import { ArrowLeft, ArrowRight, Calendar, ListChecks, Plus } from "lucide-react";
 // src/pages/TaskList.jsx
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
@@ -156,7 +157,7 @@ export default function TaskList() {
           state={{ projectId, projectName }}
           className="btn-add-task"
         >
-          + Add Task
+          <Plus size={18} aria-hidden="true" /> Add Task
         </Link>
       </div>
 
@@ -196,7 +197,7 @@ export default function TaskList() {
                             <span
                               key={l}
                               className="task-label"
-                              style={{ background: getLabel(l)?.color || getLabelColor(l) }}
+                              style={{ "--label-color": getLabel(l)?.color || getLabelColor(l) }}
                             >
                               {l}
                             </span>
@@ -243,7 +244,7 @@ export default function TaskList() {
                                   : ""
                               }`}
                             >
-                              📅{" "}
+                              <Calendar size={18} aria-hidden="true" />{" "}
                               {new Date(task.dueAt)
                                 .toLocaleDateString("en-GB")
                                 .slice(0, 5)}
@@ -255,7 +256,7 @@ export default function TaskList() {
                                 isAllChecked ? "all-checked" : ""
                               }`}
                             >
-                              ☑️ {checklistText}
+                              <ListChecks size={18} aria-hidden="true" /> {checklistText}
                             </span>
                           )}
                         </div>
@@ -275,7 +276,7 @@ export default function TaskList() {
                               handleMoveStatus(e, task.id, "in_progress")
                             }
                           >
-                            Start →
+                            Start <ArrowRight size={18} aria-hidden="true" />
                           </button>
                         )}
                         {task.status === "in_progress" && (
@@ -288,7 +289,7 @@ export default function TaskList() {
                                 handleMoveStatus(e, task.id, "todo")
                               }
                             >
-                              ← Todo
+                              <ArrowLeft size={18} aria-hidden="true" /> Todo
                             </button>
                             <button
                               type="button"
@@ -298,7 +299,7 @@ export default function TaskList() {
                                 handleMoveStatus(e, task.id, "done")
                               }
                             >
-                              Done →
+                              Done <ArrowRight size={18} aria-hidden="true" />
                             </button>
                           </div>
                         )}
@@ -311,7 +312,7 @@ export default function TaskList() {
                               handleMoveStatus(e, task.id, "in_progress")
                             }
                           >
-                            ← Reopen
+                            <ArrowLeft size={18} aria-hidden="true" /> Reopen
                           </button>
                         )}
                       </div>
@@ -326,7 +327,7 @@ export default function TaskList() {
                 state={{ status: colKey, projectId, projectName }}
                 className="btn-add-card"
               >
-                + Add a card
+                <Plus size={18} aria-hidden="true" /> Add a card
               </Link>
             </div>
           );

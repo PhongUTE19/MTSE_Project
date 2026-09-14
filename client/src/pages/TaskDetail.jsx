@@ -1,3 +1,4 @@
+import { AlignLeft, BookOpen, Calendar, Check, Clock3, Flag, ListChecks, Pencil, Settings, Tags, Trash2, Users, X } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { useParams, Link, useLocation, useNavigate } from "react-router-dom";
 import { mockApi } from "../services/mockApi";
@@ -7,7 +8,7 @@ import {
 } from "../utils/constants";
 import Toast from "../components/Toast";
 import LabelsPopup from "../components/LabelsPopup";
-import { Calendar, Check, Clock3, Flag, X } from "lucide-react";
+
 import "../styles/TaskDetail.css";
 
 export default function TaskDetail() {
@@ -219,7 +220,7 @@ export default function TaskDetail() {
     return (
       <div className="task-detail-container">
         <div className="task-detail-modal" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <p style={{ color: "#6b778c" }}>Loading task details...</p>
+          <p style={{ color: "var(--text-secondary)" }}>Loading task details...</p>
         </div>
       </div>
     );
@@ -254,15 +255,15 @@ export default function TaskDetail() {
           <Link
             to="/tasks"
             state={{ projectId, projectName }}
-            className="btn-close"
+            className="btn-close" aria-label="Close"
           >
-            ✕
+            <X size={18} aria-hidden="true" />
           </Link>
         </div>
 
         {/* Header section */}
         <div className="header-section">
-          <span className="header-icon">📖</span>
+          <span className="header-icon"><BookOpen size={18} aria-hidden="true" /></span>
           <div className="header-content">
             <input
               value={task.title}
@@ -325,7 +326,7 @@ export default function TaskDetail() {
                       <span
                         key={l}
                         className="label-badge"
-                        style={{ background: labelObj?.color || getLabelColor(l) }}
+                        style={{ "--label-color": labelObj?.color || getLabelColor(l) }}
                       >
                         {l}
                       </span>
@@ -339,7 +340,7 @@ export default function TaskDetail() {
             <div>
               <h3 className="section-title">
                 <div className="section-title-left">
-                  <span>≡</span> Description
+                  <AlignLeft size={18} aria-hidden="true" /> Description
                 </div>
               </h3>
 
@@ -387,7 +388,7 @@ export default function TaskDetail() {
             <div>
               <h3 className="section-title">
                 <div className="section-title-left">
-                  <span>☑️</span> Acceptance Criteria
+                  <ListChecks size={18} aria-hidden="true" /> Acceptance Criteria
                 </div>
                 {task.checklist && task.checklist.length > 0 && (
                   <button
@@ -417,7 +418,7 @@ export default function TaskDetail() {
                       style={{
                         width: `${progressPercent}%`,
                         background:
-                          progressPercent === 100 ? "#1f845a" : "#579dff",
+                          progressPercent === 100 ? "var(--success-text)" : "var(--periwinkle)",
                       }}
                     />
                   </div>
@@ -508,7 +509,7 @@ export default function TaskDetail() {
                               style={{ margin: 0, padding: "2px 6px" }}
                               title="Edit item"
                             >
-                              ✏️
+                              <Pencil size={18} aria-hidden="true" />
                             </button>
                             <button
                               type="button"
@@ -524,7 +525,7 @@ export default function TaskDetail() {
                               style={{ margin: 0, padding: "2px 6px" }}
                               title="Delete item"
                             >
-                              ❌
+                              <Trash2 size={18} aria-hidden="true" />
                             </button>
                           </div>
                         </>
@@ -606,7 +607,7 @@ export default function TaskDetail() {
                     className="btn-sidebar"
                     style={{ width: "100%" }}
                   >
-                    👤 Members
+                    <Users size={18} aria-hidden="true" /> Members
                   </button>
 
                   {showMembersPopup && (
@@ -615,10 +616,10 @@ export default function TaskDetail() {
                         <span className="popover-title">Assign Members</span>
                         <button
                           type="button"
-                          className="popover-close"
+                          className="popover-close" aria-label="Close picker"
                           onClick={() => setShowMembersPopup(false)}
                         >
-                          ✕
+                          <X size={18} aria-hidden="true" />
                         </button>
                       </div>
                       <div className="popover-list">
@@ -650,9 +651,9 @@ export default function TaskDetail() {
                             </div>
                           );
                         })}
-                        <div className="popover-footer" style={{ borderTop: "1px solid #dfe1e6", padding: "8px", textAlign: "center" }}>
-                          <Link to={`/settings?project=${task.projectId}`} state={{ tab: "members" }} style={{ textDecoration: "none", color: "#0052cc", fontSize: "14px", fontWeight: "500" }}>
-                            ⚙️ Manage Members
+                        <div className="popover-footer" style={{ borderTop: "1px solid var(--border-soft)", padding: "8px", textAlign: "center" }}>
+                          <Link to={`/settings?project=${task.projectId}`} state={{ tab: "members" }} style={{ textDecoration: "none", color: "var(--atlantis)", fontSize: "14px", fontWeight: "500" }}>
+                            <Settings size={18} aria-hidden="true" /> Manage Members
                           </Link>
                         </div>
                       </div>
@@ -671,7 +672,7 @@ export default function TaskDetail() {
                     className="btn-sidebar"
                     style={{ width: "100%" }}
                   >
-                    🏷️ Labels
+                    <Tags size={18} aria-hidden="true" /> Labels
                   </button>
 
                   {showLabelsPopup && (
@@ -784,7 +785,7 @@ export default function TaskDetail() {
                 className="btn-sidebar btn-danger"
                 style={{ width: "100%" }}
               >
-                🗑️ Delete Task
+                <Trash2 size={18} aria-hidden="true" /> Delete Task
               </button>
             </div>
           </div>

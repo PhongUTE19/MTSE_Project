@@ -13,7 +13,7 @@
 
 .settings-header h1 {
   font-size: 24px;
-  font-weight: 500;
+  font-weight: 600;
   margin: 0 0 16px 0;
 }
 
@@ -22,15 +22,15 @@
   max-width: 420px;
   margin-bottom: 16px;
   padding: 9px 10px;
-  border: 2px solid var(--border-light);
-  border-radius: 4px;
+  border: 1px solid #DDE2EE;
+  border-radius: var(--radius-sm);
   color: var(--text);
   background: #fff;
 }
 
 .settings-project-subtitle {
   margin: -8px 0 12px;
-  color: #5e6c84;
+  color: var(--text-secondary);
   font-size: 13px;
 }
 
@@ -47,13 +47,13 @@
 
 .settings-section-header h2 {
   font-size: 20px;
-  font-weight: 500;
+  font-weight: 600;
   margin: 0;
 }
 
 .member-history-note {
   margin: -8px 0 16px;
-  color: #5e6c84;
+  color: var(--text-secondary);
   font-size: 12px;
   font-style: italic;
 }
@@ -63,7 +63,7 @@
   color: white;
   border: none;
   padding: 8px 16px;
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -71,16 +71,16 @@
 }
 
 .btn-primary:hover {
-  background: #0047b3;
+  background: var(--primary-200);
 }
 
 .settings-table {
   width: 100%;
   border-collapse: collapse;
   background: white;
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
   overflow: hidden;
-  box-shadow: 0 1px 2px rgba(9, 30, 66, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .settings-table th,
@@ -93,7 +93,7 @@
 
 .settings-table th {
   background: var(--bg-200);
-  color: #5e6c84;
+  color: var(--text-secondary);
   font-weight: 600;
   text-transform: uppercase;
   font-size: 12px;
@@ -104,7 +104,7 @@
 }
 
 .settings-table tr:hover {
-  background: #fafbfc;
+  background: var(--bg-page);
 }
 
 .avatar-cell {
@@ -136,28 +136,28 @@
   border: none;
   cursor: pointer;
   padding: 4px;
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
   font-size: 16px;
   transition: background 0.2s;
 }
 
 .btn-icon:hover {
-  background: #ebecf0;
+  background: var(--border-soft);
 }
 
 .empty-state {
   text-align: center;
   padding: 32px;
-  color: #5e6c84;
-  background: #fafbfc;
-  border-radius: 3px;
+  color: var(--text-secondary);
+  background: var(--bg-page);
+  border-radius: var(--radius-sm);
   border: 1px dashed var(--border-light);
 }
 
 .settings-form {
-  background: var(--bg-200);
-  padding: 16px;
-  border-radius: 3px;
+  background: var(--bg-card);
+  padding: 24px;
+  border-radius: var(--radius-sm);
   margin-bottom: 24px;
   border: 1px solid var(--border-light);
 }
@@ -170,25 +170,25 @@
   display: block;
   font-size: 12px;
   font-weight: 600;
-  color: #5e6c84;
+  color: var(--text-secondary);
   margin-bottom: 4px;
 }
 
 .form-input {
   width: 100%;
   padding: 8px 12px;
-  border: 2px solid var(--border-light);
-  border-radius: 3px;
+  border: 1px solid #DDE2EE;
+  border-radius: var(--radius-sm);
   font-size: 14px;
   color: var(--text);
-  background: #fafbfc;
+  background: var(--bg-card);
   transition: all 0.2s;
   box-sizing: border-box;
 }
 
 .form-input:focus {
   background: white;
-  border-color: #4c9aff;
+  border-color: var(--periwinkle);
   outline: none;
 }
 
@@ -200,10 +200,10 @@
 
 .btn-secondary {
   background: var(--bg-200);
-  color: #5e6c84;
-  border: none;
+  color: var(--atlantis);
+  border: 1px solid var(--info-border);
   padding: 8px 16px;
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -211,7 +211,7 @@
 }
 
 .btn-secondary:hover {
-  background: #ebecf0;
+  background: var(--border-soft);
   color: var(--text);
 }
 
@@ -222,7 +222,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(9, 30, 66, 0.54);
+  background: rgba(14, 21, 94, 0.24);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -232,10 +232,10 @@
 .confirm-dialog {
   background: white;
   padding: 24px;
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
   width: 100%;
   max-width: 400px;
-  box-shadow: 0 8px 16px -4px rgba(9, 30, 66, 0.25);
+  box-shadow: var(--shadow-sm);
 }
 
 .confirm-dialog h3 {
@@ -246,7 +246,7 @@
 
 .confirm-dialog p {
   margin: 0 0 24px 0;
-  color: #5e6c84;
+  color: var(--text-secondary);
   font-size: 14px;
   line-height: 1.5;
 }
@@ -262,14 +262,14 @@
   color: white;
   border: none;
   padding: 8px 16px;
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
 }
 
 .btn-danger:hover {
-  background: #bf2600;
+  background: #8f3f3d;
 }
 
 .settings-toast {
@@ -278,15 +278,18 @@
   bottom: 20px;
   z-index: 9999;
   padding: 12px 24px;
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
   color: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .settings-toast.success {
-  background: #006644;
+  background: var(--success-bg);
+  color: var(--success-text);
+  border: 1px solid var(--success-border);
 }
 
 .settings-toast.error {
-  background: var(--danger-text);
-}
+  background: var(--danger-bg);
+  color: var(--danger-text);
+  border: 1px solid var(--danger-border);

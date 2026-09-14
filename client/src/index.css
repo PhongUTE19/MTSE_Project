@@ -1,21 +1,36 @@
 :root {
-  --text: #333333;
-  --text-h: #195775;
-  --text-200: #5c5c5c;
-  --bg: #f5f5dc;
-  --bg-100: #f5f5dc;
-  --bg-200: #ebebd2;
-  --bg-300: #c2c2aa;
-  --primary-100: #7fb3d5;
-  --primary-200: #6296b7;
-  --primary-300: #195775;
-  --accent-100: #f7cac9;
-  --accent-200: #926b6a;
-  --border: #c2c2aa;
-  --border-light: #e0e0c8;
-  --shadow-sm: 0 2px 7px rgba(25, 87, 117, 0.07);
-  --shadow-md: 0 6px 14px rgba(25, 87, 117, 0.12);
-  --shadow-lg: 0 12px 24px rgba(25, 87, 117, 0.15);
+  --phlox: #CAA9F3;
+  --verbena: #B37AD4;
+  --periwinkle: #7997E6;
+  --atlantis: #2D6ABC;
+  --phthalo-blue: #0E155E;
+  --phlox-soft: #F5EDFD;
+  --verbena-soft: #F7EEFB;
+  --periwinkle-soft: #EEF2FD;
+  --atlantis-soft: #EDF4FC;
+  --bg-page: #F8F9FD;
+  --bg-card: #FFFFFF;
+  --border-soft: #E7EAF3;
+  --text-primary: #0E155E;
+  --text-secondary: #667085;
+  --text-muted: #98A2B3;
+  --text: var(--text-primary);
+  --text-h: var(--text-primary);
+  --text-200: var(--text-secondary);
+  --bg: var(--bg-page);
+  --bg-100: var(--bg-card);
+  --bg-200: var(--periwinkle-soft);
+  --bg-300: var(--phlox-soft);
+  --primary-100: var(--periwinkle);
+  --primary-200: #24599F;
+  --primary-300: var(--atlantis);
+  --accent-100: var(--phlox-soft);
+  --accent-200: #80549E;
+  --border: var(--border-soft);
+  --border-light: var(--border-soft);
+  --shadow-sm: 0 2px 8px rgba(14, 21, 94, 0.04);
+  --shadow-md: 0 6px 16px rgba(14, 21, 94, 0.08);
+  --shadow-lg: 0 12px 28px rgba(14, 21, 94, 0.10);
   --success-bg: #e2f3e8;
   --success-text: #34745a;
   --success-border: #cfe7d8;
@@ -25,13 +40,13 @@
   --warning-bg: #fdf5e0;
   --warning-text: #946718;
   --warning-border: #f1e4bd;
-  --info-bg: #eaf4f8;
-  --info-text: #195775;
-  --info-border: #b7d7e5;
-  --radius-sm: 6px;
+  --info-bg: var(--periwinkle-soft);
+  --info-text: var(--atlantis);
+  --info-border: #DAE3F7;
+  --radius-sm: 8px;
   --radius-md: 10px;
   --radius-lg: 14px;
-  --radius-xl: 18px;
+  --radius-xl: 14px;
   --radius-pill: 999px;
   --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --heading: var(--sans);
@@ -68,3 +83,11 @@ button, a { transition: all 0.2s ease; }
   outline: 2px solid var(--primary-100);
   outline-offset: 2px;
 }
+
+/* Shared presentation for the existing controls. */
+.lucide { flex-shrink: 0; vertical-align: middle; stroke-width: 1.8; }
+button, a[class^="btn-"] { align-items: center; justify-content: center; gap: 8px; }
+button { display: inline-flex; }
+button:disabled { opacity: .6; cursor: not-allowed; }
+input:not([type="checkbox"]), select, textarea { line-height: 1.5; }
+input[type="checkbox"] { accent-color: var(--atlantis); }

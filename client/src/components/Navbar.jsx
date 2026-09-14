@@ -1,3 +1,4 @@
+import { Layers,LayoutDashboard, Plus, Settings } from "lucide-react";
 // src/components/Navbar.jsx
 import { NavLink } from "react-router-dom";
 import "../styles/Navbar.css";
@@ -7,12 +8,15 @@ export default function Navbar() {
     <nav className="navbar">
       {/* Logo / tên app */}
       <strong className="navbar-brand">
+        <span className="brand-logo">
+            <Layers size={26} />
+         </span>
         MANA
       </strong>
 
       {/* Button Create Project */}
       <NavLink to="/projects/new" className="btn-create">
-        + Create Project
+        <Plus size={18} aria-hidden="true" /> Create Project
       </NavLink>
 
       {/* Các link điều hướng */}
@@ -20,13 +24,13 @@ export default function Navbar() {
         to="/dashboard" 
         className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
       >
-        Dashboard
+        <LayoutDashboard size={18} aria-hidden="true" /> Dashboard
       </NavLink>
       <NavLink 
         to="/settings" 
         className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
       >
-        ⚙️ Settings
+        <Settings size={18} aria-hidden="true" /> Settings
       </NavLink>
     </nav>
   );

@@ -1,3 +1,4 @@
+import { FolderPlus, X } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { mockApi } from "../services/mockApi";
@@ -78,13 +79,13 @@ export default function CreateProject() {
     <div className="create-task-container">
       <div className="create-task-modal">
         <div className="btn-close-container">
-          <Link to="/dashboard" className="btn-close">
-            ✕
+          <Link to="/dashboard" className="btn-close" aria-label="Close">
+            <X size={18} aria-hidden="true" />
           </Link>
         </div>
 
         <h1 className="create-task-title">
-          <span>📁</span> Create New Project
+          <FolderPlus size={18} aria-hidden="true" /> Create New Project
         </h1>
 
         <form onSubmit={handleSubmit} className="create-task-form">

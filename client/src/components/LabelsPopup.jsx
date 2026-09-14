@@ -1,3 +1,4 @@
+import { Pencil, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { mockApi } from "../services/mockApi";
 import EditLabelModal from "./EditLabelModal";
@@ -53,7 +54,7 @@ export default function LabelsPopup({ projectId, selectedLabelNames = [], onTogg
     <div className="labels-popup">
       <header className="labels-popup-header">
         <h3>Labels</h3>
-        <button type="button" onClick={onClose}>✕</button>
+        <button type="button" onClick={onClose} aria-label="Close"><X size={18} aria-hidden="true" /></button>
       </header>
       <div className="labels-search">
         <input placeholder="Search labels..." value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} autoFocus />
@@ -65,8 +66,8 @@ export default function LabelsPopup({ projectId, selectedLabelNames = [], onTogg
           return (
             <div key={label.id} className={`label-row ${isSelected ? "selected" : ""}`}>
               <input type="checkbox" checked={isSelected} onChange={() => onToggleLabel(label.name)} />
-              <span className="popup-label-badge" style={{ background: label.color }}>{label.name}</span>
-              <button type="button" className="btn-edit-label" onClick={() => setEditingLabel(label)} title="Edit label">✏️</button>
+              <span className="popup-label-badge" style={{ "--label-color": label.color }}>{label.name}</span>
+              <button type="button" className="btn-edit-label" onClick={() => setEditingLabel(label)} title="Edit label"><Pencil size={18} aria-hidden="true" /></button>
             </div>
           );
         })}

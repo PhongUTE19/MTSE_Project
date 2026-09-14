@@ -1,3 +1,4 @@
+import { Pencil, Plus } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import mockApi from "../services/mockApi";
@@ -91,7 +92,7 @@ const Settings = () => {
         <div className="settings-section-header">
           <h2>Team Members</h2>
           {!isAddingMember && !editingMember && (
-            <button className="btn-primary" onClick={() => setIsAddingMember(true)}>+ Add Member</button>
+            <button className="btn-primary" onClick={() => setIsAddingMember(true)}><Plus size={18} aria-hidden="true" /> Add Member</button>
           )}
         </div>
         <p className="settings-project-subtitle">Members of {selectedProject?.name || "selected project"}</p>
@@ -136,7 +137,7 @@ const Settings = () => {
                   <td>{member.email}</td>
                   <td>
                     <div className="actions-cell">
-                      <button className="btn-icon" onClick={() => { setEditingMember(member); setMemberForm({ name: member.name, mssv: member.mssv, email: member.email }); }}>✏️</button>
+                      <button className="btn-icon" aria-label="Edit member" onClick={() => { setEditingMember(member); setMemberForm({ name: member.name, mssv: member.mssv, email: member.email }); }}><Pencil size={18} aria-hidden="true" /></button>
                     </div>
                   </td>
                 </tr>

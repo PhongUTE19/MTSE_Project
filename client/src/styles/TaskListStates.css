@@ -5,7 +5,7 @@
   border-radius: 12px;
   margin: 20px auto;
   max-width: 400px;
-  box-shadow: 0 1px 2px rgba(9, 30, 66, 0.25);
+  box-shadow: var(--shadow-sm);
 }
 
 .state-loading {
@@ -40,7 +40,7 @@
   background: var(--primary-300);
   color: #fff;
   border: none;
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
   font-weight: bold;
   cursor: pointer;
   text-decoration: none;
@@ -48,5 +48,5 @@
 }
 
 .btn-state:hover {
-  background: #0047b3;
+  background: var(--primary-200);
 }
