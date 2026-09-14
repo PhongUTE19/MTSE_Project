@@ -1,6 +1,7 @@
 // src/pages/CreateTask.jsx
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
+import { ListPlus, X, Users, Tags, Plus, ChevronDown } from "lucide-react";
 import { validateTaskForm } from "../utils/validators";
 import { mockApi } from "../services/mockApi";
 import { PREDEFINED_MEMBERS, PREDEFINED_LABELS, getLabelColor } from "../utils/constants";
@@ -48,7 +49,7 @@ export default function CreateTask() {
           setStudents(data);
         }
       })
-      .catch(() => {});
+      .catch(() => { });
     return () => {
       isMounted = false;
     };
@@ -149,20 +150,23 @@ export default function CreateTask() {
             to="/tasks"
             state={{ projectId, projectName }}
             className="btn-close"
+            aria-label="Close"
           >
-            ✕
+            <X size={19} />
           </Link>
         </div>
 
         <h1 className="create-task-title">
-          <span>📝</span> Create New Task
+          <ListPlus size={27} />
+          Create New Task
+
           <span className="create-task-status-badge">
             in{" "}
             {defaultStatus === "todo"
               ? "To Do"
               : defaultStatus === "in_progress"
-              ? "In Progress"
-              : "Done"}
+                ? "In Progress"
+                : "Done"}
           </span>
         </h1>
 
@@ -225,11 +229,17 @@ export default function CreateTask() {
                   setShowLabelsPopup(false);
                 }}
               >
-                <span>👤 Assign Members</span>
+                <span>
+                  <Users size={17} />
+                  Assign Members
+                </span>
+
                 <span className="picker-count">
-                  {values.assigneeIds.length > 0
-                    ? `(${values.assigneeIds.length} selected)`
-                    : "▾"}
+                  {values.assigneeIds.length > 0 ? (
+                    `(${values.assigneeIds.length} selected)`
+                  ) : (
+                    <ChevronDown size={16} />
+                  )}
                 </span>
               </button>
 
@@ -251,9 +261,8 @@ export default function CreateTask() {
                       return (
                         <div
                           key={member.id}
-                          className={`popover-item ${
-                            isSelected ? "selected" : ""
-                          }`}
+                          className={`popover-item ${isSelected ? "selected" : ""
+                            }`}
                           onClick={() => handleToggleMember(member.id)}
                         >
                           <input
@@ -328,11 +337,17 @@ export default function CreateTask() {
                   setShowMembersPopup(false);
                 }}
               >
-                <span>🏷️ Select Labels</span>
+                <span>
+                  <Tags size={17} />
+                  Select Labels
+                </span>
+
                 <span className="picker-count">
-                  {values.labels.length > 0
-                    ? `(${values.labels.length} selected)`
-                    : "▾"}
+                  {values.labels.length > 0 ? (
+                    `(${values.labels.length} selected)`
+                  ) : (
+                    <ChevronDown size={16} />
+                  )}
                 </span>
               </button>
 
@@ -354,9 +369,8 @@ export default function CreateTask() {
                       return (
                         <div
                           key={label}
-                          className={`popover-item ${
-                            isSelected ? "selected" : ""
-                          }`}
+                          className={`popover-item ${isSelected ? "selected" : ""
+                            }`}
                           onClick={() => handleToggleLabel(label)}
                         >
                           <input
@@ -441,6 +455,7 @@ export default function CreateTask() {
 
           {/* Submit */}
           <button type="submit" className="btn-submit" disabled={isSubmitting}>
+            {!isSubmitting && <Plus size={18} />}
             {isSubmitting ? "Creating..." : "Create Task"}
           </button>
         </form>

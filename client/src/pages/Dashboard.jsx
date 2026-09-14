@@ -1,6 +1,7 @@
 // src/pages/Dashboard.jsx
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { FolderKanban, ListTodo, CircleCheckBig, ClockAlert, LayoutDashboard, ExternalLink, Trash2, TriangleAlert } from "lucide-react";
 import { mockApi } from "../services/mockApi";
 import Toast from "../components/Toast";
 import "../styles/Dashboard.css";
@@ -68,31 +69,69 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard-container">
-      <h1 className="dashboard-title">Dashboard</h1>
-      
+      <h1 className="dashboard-title">
+        <LayoutDashboard size={28} />
+        Dashboard
+      </h1>
+
       {/* Statistics Cards */}
       <div className="dashboard-stats">
         <div className="stat-card">
-          <h3 className="stat-title">Total Projects</h3>
-          <div className="stat-value primary">{loading ? "..." : stats.totalProjects}</div>
+          <div className="stat-icon primary">
+            <FolderKanban size={22} />
+          </div>
+          <div>
+            <h3 className="stat-title">Total Projects</h3>
+            <div className="stat-value primary">
+              {loading ? "..." : stats.totalProjects}
+            </div>
+          </div>
         </div>
+
         <div className="stat-card">
-          <h3 className="stat-title">Total Tasks</h3>
-          <div className="stat-value default">{loading ? "..." : stats.totalTasks}</div>
+          <div className="stat-icon default">
+            <ListTodo size={22} />
+          </div>
+          <div>
+            <h3 className="stat-title">Total Tasks</h3>
+            <div className="stat-value default">
+              {loading ? "..." : stats.totalTasks}
+            </div>
+          </div>
         </div>
+
         <div className="stat-card">
-          <h3 className="stat-title">Tasks Done</h3>
-          <div className="stat-value success">{loading ? "..." : stats.doneTasks}</div>
+          <div className="stat-icon success">
+            <CircleCheckBig size={22} />
+          </div>
+          <div>
+            <h3 className="stat-title">Tasks Done</h3>
+            <div className="stat-value success">
+              {loading ? "..." : stats.doneTasks}
+            </div>
+          </div>
         </div>
+
         <div className="stat-card">
-          <h3 className="stat-title">Overdue Tasks</h3>
-          <div className="stat-value danger">{loading ? "..." : stats.overdueTasks}</div>
+          <div className="stat-icon danger">
+            <ClockAlert size={22} />
+          </div>
+          <div>
+            <h3 className="stat-title">Overdue Tasks</h3>
+            <div className="stat-value danger">
+              {loading ? "..." : stats.overdueTasks}
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Projects Table */}
       <div className="projects-section">
-        <h2 className="projects-title">Active Projects</h2>
+        <h2 className="projects-title">
+          <FolderKanban size={21} />
+          Active Projects
+        </h2>
+
         <div className="table-responsive">
           <table className="projects-table">
             <thead>
@@ -104,35 +143,53 @@ export default function Dashboard() {
                 <th className="right">Action</th>
               </tr>
             </thead>
+
             <tbody>
               {projectsList.length > 0 ? (
                 projectsList.map((p) => (
                   <tr key={p.id}>
                     <td className="project-name">{p.name}</td>
-                    <td className="project-course">{p.courseName}</td>
+
+                    <td className="project-course">
+                      {p.courseName}
+                    </td>
+
                     <td>
-                      <span className={`status-badge ${p.status === "active" ? "active" : "inactive"}`}>
+                      <span
+                        className={`status-badge ${p.status === "active" ? "active" : "inactive"
+                          }`}
+                      >
                         {p.status}
                       </span>
                     </td>
+
                     <td className="project-deadline">
-                      {p.deadline ? new Date(p.deadline).toLocaleDateString() : "-"}
+                      {p.deadline
+                        ? new Date(p.deadline).toLocaleDateString()
+                        : "-"}
                     </td>
+
                     <td className="right">
                       <div className="project-actions">
                         <Link
                           to="/tasks"
-                          state={{ projectId: p.id, projectName: p.name }}
+                          state={{
+                            projectId: p.id,
+                            projectName: p.name,
+                          }}
                           className="btn-view-board"
                         >
+                          <ExternalLink size={15} />
                           View Board
                         </Link>
+
                         <button
                           type="button"
                           className="btn-delete-project"
                           onClick={() => setProjectToDelete(p)}
                           title={`Delete project ${p.name}`}
                         >
+                          <Trash2 size={15} />
                           Delete
                         </button>
                       </div>
@@ -142,7 +199,9 @@ export default function Dashboard() {
               ) : (
                 <tr>
                   <td colSpan="5" className="empty-row">
-                    {loading ? "Loading projects..." : "No projects found."}
+                    {loading
+                      ? "Loading projects..."
+                      : "No projects found."}
                   </td>
                 </tr>
               )}
@@ -155,7 +214,9 @@ export default function Dashboard() {
       {projectToDelete && (
         <div
           className="confirm-dialog-overlay"
-          onClick={() => !isDeleting && setProjectToDelete(null)}
+          onClick={() =>
+            !isDeleting && setProjectToDelete(null)
+          }
         >
           <div
             className="confirm-dialog-content"
@@ -164,13 +225,21 @@ export default function Dashboard() {
             aria-modal="true"
             aria-labelledby="confirm-delete-title"
           >
-            <h3 id="confirm-delete-title" className="confirm-dialog-title">
-              <span>⚠️</span> Delete Project
+            <h3
+              id="confirm-delete-title"
+              className="confirm-dialog-title"
+            >
+              <TriangleAlert size={22} />
+              Delete Project
             </h3>
+
             <p className="confirm-dialog-body">
-              Are you sure you want to delete <strong>"{projectToDelete.name}"</strong>?
-              All tasks belonging to this project will be permanently deleted. This action cannot be undone.
+              Are you sure you want to delete{" "}
+              <strong>"{projectToDelete.name}"</strong>?
+              All tasks belonging to this project will be
+              permanently deleted. This action cannot be undone.
             </p>
+
             <div className="confirm-dialog-actions">
               <button
                 type="button"
@@ -180,12 +249,14 @@ export default function Dashboard() {
               >
                 Cancel
               </button>
+
               <button
                 type="button"
                 className="btn-confirm-danger"
                 onClick={handleConfirmDelete}
                 disabled={isDeleting}
               >
+                <Trash2 size={15} />
                 {isDeleting ? "Deleting..." : "Delete Project"}
               </button>
             </div>
@@ -201,4 +272,3 @@ export default function Dashboard() {
     </div>
   );
 }
-

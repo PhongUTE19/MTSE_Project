@@ -1,5 +1,6 @@
 // src/components/Toast.jsx
 import { useEffect } from "react";
+import { CircleCheck, CircleAlert, X } from "lucide-react";
 import "../styles/Toast.css";
 
 export default function Toast({ message, type = "success", onClose, duration = 3000 }) {
@@ -15,10 +16,10 @@ export default function Toast({ message, type = "success", onClose, duration = 3
 
   return (
     <div className={`toast-notification ${type}`}>
-      <span className="toast-icon">{type === "success" ? "✓" : "⚠️"}</span>
+      <span className="toast-icon">{type === "success" ? <CircleCheck size={17} /> : <CircleAlert size={17} />}</span>
       <span className="toast-message">{message}</span>
       <button type="button" className="toast-close" onClick={onClose} aria-label="Close notification">
-        ✕
+        <X size={16} />
       </button>
     </div>
   );

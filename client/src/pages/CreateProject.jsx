@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { FolderPlus, X, Plus } from "lucide-react";
 import { mockApi } from "../services/mockApi";
 import Toast from "../components/Toast";
 import "../styles/CreateTask.css";
@@ -78,13 +79,14 @@ export default function CreateProject() {
     <div className="create-task-container">
       <div className="create-task-modal">
         <div className="btn-close-container">
-          <Link to="/dashboard" className="btn-close">
-            ✕
+          <Link to="/dashboard" className="btn-close" aria-label="Close">
+            <X size={20} />
           </Link>
         </div>
 
         <h1 className="create-task-title">
-          <span>📁</span> Create New Project
+          <FolderPlus size={27} />
+          Create New Project
         </h1>
 
         <form onSubmit={handleSubmit} className="create-task-form">
@@ -138,7 +140,8 @@ export default function CreateProject() {
             />
           </div>
 
-          <button type="submit" className="btn-submit" disabled={isSubmitting}>
+          <button type="submit" className="btn-submit" disabled={isSubmitting} >
+            {!isSubmitting && <Plus size={18} />}
             {isSubmitting ? "Creating..." : "Create Project"}
           </button>
         </form>

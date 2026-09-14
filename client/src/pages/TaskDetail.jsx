@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams, Link, useLocation, useNavigate } from "react-router-dom";
+import { BookOpen, X, AlignLeft, ListChecks, Users, Tags, Trash2, Plus, Pencil } from "lucide-react";
 import { mockApi } from "../services/mockApi";
 import {
   PREDEFINED_MEMBERS,
@@ -67,7 +68,7 @@ export default function TaskDetail() {
             .then((p) => {
               if (isMounted) setProject(p);
             })
-            .catch(() => {});
+            .catch(() => { });
         }
       })
       .catch(() => {
@@ -221,13 +222,15 @@ export default function TaskDetail() {
             state={{ projectId, projectName }}
             className="btn-close"
           >
-            ✕
+            <X size={22} />
           </Link>
         </div>
 
         {/* Header section */}
         <div className="header-section">
-          <span className="header-icon">📖</span>
+          <span className="header-icon">
+            <BookOpen size={24} />
+          </span>
           <div className="header-content">
             <input
               value={task.title}
@@ -239,10 +242,6 @@ export default function TaskDetail() {
                 updateTaskData({ title: task.title });
               }}
               className="title-input"
-              onFocus={(e) => {
-                e.target.style.background = "#fff";
-                e.target.style.border = "2px solid #388bff";
-              }}
             />
             <p className="list-info">
               in list{" "}
@@ -250,8 +249,8 @@ export default function TaskDetail() {
                 {task.status === "todo"
                   ? "To Do"
                   : task.status === "in_progress"
-                  ? "In Progress"
-                  : "Done"}
+                    ? "In Progress"
+                    : "Done"}
               </span>
             </p>
           </div>
@@ -302,7 +301,8 @@ export default function TaskDetail() {
             <div>
               <h3 className="section-title">
                 <div className="section-title-left">
-                  <span>≡</span> Description
+                  <AlignLeft size={19} />
+                  Description
                 </div>
               </h3>
 
@@ -350,7 +350,8 @@ export default function TaskDetail() {
             <div>
               <h3 className="section-title">
                 <div className="section-title-left">
-                  <span>☑️</span> Acceptance Criteria
+                  <ListChecks size={19} />
+                  Acceptance Criteria
                 </div>
                 {task.checklist && task.checklist.length > 0 && (
                   <button
@@ -454,9 +455,8 @@ export default function TaskDetail() {
                               );
                               updateTaskData({ checklist: updatedChecklist });
                             }}
-                            className={`checklist-title ${
-                              item.completed ? "completed" : "active"
-                            }`}
+                            className={`checklist-title ${item.completed ? "completed" : "active"
+                              }`}
                           >
                             {item.title}
                           </span>
@@ -471,7 +471,7 @@ export default function TaskDetail() {
                               style={{ margin: 0, padding: "2px 6px" }}
                               title="Edit item"
                             >
-                              ✏️
+                              <Pencil size={14} />
                             </button>
                             <button
                               type="button"
@@ -487,7 +487,7 @@ export default function TaskDetail() {
                               style={{ margin: 0, padding: "2px 6px" }}
                               title="Delete item"
                             >
-                              ❌
+                              <Trash2 size={14} />
                             </button>
                           </div>
                         </>
@@ -547,7 +547,10 @@ export default function TaskDetail() {
                   }}
                   className="btn-add-item"
                 >
-                  + Add an item
+                  <>
+                    <Plus size={16} />
+                    Add an item
+                  </>
                 </button>
               )}
             </div>
@@ -569,7 +572,8 @@ export default function TaskDetail() {
                     className="btn-sidebar"
                     style={{ width: "100%" }}
                   >
-                    👤 Members
+                    <Users size={17} />
+                    Members
                   </button>
 
                   {showMembersPopup && (
@@ -629,7 +633,8 @@ export default function TaskDetail() {
                     className="btn-sidebar"
                     style={{ width: "100%" }}
                   >
-                    🏷️ Labels
+                    <Tags size={17} />
+                    Labels
                   </button>
 
                   {showLabelsPopup && (
@@ -776,7 +781,8 @@ export default function TaskDetail() {
                 className="btn-sidebar btn-danger"
                 style={{ width: "100%" }}
               >
-                🗑️ Delete Task
+                <Trash2 size={17} />
+                Delete Task
               </button>
             </div>
           </div>

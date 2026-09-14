@@ -1,8 +1,23 @@
 :root {
-  --text: #172b4d;
-  --text-h: #08060d;
-  --bg: #ffffff;
-  --border: #dfe1e6;
+  --text: #333333;
+  --text-h: #195775;
+  --bg: #F5F5DC;
+  --border: #C2C2AA;
+
+  --primary-100: #7FB3D5;
+  --primary-200: #6296B7;
+  --primary-300: #195775;
+
+  --accent-100: #F7CAC9;
+  --accent-200: #926B6A;
+
+  --text-100: #333333;
+  --text-200: #5C5C5C;
+
+  --bg-100: #F5F5DC;
+  --bg-200: #EBEBD2;
+  --bg-300: #C2C2AA;
+
   --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   --heading: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   --mono: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
@@ -27,8 +42,8 @@ body {
   padding: 0;
   width: 100%;
   min-height: 100vh;
-  background-color: #ffffff;
-  color: #172b4d;
+  background-color: var(--bg);
+  color: var(--text);
 }
 
 #root {
@@ -39,7 +54,7 @@ body {
   display: flex;
   flex-direction: column;
   text-align: left;
-  background-color: #ffffff;
+  background-color: var(--bg);
 }
 
 h1,
@@ -49,12 +64,13 @@ h4,
 h5,
 h6 {
   font-family: var(--heading);
-  color: #172b4d;
+  color: var(--text-h);
   margin: 0;
 }
 
 p {
   margin: 0;
+  color: var(--text-200);
 }
 
 button,
