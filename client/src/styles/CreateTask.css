@@ -1,17 +1,17 @@
 .create-task-container {
   max-width: 800px;
   margin: 0 auto;
-  background: #f4f5f7;
+  background: var(--bg);
   min-height: 100vh;
   padding: 32px 16px;
 }
 
 .create-task-modal {
-  background: #fff;
-  border-radius: 12px;
+  background: #fffef9;
+  border-radius: var(--radius-lg);
   padding: 32px;
   min-height: 600px;
-  box-shadow: 0 8px 16px -4px rgba(9, 30, 66, 0.25);
+  box-shadow: var(--shadow-md);
   position: relative;
 }
 
@@ -23,11 +23,11 @@
 
 .btn-close {
   text-decoration: none;
-  color: #42526e;
+  color: var(--primary-300);
   font-weight: bold;
   padding: 8px;
   border-radius: 50%;
-  background: #091e420f;
+  background: var(--info-bg);
   display: flex;
   width: 16px;
   height: 16px;
@@ -36,12 +36,12 @@
 }
 
 .btn-close:hover {
-  background: #091e421f;
+  background: #d8ebf4;
 }
 
 .create-task-title {
-  color: #172b4d;
-  font-size: 24px;
+  color: var(--primary-300);
+  font-size: 26px;
   margin-bottom: 24px;
   display: flex;
   align-items: center;
@@ -51,8 +51,8 @@
 .create-task-status-badge {
   font-size: 14px;
   font-weight: normal;
-  color: #626f86;
-  background: #091e420f;
+  color: var(--text-200);
+  background: var(--info-bg);
   padding: 4px 8px;
   border-radius: 3px;
 }
@@ -73,7 +73,7 @@
   display: block;
   margin-bottom: 4px;
   font-weight: 600;
-  color: #172b4d;
+  color: var(--text-200);
   font-size: 14px;
 }
 
@@ -81,67 +81,69 @@
   display: block;
   width: 100%;
   padding: 10px;
-  border-radius: 3px;
-  border: 2px solid #dfe1e6;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--border-light);
   outline: none;
   font-size: 14px;
   font-family: inherit;
   background-color: #ffffff;
-  color: #172b4d;
+  color: var(--text);
   box-sizing: border-box;
 }
 
 .form-input::placeholder {
-  color: #626f86;
+  color: var(--text-200);
   opacity: 1;
 }
 
 .form-input:focus {
-  border: 2px solid #388bff;
+  border: 2px solid var(--primary-100);
+  box-shadow: 0 0 0 3px rgba(127, 179, 213, 0.15);
   background-color: #ffffff;
-  color: #172b4d;
+  color: var(--text);
 }
 
 select.form-input {
   background-color: #ffffff;
-  color: #172b4d;
+  color: var(--text);
   cursor: pointer;
 }
 
 select.form-input option {
   background-color: #ffffff;
-  color: #172b4d;
+  color: var(--text);
 }
 
 .form-textarea {
   display: block;
   width: 100%;
   padding: 10px;
-  border-radius: 3px;
-  border: 2px solid #dfe1e6;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--border-light);
   outline: none;
   font-size: 14px;
   font-family: inherit;
   background-color: #ffffff;
-  color: #172b4d;
+  color: var(--text);
   min-height: 80px;
   resize: vertical;
   box-sizing: border-box;
 }
 
 .form-textarea::placeholder {
-  color: #626f86;
+  color: var(--text-200);
   opacity: 1;
 }
 
 .form-textarea:focus {
-  border: 2px solid #388bff;
+  border: 2px solid var(--primary-100);
+  box-shadow: 0 0 0 3px rgba(127, 179, 213, 0.15);
   background-color: #ffffff;
-  color: #172b4d;
+  color: var(--text);
 }
 
 .form-error {
-  color: #c9372c;
+  color: var(--danger-text);
   font-size: 13px;
   margin-top: 4px;
   display: block;
@@ -149,17 +151,21 @@ select.form-input option {
 
 .btn-submit {
   padding: 10px 24px;
-  background: #0052cc;
+  background: var(--primary-300);
   color: #fff;
   border: none;
-  border-radius: 3px;
+  border-radius: var(--radius-md);
   font-weight: bold;
   cursor: pointer;
   font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
 }
 
 .btn-submit:hover {
-  background: #0047b3;
+  background: var(--primary-200);
+  transform: translateY(-1px);
 }
 
 /* Pickers & Popovers for Members & Labels */
@@ -175,9 +181,9 @@ select.form-input option {
   width: 100%;
   padding: 8px 12px;
   background-color: #ffffff;
-  color: #172b4d;
-  border: 2px solid #dfe1e6;
-  border-radius: 4px;
+  color: var(--text);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-sm);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -186,13 +192,13 @@ select.form-input option {
 }
 
 .btn-picker:hover {
-  background-color: #f4f5f7;
-  border-color: #c1c7d0;
+  background-color: var(--info-bg);
+  border-color: var(--primary-100);
 }
 
 .picker-count {
   font-size: 12px;
-  color: #626f86;
+  color: var(--text-200);
   font-weight: normal;
 }
 
@@ -201,10 +207,10 @@ select.form-input option {
   top: calc(100% + 4px);
   left: 0;
   width: 280px;
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(9, 30, 66, 0.2), 0 0 1px rgba(9, 30, 66, 0.3);
-  border: 1px solid #dfe1e6;
+  background: #fffef9;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-light);
   padding: 8px;
   z-index: 100;
   display: flex;
@@ -217,7 +223,7 @@ select.form-input option {
   justify-content: space-between;
   align-items: center;
   padding: 2px 4px 6px;
-  border-bottom: 1px solid #ebecf0;
+  border-bottom: 1px solid var(--border-light);
   margin-bottom: 4px;
 }
 
@@ -225,7 +231,7 @@ select.form-input option {
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  color: #626f86;
+  color: var(--text-200);
   margin: 0;
 }
 
@@ -233,7 +239,7 @@ select.form-input option {
   background: transparent;
   border: none;
   cursor: pointer;
-  color: #626f86;
+  color: var(--text-200);
   font-size: 13px;
   padding: 2px 6px;
   border-radius: 4px;
@@ -241,8 +247,8 @@ select.form-input option {
 }
 
 .popover-close:hover {
-  background: #091e420f;
-  color: #172b4d;
+  background: var(--info-bg);
+  color: var(--primary-300);
 }
 
 .popover-list {
@@ -263,16 +269,17 @@ select.form-input option {
   transition: background 0.15s ease;
   user-select: none;
   font-size: 13px;
-  color: #172b4d;
+  color: var(--text);
   background: transparent;
 }
 
 .popover-item:hover {
-  background: #f4f5f7;
+  background: var(--info-bg);
 }
 
 .popover-item.selected {
-  background: #e9f2ff;
+  background: #d8ebf4;
+  border-left: 3px solid var(--primary-300);
   font-weight: 500;
 }
 
@@ -281,14 +288,14 @@ select.form-input option {
   height: 15px;
   margin: 0;
   cursor: pointer;
-  accent-color: #0052cc;
+  accent-color: var(--primary-300);
 }
 
 .member-avatar-sm {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: #0052cc;
+  background: var(--primary-100);
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -308,12 +315,12 @@ select.form-input option {
 }
 
 .member-name {
-  color: #172b4d;
+  color: var(--text);
   font-size: 13px;
 }
 
 .member-mssv {
-  color: #626f86;
+  color: var(--text-200);
   font-size: 11px;
 }
 
@@ -336,7 +343,7 @@ select.form-input option {
 
 .empty-chips-hint {
   font-size: 12px;
-  color: #626f86;
+  color: var(--text-200);
   font-style: italic;
 }
 
@@ -344,12 +351,12 @@ select.form-input option {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #f4f5f7;
-  border: 1px solid #dfe1e6;
+  background: var(--bg-200);
+  border: 1px solid var(--border-light);
   border-radius: 16px;
   padding: 2px 8px 2px 4px;
   font-size: 12px;
-  color: #172b4d;
+  color: var(--text);
   font-weight: 500;
 }
 
@@ -357,7 +364,7 @@ select.form-input option {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #0052cc;
+  background: var(--primary-100);
   color: #fff;
   display: flex;
   align-items: center;

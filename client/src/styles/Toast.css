@@ -36,7 +36,7 @@
 }
 
 .toast-notification.error {
-  background-color: #ffebe6;
+  background-color: var(--danger-bg);
   color: #ae2e24;
   border: 1px solid #ffd2cc;
 }

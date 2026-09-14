@@ -6,6 +6,8 @@ import {
   getStudentName as getStudentNameHelper,
 } from "../utils/constants";
 import Toast from "../components/Toast";
+import LabelsPopup from "../components/LabelsPopup";
+import { Calendar, Check, Clock3, Flag, X } from "lucide-react";
 import "../styles/TaskDetail.css";
 
 export default function TaskDetail() {
@@ -34,6 +36,7 @@ export default function TaskDetail() {
   const [editingItemTitle, setEditingItemTitle] = useState("");
 
   const projectId = location.state?.projectId || task?.projectId;
+  const locationProjectId = location.state?.projectId;
   const projectName = location.state?.projectName || project?.name;
 
   const loading = loadedTaskId !== taskId;
@@ -44,8 +47,8 @@ export default function TaskDetail() {
 
     Promise.all([
       mockApi.getTaskById(taskId).catch(() => null),
-      mockApi.getMembers().catch(() => []),
-      mockApi.getLabels().catch(() => []),
+      mockApi.getMembers(locationProjectId).catch(() => []),
+      mockApi.getLabels(locationProjectId).catch(() => []),
     ])
       .then(([taskData, membersData, labelsData]) => {
         if (!isMounted) return;
@@ -81,7 +84,21 @@ export default function TaskDetail() {
     return () => {
       isMounted = false;
     };
-  }, [taskId]);
+  }, [taskId, locationProjectId]);
+
+  useEffect(() => {
+    if (!task?.projectId) return undefined;
+    let isMounted = true;
+    Promise.all([mockApi.getMembers(task.projectId), mockApi.getLabels(task.projectId)])
+      .then(([membersData, labelsData]) => {
+        if (isMounted) {
+          setMembers(membersData);
+          setLabels(labelsData);
+        }
+      })
+      .catch(() => {});
+    return () => { isMounted = false; };
+  }, [task?.projectId]);
 
   // Persist updates to mock API
   const updateTaskData = useCallback(
@@ -118,6 +135,23 @@ export default function TaskDetail() {
       ? current.filter((l) => l !== label)
       : [...current, label];
     updateTaskData({ labels: updated });
+  };
+
+  const handleLabelsChanged = async (change) => {
+    const freshLabels = await mockApi.getLabels(task.projectId);
+    setLabels(freshLabels);
+    if (change?.oldName && change?.newName) {
+      setTask((previous) => ({
+        ...previous,
+        labels: (previous.labels || []).map((name) => name === change.oldName ? change.newName : name),
+      }));
+    }
+    if (change?.deletedName) {
+      setTask((previous) => ({
+        ...previous,
+        labels: (previous.labels || []).filter((name) => name !== change.deletedName),
+      }));
+    }
   };
 
   // Delete task with confirmation
@@ -432,7 +466,7 @@ export default function TaskDetail() {
                             className="btn-primary"
                             style={{ padding: "4px 8px", fontSize: "12px" }}
                           >
-                            Save
+                            <Check size={14} aria-hidden="true" /> Save
                           </button>
                           <button
                             type="button"
@@ -443,7 +477,7 @@ export default function TaskDetail() {
                             className="btn-text"
                             style={{ padding: "4px 8px", fontSize: "12px" }}
                           >
-                            Cancel
+                            <X size={14} aria-hidden="true" /> Cancel
                           </button>
                         </div>
                       ) : (
@@ -617,7 +651,7 @@ export default function TaskDetail() {
                           );
                         })}
                         <div className="popover-footer" style={{ borderTop: "1px solid #dfe1e6", padding: "8px", textAlign: "center" }}>
-                          <Link to="/settings" state={{ tab: "members" }} style={{ textDecoration: "none", color: "#0052cc", fontSize: "14px", fontWeight: "500" }}>
+                          <Link to={`/settings?project=${task.projectId}`} state={{ tab: "members" }} style={{ textDecoration: "none", color: "#0052cc", fontSize: "14px", fontWeight: "500" }}>
                             ⚙️ Manage Members
                           </Link>
                         </div>
@@ -641,53 +675,13 @@ export default function TaskDetail() {
                   </button>
 
                   {showLabelsPopup && (
-                    <div className="popover-menu">
-                      <div className="popover-header">
-                        <span className="popover-title">Select Labels</span>
-                        <button
-                          type="button"
-                          className="popover-close"
-                          onClick={() => setShowLabelsPopup(false)}
-                        >
-                          ✕
-                        </button>
-                      </div>
-                      <div className="popover-list">
-                        {labels.map((labelObj) => {
-                          const labelName = labelObj.name;
-                          const isSelected = (task.labels || []).includes(labelName);
-                          return (
-                            <div
-                              key={labelObj.id}
-                              className={`popover-item ${isSelected ? "selected" : ""}`}
-                              onClick={() => handleToggleLabel(labelName)}
-                            >
-                              <input
-                                type="checkbox"
-                                checked={isSelected}
-                                readOnly
-                                className="popover-checkbox"
-                              />
-                              <span
-                                className="task-label"
-                                style={{
-                                  background: labelObj.color || getLabelColor(labelName),
-                                  fontSize: "12px",
-                                  padding: "2px 8px",
-                                }}
-                              >
-                                {labelName}
-                              </span>
-                            </div>
-                          );
-                        })}
-                        <div className="popover-footer" style={{ borderTop: "1px solid #dfe1e6", padding: "8px", textAlign: "center" }}>
-                          <Link to="/settings" state={{ tab: "labels" }} style={{ textDecoration: "none", color: "#0052cc", fontSize: "14px", fontWeight: "500" }}>
-                            ⚙️ Manage Labels
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
+                    <LabelsPopup
+                      projectId={task.projectId}
+                      selectedLabelNames={task.labels || []}
+                      onToggleLabel={handleToggleLabel}
+                      onLabelsChanged={handleLabelsChanged}
+                      onClose={() => setShowLabelsPopup(false)}
+                    />
                   )}
                 </div>
               </div>
@@ -696,7 +690,7 @@ export default function TaskDetail() {
             <div>
               <div className="info-label">Task Metadata</div>
               <div className="metadata-grid">
-                <strong className="metadata-label">Status:</strong>
+                <strong className="metadata-label"><Flag size={14} aria-hidden="true" /> Status:</strong>
                 <select
                   value={task.status}
                   onChange={(e) => {
@@ -709,7 +703,7 @@ export default function TaskDetail() {
                   <option value="done">Done</option>
                 </select>
 
-                <strong className="metadata-label">Priority:</strong>
+                <strong className="metadata-label"><Flag size={14} aria-hidden="true" /> Priority:</strong>
                 <select
                   value={task.priority}
                   onChange={(e) => {
@@ -722,7 +716,7 @@ export default function TaskDetail() {
                   <option value="high">High</option>
                 </select>
 
-                <strong className="metadata-label">Start:</strong>
+                <strong className="metadata-label"><Calendar size={14} aria-hidden="true" /> Start:</strong>
                 <input
                   type="date"
                   value={
@@ -740,7 +734,7 @@ export default function TaskDetail() {
                   className="metadata-input"
                 />
 
-                <strong className="metadata-label">Due:</strong>
+                <strong className="metadata-label"><Calendar size={14} aria-hidden="true" /> Due:</strong>
                 <input
                   type="date"
                   value={
@@ -758,7 +752,7 @@ export default function TaskDetail() {
                   className="metadata-input"
                 />
 
-                <strong className="metadata-label">Reminder:</strong>
+                <strong className="metadata-label"><Clock3 size={14} aria-hidden="true" /> Reminder:</strong>
                 <select
                   value={
                     task.reminderMinutesBefore && task.reminderMinutesBefore[0]

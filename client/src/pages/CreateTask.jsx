@@ -5,6 +5,8 @@ import { validateTaskForm } from "../utils/validators";
 import { mockApi } from "../services/mockApi";
 import { getLabelColor } from "../utils/constants";
 import Toast from "../components/Toast";
+import LabelsPopup from "../components/LabelsPopup";
+import { Plus, X } from "lucide-react";
 import "../styles/CreateTask.css";
 
 export default function CreateTask() {
@@ -41,8 +43,8 @@ export default function CreateTask() {
   useEffect(() => {
     let isMounted = true;
     Promise.all([
-      mockApi.getMembers(),
-      mockApi.getLabels(),
+      mockApi.getMembers(projectId),
+      mockApi.getLabels(projectId),
     ])
       .then(([m, l]) => {
         if (isMounted) {
@@ -52,7 +54,27 @@ export default function CreateTask() {
       })
       .catch(() => {});
     return () => { isMounted = false; };
-  }, []);
+  }, [projectId]);
+
+  const refreshLabels = async () => {
+    setLabels(await mockApi.getLabels(projectId));
+  };
+
+  const handleLabelsChanged = async (change) => {
+    await refreshLabels();
+    if (change?.oldName && change?.newName) {
+      setValues((prev) => ({
+        ...prev,
+        labels: prev.labels.map((name) => name === change.oldName ? change.newName : name),
+      }));
+    }
+    if (change?.deletedName) {
+      setValues((prev) => ({
+        ...prev,
+        labels: prev.labels.filter((name) => name !== change.deletedName),
+      }));
+    }
+  };
 
   // Update text field values
   const handleChange = (e) => {
@@ -150,7 +172,7 @@ export default function CreateTask() {
             state={{ projectId, projectName }}
             className="btn-close"
           >
-            ✕
+            <X size={18} aria-hidden="true" />
           </Link>
         </div>
 
@@ -277,7 +299,7 @@ export default function CreateTask() {
                       );
                     })}
                     <div className="popover-footer" style={{ borderTop: "1px solid #dfe1e6", padding: "8px", textAlign: "center" }}>
-                      <Link to="/settings" state={{ tab: "members" }} style={{ textDecoration: "none", color: "#0052cc", fontSize: "14px", fontWeight: "500" }}>
+                      <Link to={`/settings?project=${projectId}`} state={{ tab: "members" }} style={{ textDecoration: "none", color: "#0052cc", fontSize: "14px", fontWeight: "500" }}>
                         ⚙️ Manage Members
                       </Link>
                     </div>
@@ -340,55 +362,13 @@ export default function CreateTask() {
               </button>
 
               {showLabelsPopup && (
-                <div className="popover-menu">
-                  <div className="popover-header">
-                    <span className="popover-title">Select Labels</span>
-                    <button
-                      type="button"
-                      className="popover-close"
-                      onClick={() => setShowLabelsPopup(false)}
-                    >
-                      ✕
-                    </button>
-                  </div>
-                  <div className="popover-list">
-                    {labels.map((labelObj) => {
-                      const labelName = labelObj.name;
-                      const isSelected = values.labels.includes(labelName);
-                      return (
-                        <div
-                          key={labelObj.id}
-                          className={`popover-item ${
-                            isSelected ? "selected" : ""
-                          }`}
-                          onClick={() => handleToggleLabel(labelName)}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={isSelected}
-                            readOnly
-                            className="popover-checkbox"
-                          />
-                          <span
-                            className="task-label"
-                            style={{
-                              background: labelObj.color || getLabelColor(labelName),
-                              fontSize: "12px",
-                              padding: "2px 8px",
-                            }}
-                          >
-                            {labelName}
-                          </span>
-                        </div>
-                      );
-                    })}
-                    <div className="popover-footer" style={{ borderTop: "1px solid #dfe1e6", padding: "8px", textAlign: "center" }}>
-                      <Link to="/settings" state={{ tab: "labels" }} style={{ textDecoration: "none", color: "#0052cc", fontSize: "14px", fontWeight: "500" }}>
-                        ⚙️ Manage Labels
-                      </Link>
-                    </div>
-                  </div>
-                </div>
+                <LabelsPopup
+                  projectId={projectId}
+                  selectedLabelNames={values.labels}
+                  onToggleLabel={handleToggleLabel}
+                  onLabelsChanged={handleLabelsChanged}
+                  onClose={() => setShowLabelsPopup(false)}
+                />
               )}
             </div>
 
@@ -452,7 +432,7 @@ export default function CreateTask() {
 
           {/* Submit */}
           <button type="submit" className="btn-submit" disabled={isSubmitting}>
-            {isSubmitting ? "Creating..." : "Create Task"}
+            <Plus size={17} aria-hidden="true" /> {isSubmitting ? "Creating..." : "Create Task"}
           </button>
         </form>
       </div>

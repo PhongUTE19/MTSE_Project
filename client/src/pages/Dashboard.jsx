@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { mockApi } from "../services/mockApi";
 import Toast from "../components/Toast";
+import { AlertTriangle, ExternalLink, FolderKanban, ListTodo, Trash2, CheckCircle2 } from "lucide-react";
 import "../styles/Dashboard.css";
 
 export default function Dashboard() {
@@ -73,18 +74,22 @@ export default function Dashboard() {
       {/* Statistics Cards */}
       <div className="dashboard-stats">
         <div className="stat-card">
+          <FolderKanban className="stat-icon" size={22} aria-hidden="true" />
           <h3 className="stat-title">Total Projects</h3>
           <div className="stat-value primary">{loading ? "..." : stats.totalProjects}</div>
         </div>
         <div className="stat-card">
+          <ListTodo className="stat-icon" size={22} aria-hidden="true" />
           <h3 className="stat-title">Total Tasks</h3>
           <div className="stat-value default">{loading ? "..." : stats.totalTasks}</div>
         </div>
         <div className="stat-card">
+          <CheckCircle2 className="stat-icon" size={22} aria-hidden="true" />
           <h3 className="stat-title">Tasks Done</h3>
           <div className="stat-value success">{loading ? "..." : stats.doneTasks}</div>
         </div>
         <div className="stat-card">
+          <AlertTriangle className="stat-icon" size={22} aria-hidden="true" />
           <h3 className="stat-title">Overdue Tasks</h3>
           <div className="stat-value danger">{loading ? "..." : stats.overdueTasks}</div>
         </div>
@@ -125,7 +130,7 @@ export default function Dashboard() {
                           state={{ projectId: p.id, projectName: p.name }}
                           className="btn-view-board"
                         >
-                          View Board
+                          <ExternalLink size={15} aria-hidden="true" /> View Board
                         </Link>
                         <button
                           type="button"
@@ -133,7 +138,7 @@ export default function Dashboard() {
                           onClick={() => setProjectToDelete(p)}
                           title={`Delete project ${p.name}`}
                         >
-                          Delete
+                          <Trash2 size={15} aria-hidden="true" /> Delete
                         </button>
                       </div>
                     </td>
@@ -165,7 +170,7 @@ export default function Dashboard() {
             aria-labelledby="confirm-delete-title"
           >
             <h3 id="confirm-delete-title" className="confirm-dialog-title">
-              <span>⚠️</span> Delete Project
+              <AlertTriangle size={18} aria-hidden="true" /> Delete Project
             </h3>
             <p className="confirm-dialog-body">
               Are you sure you want to delete <strong>"{projectToDelete.name}"</strong>?

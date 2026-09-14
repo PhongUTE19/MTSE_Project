@@ -11,6 +11,7 @@
     "test": "npx -y -p vitest@4.0.18 vitest run"
   },
   "dependencies": {
+    "lucide-react": "^1.46.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-router-dom": "^7.18.3"

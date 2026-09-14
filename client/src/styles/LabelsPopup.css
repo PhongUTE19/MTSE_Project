@@ -1,0 +1,25 @@
+.labels-popup {
+  width: 320px;
+  max-width: calc(100vw - 24px);
+  background: #fff;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  box-shadow: 0 8px 16px rgba(9, 30, 66, 0.25);
+  padding: 12px;
+  color: var(--text);
+}
+.labels-popup-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-light); padding-bottom: 10px; }
+.labels-popup-header h3 { margin: 0; font-size: 16px; }
+.labels-popup-header button, .btn-edit-label { border: 0; background: transparent; cursor: pointer; color: #5e6c84; }
+.labels-search { padding: 10px 0; }
+.labels-search input { width: 100%; box-sizing: border-box; padding: 8px 10px; border: 2px solid var(--border-light); border-radius: var(--radius-sm); }
+.labels-list-title { color: #5e6c84; font-size: 12px; font-weight: 600; margin-bottom: 6px; }
+.labels-list { max-height: 260px; overflow-y: auto; }
+.label-row { display: flex; align-items: center; gap: 8px; padding: 6px 4px; border-radius: 4px; }
+.label-row:hover, .label-row.selected { background: var(--info-bg); }
+.popup-label-badge { flex: 1; color: #1d2125; padding: 4px 12px; border-radius: 3px; font-weight: 500; text-align: left; }
+.btn-edit-label { padding: 4px; }
+.btn-create-label { width: 100%; margin-top: 10px; padding: 9px; border: 0; border-radius: var(--radius-sm); background: var(--bg-200); color: var(--primary-300); cursor: pointer; font-weight: 600; }
+.btn-create-label:hover { background: #ebecf0; }
+.labels-empty, .labels-popup-error { color: #5e6c84; font-size: 13px; padding: 10px 4px; }
+.labels-popup-error { color: var(--danger-text); }

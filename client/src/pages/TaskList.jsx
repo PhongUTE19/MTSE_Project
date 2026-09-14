@@ -19,6 +19,7 @@ export default function TaskList() {
     error: null,
   });
   const [members, setMembers] = useState([]);
+  const [labels, setLabels] = useState([]);
   const [toast, setToast] = useState(location.state?.toast || null);
 
   // Fetch tasks and student members from mock API
@@ -26,11 +27,13 @@ export default function TaskList() {
     let isMounted = true;
     Promise.all([
       mockApi.getTasks(projectId),
-      mockApi.getMembers().catch(() => []),
+      mockApi.getMembers(projectId).catch(() => []),
+      mockApi.getLabels(projectId).catch(() => []),
     ])
-      .then(([tasks, membersData]) => {
+      .then(([tasks, membersData, labelsData]) => {
         if (isMounted) {
           setMembers(membersData);
+          setLabels(labelsData);
           setState({ status: "success", data: tasks, error: null });
         }
       })
@@ -76,6 +79,8 @@ export default function TaskList() {
       }
     );
   };
+
+  const getLabel = (name) => labels.find((label) => label.name.toLowerCase() === name.toLowerCase());
 
   // ----- Loading -----
   if (state.status === "loading") {
@@ -191,7 +196,7 @@ export default function TaskList() {
                             <span
                               key={l}
                               className="task-label"
-                              style={{ background: getLabelColor(l) }}
+                              style={{ background: getLabel(l)?.color || getLabelColor(l) }}
                             >
                               {l}
                             </span>
