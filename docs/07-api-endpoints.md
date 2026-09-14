@@ -1,7 +1,7 @@
 # 📡 API Endpoint Specifications (API Contract)
 
 **Application:** Student Task & Deadline Manager (MANA)  
-**Milestone:** Homework 3B — Complete Frontend Prototype & API Contract  
+**Milestone:** Homework 3B+ — Members & Labels Dynamic Management
 **Prepared for:** Week 4 — Backend Technologies & DevOps Integration  
 
 ---
@@ -357,3 +357,89 @@ Retrieve list of students/team members available for assignment.
   }
 ]
 ```
+
+### 2.5. Members
+
+#### `GET /api/v1/members`
+Retrieve the current team members available for assignment.
+
+- **Response `200 OK`:**
+```json
+[
+  {
+    "id": "student-1",
+    "name": "Bùi Duy Phong",
+    "mssv": "19110131",
+    "email": "BuiDuyPhong@gmail.com"
+  }
+]
+```
+
+#### `POST /api/v1/members`
+Create a team member.
+
+- **Request body:**
+```json
+{
+  "name": "Nguyễn Văn A",
+  "mssv": "23110099",
+  "email": "a@example.com"
+}
+```
+- **Response `201 Created`:** The created member object.
+- **Response `400 Bad Request`:** Validation error, including duplicate MSSV or invalid email.
+
+#### `PATCH /api/v1/members/:id`
+Update one or more member fields (`name`, `mssv`, `email`).
+
+- **Response `200 OK`:** The updated member.
+- **Response `404 Not Found`:** Member does not exist.
+
+> Members are not deletable to preserve task history. Use `PATCH` when member information changes.
+
+### 2.6. Labels
+
+#### `GET /api/v1/labels`
+Retrieve labels available for task assignment.
+
+- **Response `200 OK`:**
+```json
+[
+  {
+    "id": "label-1",
+    "name": "Frontend",
+    "color": "#4bce97"
+  }
+]
+```
+
+#### `POST /api/v1/labels`
+Create a label.
+
+- **Request body:** `{ "name": "Frontend", "color": "#4bce97" }`
+- Label names are normalized and must be unique case-insensitively.
+- **Response `201 Created`:** The created label.
+- **Response `400 Bad Request`:** Duplicate or invalid label name.
+
+#### `PATCH /api/v1/labels/:id`
+Update a label's `name` and/or `color`.
+
+- **Response `200 OK`:** The updated label.
+- **Response `404 Not Found`:** Label does not exist.
+
+#### `DELETE /api/v1/labels/:id`
+Delete a label and remove its name from every task's `labels` array.
+
+- **Response `200 OK`:** `{ "success": true, "deletedId": "..." }`
+- **Response `404 Not Found`:** Label does not exist.
+
+---
+
+## 3. Endpoint Overview
+
+The contract now contains **15 endpoints**: 8 original Homework 3B endpoints plus 3 Members endpoints and 4 Labels endpoints.
+
+## 4. Changelog
+
+- **3B:** 8 endpoints for Projects, Tasks, Dashboard, and Students.
+- **3B+:** 15 endpoints, adding member add/edit and Labels CRUD with validation and label cascade cleanup.

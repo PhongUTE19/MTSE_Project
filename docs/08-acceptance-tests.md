@@ -1,7 +1,7 @@
 # 🧪 Acceptance Tests & Verification Evidence
 
 **Project:** Student Task & Deadline Manager (MANA)  
-**Milestone:** Homework 3B — Complete Frontend Prototype  
+**Milestone:** Homework 3B+ — Members & Labels Dynamic Management  
 
 ---
 
@@ -18,19 +18,20 @@ npm test
 ### Test Results
 ```text
  ✓ src/tests/validators.test.js (6 tests)
- ✓ src/tests/mockApi.test.js (5 tests)
+ ✓ src/tests/mockApi.test.js (6 tests)
  ✓ src/tests/workflow.test.js (1 test)
+ ✓ src/tests/uiFeatures.test.js (7 tests)
 
- Test Files  3 passed (3)
-      Tests  12 passed (12)
-   Duration  711ms
+ Test Files  4 passed (4)
+    Tests  20 passed (20)
 ```
 
 | Test Suite File | Test Cases | Objective | Result |
 |---|---|---|---|
 | `src/tests/validators.test.js` | 6 | Verifies title (empty, <3 chars, valid) and deadline (missing, past, valid format) validation | ✅ PASS |
-| `src/tests/mockApi.test.js` | 5 | Verifies mock CRUD operations: list, get by ID, create, update status/checklist, delete, and dashboard calculations | ✅ PASS |
+| `src/tests/mockApi.test.js` | 6 | Verifies mock CRUD operations: list, get by ID, create, update status/checklist, delete, and dashboard calculations | ✅ PASS |
 | `src/tests/workflow.test.js` | 1 (End-to-End) | Simulates full user lifecycle: Create Task → Board View → In Progress → Checklist Complete → Done → Delete | ✅ PASS |
+| `src/tests/uiFeatures.test.js` | 7 | Verifies backward-compatible constants, dynamic member/label arrays, checklist updates, and project cascade behavior | ✅ PASS |
 
 ---
 
@@ -145,3 +146,41 @@ npm test
 #### Expected Results:
 - Errors display inline under the appropriate input fields.
 - No task is created or added to state while validation fails.
+
+### 📋 Scenario 6: Members Management (Add/Edit)
+
+- **Goal:** Verify member add/edit and synchronization with task member pickers while preserving task history.
+
+#### Steps:
+1. Open **Settings** and select **Members**.
+2. Click **+ Add Member**, enter `Nguyễn Văn A`, MSSV `23110099`, and `a@example.com`, then save.
+3. Confirm the member appears in the table and in the Members picker on `/tasks/new`.
+4. Edit the member name to `Nguyễn Văn B` and confirm the picker shows the new name.
+5. Try to delete the member and confirm there is no delete button in the Members table.
+
+#### Expected Results:
+- Member add/edit succeeds and changes are shared by all member pickers.
+- Members cannot be deleted, preserving the history of task assignments.
+
+### 📋 Scenario 7: Labels Management & Normalization
+
+- **Goal:** Verify label CRUD, color handling, duplicate prevention, and cascade cleanup.
+
+#### Steps:
+1. Open **Settings**, select **Labels**, and add `UI/UX`.
+2. Attempt to add `ui/ux` and confirm the case-insensitive duplicate error.
+3. Add `Backend`, then confirm both labels appear in the Create Task Labels picker.
+4. Create a task with `UI/UX`, then delete that label from Settings.
+
+#### Expected Results:
+- Labels can be added, edited, and deleted with their colors.
+- Duplicate names are rejected case-insensitively.
+- Deleting a label removes its name from every task's `labels` array.
+
+### 3. LocalStorage Migration
+
+New installs and existing users are seeded with `mana_members` and `mana_labels` when those keys are absent. If an earlier development session contains stale mock data, reset it in the browser console with:
+
+```js
+localStorage.clear(); location.reload();
+```
