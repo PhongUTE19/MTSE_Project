@@ -1,6 +1,16 @@
 // src/middlewares/errorHandler.js
 export function errorHandler(err, req, res, next) {
-  console.error("[ERROR]", err.message);
+  console.error(JSON.stringify({
+    timestamp: new Date().toISOString(),
+    level: "error",
+    event: "request_error",
+    requestId: req.requestId,
+    method: req.method,
+    path: req.path,
+    // Do not log raw database errors: they can contain submitted values.
+    code: ["23505", "23514", "23503", "PGRST116"].includes(err.code)
+      ? err.code : "UNEXPECTED_ERROR",
+  }));
 
   if (err.code === "23505" || err.code === "23514" || err.code === "23503") {
     return res.status(400).json({

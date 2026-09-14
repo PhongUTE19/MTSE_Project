@@ -3,7 +3,7 @@ import test from "node:test";
 import { createTaskSchema, updateTaskSchema } from "../src/validators/taskValidator.js";
 
 const projectId = "650e8400-e29b-41d4-a716-446655440001";
-const dueAt = "2026-12-31T23:59:00.000Z";
+const dueAt = new Date(Date.now() + 86400000).toISOString();
 
 test("create task applies defaults", () => {
   const result = createTaskSchema.parse({ projectId, title: "Valid task", dueAt });

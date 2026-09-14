@@ -1,7 +1,7 @@
 // src/app.js
 import express from "express";
 import cors from "cors";
-import morgan from "morgan";
+import { requestLogger } from "./middlewares/requestLogger.js";
 import projectRoutes from "./routes/projectRoutes.js";
 import taskRoutes from "./routes/taskRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
@@ -10,9 +10,9 @@ import { errorHandler } from "./middlewares/errorHandler.js";
 const app = express();
 
 // Middlewares
+app.use(requestLogger);
 app.use(cors());
 app.use(express.json());
-app.use(morgan("dev"));
 
 // Health check
 app.get("/api/health", (req, res) => {
@@ -20,6 +20,7 @@ app.get("/api/health", (req, res) => {
     status: "ok",
     timestamp: new Date().toISOString(),
     service: "mana-server",
+    uptimeSeconds: Math.floor(process.uptime()),
   });
 });
 
