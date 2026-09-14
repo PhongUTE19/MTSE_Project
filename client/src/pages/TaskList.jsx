@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { mockApi } from "../services/mockApi";
-import { PREDEFINED_MEMBERS, getLabelColor } from "../utils/constants";
+import { getLabelColor } from "../utils/constants";
 import Toast from "../components/Toast";
 import { LoadingState, EmptyState, ErrorState } from "../components/TaskListStates";
 import "../styles/TaskList.css";
@@ -18,7 +18,7 @@ export default function TaskList() {
     data: null,
     error: null,
   });
-  const [students, setStudents] = useState(PREDEFINED_MEMBERS);
+  const [members, setMembers] = useState([]);
   const [toast, setToast] = useState(location.state?.toast || null);
 
   // Fetch tasks and student members from mock API
@@ -26,13 +26,11 @@ export default function TaskList() {
     let isMounted = true;
     Promise.all([
       mockApi.getTasks(projectId),
-      mockApi.getStudents().catch(() => []),
+      mockApi.getMembers().catch(() => []),
     ])
-      .then(([tasks, studentsData]) => {
+      .then(([tasks, membersData]) => {
         if (isMounted) {
-          if (studentsData && studentsData.length > 0) {
-            setStudents(studentsData);
-          }
+          setMembers(membersData);
           setState({ status: "success", data: tasks, error: null });
         }
       })
@@ -72,8 +70,7 @@ export default function TaskList() {
   // Helper to find student details
   const getStudent = (id) => {
     return (
-      students.find((s) => s.id === id) ||
-      PREDEFINED_MEMBERS.find((s) => s.id === id) || {
+      members.find((s) => s.id === id) || {
         id,
         name: id,
       }

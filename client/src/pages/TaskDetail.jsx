@@ -2,8 +2,6 @@ import { useState, useEffect, useCallback } from "react";
 import { useParams, Link, useLocation, useNavigate } from "react-router-dom";
 import { mockApi } from "../services/mockApi";
 import {
-  PREDEFINED_MEMBERS,
-  PREDEFINED_LABELS,
   getLabelColor,
   getStudentName as getStudentNameHelper,
 } from "../utils/constants";
@@ -18,7 +16,8 @@ export default function TaskDetail() {
   const [loadedTaskId, setLoadedTaskId] = useState(null);
   const [task, setTask] = useState(null);
   const [project, setProject] = useState(null);
-  const [students, setStudents] = useState([]);
+  const [members, setMembers] = useState([]);
+  const [labels, setLabels] = useState([]);
   const [notFound, setNotFound] = useState(false);
 
   const [isEditingDesc, setIsEditingDesc] = useState(false);
@@ -45,9 +44,10 @@ export default function TaskDetail() {
 
     Promise.all([
       mockApi.getTaskById(taskId).catch(() => null),
-      mockApi.getStudents().catch(() => []),
+      mockApi.getMembers().catch(() => []),
+      mockApi.getLabels().catch(() => []),
     ])
-      .then(([taskData, studentsData]) => {
+      .then(([taskData, membersData, labelsData]) => {
         if (!isMounted) return;
 
         setLoadedTaskId(taskId);
@@ -59,7 +59,8 @@ export default function TaskDetail() {
         setNotFound(false);
         setTask(taskData);
         setDescInput(taskData.description || "");
-        setStudents(studentsData.length > 0 ? studentsData : PREDEFINED_MEMBERS);
+        setMembers(membersData);
+        setLabels(labelsData);
 
         if (taskData.projectId) {
           mockApi
@@ -149,7 +150,7 @@ export default function TaskDetail() {
 
   // Helper: get student name from ID
   const getStudentName = (id) => {
-    return getStudentNameHelper(students, id);
+    return getStudentNameHelper(members, id);
   };
 
   // Add checklist item
@@ -284,15 +285,17 @@ export default function TaskDetail() {
                 <div>
                   <div className="info-label">Labels</div>
                   <div style={{ display: "flex", gap: "4px", flexWrap: "wrap" }}>
-                    {task.labels.map((l) => (
+                    {task.labels.map((l) => {
+                      const labelObj = labels.find(label => label.name.toLowerCase() === l.toLowerCase());
+                      return (
                       <span
                         key={l}
                         className="label-badge"
-                        style={{ background: getLabelColor(l) }}
+                        style={{ background: labelObj?.color || getLabelColor(l) }}
                       >
                         {l}
                       </span>
-                    ))}
+                    )})}
                   </div>
                 </div>
               )}
@@ -585,7 +588,7 @@ export default function TaskDetail() {
                         </button>
                       </div>
                       <div className="popover-list">
-                        {PREDEFINED_MEMBERS.map((member) => {
+                        {members.map((member) => {
                           const isSelected = (task.assigneeIds || []).includes(member.id);
                           return (
                             <div
@@ -609,10 +612,15 @@ export default function TaskDetail() {
                               >
                                 {member.name.split(" ").pop().charAt(0)}
                               </div>
-                              <span>{member.name}</span>
+                              <span>{member.name} {member.mssv && `(${member.mssv})`}</span>
                             </div>
                           );
                         })}
+                        <div className="popover-footer" style={{ borderTop: "1px solid #dfe1e6", padding: "8px", textAlign: "center" }}>
+                          <Link to="/settings" state={{ tab: "members" }} style={{ textDecoration: "none", color: "#0052cc", fontSize: "14px", fontWeight: "500" }}>
+                            ⚙️ Manage Members
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -645,13 +653,14 @@ export default function TaskDetail() {
                         </button>
                       </div>
                       <div className="popover-list">
-                        {PREDEFINED_LABELS.map((label) => {
-                          const isSelected = (task.labels || []).includes(label);
+                        {labels.map((labelObj) => {
+                          const labelName = labelObj.name;
+                          const isSelected = (task.labels || []).includes(labelName);
                           return (
                             <div
-                              key={label}
+                              key={labelObj.id}
                               className={`popover-item ${isSelected ? "selected" : ""}`}
-                              onClick={() => handleToggleLabel(label)}
+                              onClick={() => handleToggleLabel(labelName)}
                             >
                               <input
                                 type="checkbox"
@@ -662,16 +671,21 @@ export default function TaskDetail() {
                               <span
                                 className="task-label"
                                 style={{
-                                  background: getLabelColor(label),
+                                  background: labelObj.color || getLabelColor(labelName),
                                   fontSize: "12px",
                                   padding: "2px 8px",
                                 }}
                               >
-                                {label}
+                                {labelName}
                               </span>
                             </div>
                           );
                         })}
+                        <div className="popover-footer" style={{ borderTop: "1px solid #dfe1e6", padding: "8px", textAlign: "center" }}>
+                          <Link to="/settings" state={{ tab: "labels" }} style={{ textDecoration: "none", color: "#0052cc", fontSize: "14px", fontWeight: "500" }}>
+                            ⚙️ Manage Labels
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   )}

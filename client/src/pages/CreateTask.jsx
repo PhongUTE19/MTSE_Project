@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { validateTaskForm } from "../utils/validators";
 import { mockApi } from "../services/mockApi";
-import { PREDEFINED_MEMBERS, PREDEFINED_LABELS, getLabelColor } from "../utils/constants";
+import { getLabelColor } from "../utils/constants";
 import Toast from "../components/Toast";
 import "../styles/CreateTask.css";
 
@@ -16,8 +16,8 @@ export default function CreateTask() {
   const projectId = location.state?.projectId || "project-1";
   const projectName = location.state?.projectName;
 
-  // Reference students list
-  const [students, setStudents] = useState(PREDEFINED_MEMBERS);
+  const [members, setMembers] = useState([]);
+  const [labels, setLabels] = useState([]);
 
   // Form values, errors, touched
   const [values, setValues] = useState({
@@ -38,20 +38,20 @@ export default function CreateTask() {
   const [showMembersPopup, setShowMembersPopup] = useState(false);
   const [showLabelsPopup, setShowLabelsPopup] = useState(false);
 
-  // Load students
   useEffect(() => {
     let isMounted = true;
-    mockApi
-      .getStudents()
-      .then((data) => {
-        if (isMounted && data && data.length > 0) {
-          setStudents(data);
+    Promise.all([
+      mockApi.getMembers(),
+      mockApi.getLabels(),
+    ])
+      .then(([m, l]) => {
+        if (isMounted) {
+          setMembers(m);
+          setLabels(l);
         }
       })
       .catch(() => {});
-    return () => {
-      isMounted = false;
-    };
+    return () => { isMounted = false; };
   }, []);
 
   // Update text field values
@@ -246,7 +246,7 @@ export default function CreateTask() {
                     </button>
                   </div>
                   <div className="popover-list">
-                    {students.map((member) => {
+                    {members.map((member) => {
                       const isSelected = values.assigneeIds.includes(member.id);
                       return (
                         <div
@@ -276,6 +276,11 @@ export default function CreateTask() {
                         </div>
                       );
                     })}
+                    <div className="popover-footer" style={{ borderTop: "1px solid #dfe1e6", padding: "8px", textAlign: "center" }}>
+                      <Link to="/settings" state={{ tab: "members" }} style={{ textDecoration: "none", color: "#0052cc", fontSize: "14px", fontWeight: "500" }}>
+                        ⚙️ Manage Members
+                      </Link>
+                    </div>
                   </div>
                 </div>
               )}
@@ -285,12 +290,10 @@ export default function CreateTask() {
             <div className="selected-chips-container">
               {values.assigneeIds.length > 0 ? (
                 values.assigneeIds.map((id) => {
-                  const member =
-                    students.find((s) => s.id === id) ||
-                    PREDEFINED_MEMBERS.find((s) => s.id === id) || {
-                      id,
-                      name: id,
-                    };
+                  const member = members.find((s) => s.id === id) || {
+                    id,
+                    name: id,
+                  };
                   return (
                     <span key={id} className="selected-member-chip">
                       <span className="member-avatar-xs">
@@ -349,15 +352,16 @@ export default function CreateTask() {
                     </button>
                   </div>
                   <div className="popover-list">
-                    {PREDEFINED_LABELS.map((label) => {
-                      const isSelected = values.labels.includes(label);
+                    {labels.map((labelObj) => {
+                      const labelName = labelObj.name;
+                      const isSelected = values.labels.includes(labelName);
                       return (
                         <div
-                          key={label}
+                          key={labelObj.id}
                           className={`popover-item ${
                             isSelected ? "selected" : ""
                           }`}
-                          onClick={() => handleToggleLabel(label)}
+                          onClick={() => handleToggleLabel(labelName)}
                         >
                           <input
                             type="checkbox"
@@ -368,16 +372,21 @@ export default function CreateTask() {
                           <span
                             className="task-label"
                             style={{
-                              background: getLabelColor(label),
+                              background: labelObj.color || getLabelColor(labelName),
                               fontSize: "12px",
                               padding: "2px 8px",
                             }}
                           >
-                            {label}
+                            {labelName}
                           </span>
                         </div>
                       );
                     })}
+                    <div className="popover-footer" style={{ borderTop: "1px solid #dfe1e6", padding: "8px", textAlign: "center" }}>
+                      <Link to="/settings" state={{ tab: "labels" }} style={{ textDecoration: "none", color: "#0052cc", fontSize: "14px", fontWeight: "500" }}>
+                        ⚙️ Manage Labels
+                      </Link>
+                    </div>
                   </div>
                 </div>
               )}
@@ -386,11 +395,13 @@ export default function CreateTask() {
             {/* Display selected labels */}
             <div className="selected-chips-container">
               {values.labels.length > 0 ? (
-                values.labels.map((l) => (
+                values.labels.map((l) => {
+                  const labelObj = labels.find(label => label.name.toLowerCase() === l.toLowerCase());
+                  return (
                   <span
                     key={l}
                     className="selected-label-chip"
-                    style={{ background: getLabelColor(l) }}
+                    style={{ background: labelObj?.color || getLabelColor(l) }}
                   >
                     <span className="chip-label">{l}</span>
                     <button
@@ -402,7 +413,7 @@ export default function CreateTask() {
                       ✕
                     </button>
                   </span>
-                ))
+                )})
               ) : (
                 <span className="empty-chips-hint">No labels selected.</span>
               )}

@@ -22,6 +22,12 @@ export default function Navbar() {
       >
         Dashboard
       </NavLink>
+      <NavLink 
+        to="/settings" 
+        className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}
+      >
+        ⚙️ Settings
+      </NavLink>
     </nav>
   );
 }
