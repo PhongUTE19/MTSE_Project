@@ -1,8 +1,8 @@
 // src/tests/projectRefactor.test.js
 import { describe, it, expect, beforeEach } from "vitest";
-import { projectService } from "../services/projectService";
-import { mockApi } from "../services/mockApi";
-import { DEFAULT_COURSE_NAME } from "../utils/constants";
+import { projectService } from "../src/services/projectService";
+import { mockApi } from "../src/services/mockApi";
+import { DEFAULT_COURSE_NAME } from "../src/utils/constants";
 import { fileURLToPath } from "url";
 import fs from "fs";
 import path from "path";
@@ -75,11 +75,11 @@ describe("CreateProject Refactoring & projectService Architecture", () => {
 
   describe("Architectural Boundaries & Separation of Concerns", () => {
     const createProjectJsx = fs.readFileSync(
-      path.resolve(__dirname, "../pages/CreateProject.jsx"),
+      path.resolve(__dirname, "../src/pages/CreateProject.jsx"),
       "utf-8"
     );
     const useCreateProjectJs = fs.readFileSync(
-      path.resolve(__dirname, "../hooks/useCreateProject.js"),
+      path.resolve(__dirname, "../src/hooks/useCreateProject.js"),
       "utf-8"
     );
 

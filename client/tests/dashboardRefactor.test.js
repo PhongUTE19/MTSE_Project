@@ -1,8 +1,8 @@
 // src/tests/dashboardRefactor.test.js
 import { describe, it, expect, beforeEach } from "vitest";
-import { projectService } from "../services/projectService";
-import { mockApi } from "../services/mockApi";
-import { formatDisplayDate } from "../utils/date";
+import { projectService } from "../src/services/projectService";
+import { mockApi } from "../src/services/mockApi";
+import { formatDisplayDate } from "../src/utils/date";
 import { fileURLToPath } from "url";
 import fs from "fs";
 import path from "path";
@@ -61,11 +61,11 @@ describe("Dashboard Refactoring & Architecture", () => {
 
   describe("Architectural Boundaries & Separation of Concerns", () => {
     const dashboardJsx = fs.readFileSync(
-      path.resolve(__dirname, "../pages/Dashboard.jsx"),
+      path.resolve(__dirname, "../src/pages/Dashboard.jsx"),
       "utf-8"
     );
     const useDashboardJs = fs.readFileSync(
-      path.resolve(__dirname, "../hooks/useDashboard.js"),
+      path.resolve(__dirname, "../src/hooks/useDashboard.js"),
       "utf-8"
     );
 

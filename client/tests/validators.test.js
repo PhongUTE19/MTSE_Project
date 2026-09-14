@@ -3,7 +3,7 @@ import {
   validateTaskForm,
   validateProjectForm,
   validateMemberForm,
-} from "../utils/validators";
+} from "../src/utils/validators";
 
 describe("validateTaskForm - Unit Tests", () => {
   it("should fail validation when title is empty or only whitespace", () => {

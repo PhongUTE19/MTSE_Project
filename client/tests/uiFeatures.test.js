@@ -1,12 +1,12 @@
 // src/tests/uiFeatures.test.js
 import { describe, it, expect, beforeEach } from "vitest";
-import { mockApi } from "../services/mockApi";
+import { mockApi } from "../src/services/mockApi";
 import {
   INITIAL_MEMBERS,
   INITIAL_LABELS,
   getLabelColor,
   getStudentName,
-} from "../utils/constants";
+} from "../src/utils/constants";
 
 describe("UI Features & Consistency Tests", () => {
   beforeEach(async () => {
@@ -176,7 +176,7 @@ describe("UI Features & Consistency Tests", () => {
 
   describe("Standardized Avatar Initials", () => {
     it("should correctly extract the Firstname initial", async () => {
-      const { getAvatarInitial, getFirstName } = await import("../utils/avatar");
+      const { getAvatarInitial, getFirstName } = await import("../src/utils/avatar");
 
       // Firstname extraction
       expect(getFirstName("Bùi Duy Phong")).toBe("Phong");
@@ -266,7 +266,7 @@ describe("UI Features & Consistency Tests", () => {
 
   describe("Status Constants & Centralized Helpers", () => {
     it("should resolve status labels consistently", async () => {
-      const { DEFAULT_STATUSES, getStatusLabel } = await import("../utils/constants");
+      const { DEFAULT_STATUSES, getStatusLabel } = await import("../src/utils/constants");
 
       expect(DEFAULT_STATUSES).toHaveLength(3);
       expect(DEFAULT_STATUSES.map((s) => s.id)).toEqual(["todo", "in_progress", "done"]);

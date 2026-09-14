@@ -1,7 +1,7 @@
 // src/tests/settingsRefactor.test.js
 import { describe, it, expect, beforeEach } from "vitest";
-import { projectService } from "../services/projectService";
-import { mockApi } from "../services/mockApi";
+import { projectService } from "../src/services/projectService";
+import { mockApi } from "../src/services/mockApi";
 import { fileURLToPath } from "url";
 import fs from "fs";
 import path from "path";
@@ -77,11 +77,11 @@ describe("Settings Refactoring & Architecture", () => {
 
   describe("Architectural Boundaries & Separation of Concerns", () => {
     const settingsJsx = fs.readFileSync(
-      path.resolve(__dirname, "../pages/Settings.jsx"),
+      path.resolve(__dirname, "../src/pages/Settings.jsx"),
       "utf-8"
     );
     const useSettingsJs = fs.readFileSync(
-      path.resolve(__dirname, "../hooks/useSettings.js"),
+      path.resolve(__dirname, "../src/hooks/useSettings.js"),
       "utf-8"
     );
 

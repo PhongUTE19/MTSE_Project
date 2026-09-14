@@ -1,8 +1,8 @@
 // src/tests/createTaskRefactor.test.js
 import { describe, it, expect, beforeEach } from "vitest";
-import { taskService } from "../services/taskService";
-import { mockApi } from "../services/mockApi";
-import { parseChecklistInput, toggleArrayItem } from "../utils/taskHelpers";
+import { taskService } from "../src/services/taskService";
+import { mockApi } from "../src/services/mockApi";
+import { parseChecklistInput, toggleArrayItem } from "../src/utils/taskHelpers";
 import { fileURLToPath } from "url";
 import fs from "fs";
 import path from "path";
@@ -98,11 +98,11 @@ describe("CreateTask Refactoring & Architecture", () => {
 
   describe("Architectural Boundaries & Separation of Concerns", () => {
     const createTaskJsx = fs.readFileSync(
-      path.resolve(__dirname, "../pages/CreateTask.jsx"),
+      path.resolve(__dirname, "../src/pages/CreateTask.jsx"),
       "utf-8"
     );
     const useCreateTaskJs = fs.readFileSync(
-      path.resolve(__dirname, "../hooks/useCreateTask.js"),
+      path.resolve(__dirname, "../src/hooks/useCreateTask.js"),
       "utf-8"
     );
 

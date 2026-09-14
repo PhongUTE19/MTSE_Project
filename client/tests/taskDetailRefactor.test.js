@@ -1,8 +1,8 @@
 // src/tests/taskDetailRefactor.test.js
 import { describe, it, expect, beforeEach } from "vitest";
-import { taskService } from "../services/taskService";
-import { mockApi } from "../services/mockApi";
-import { DEFAULT_STATUSES } from "../utils/constants";
+import { taskService } from "../src/services/taskService";
+import { mockApi } from "../src/services/mockApi";
+import { DEFAULT_STATUSES } from "../src/utils/constants";
 import { fileURLToPath } from "url";
 import fs from "fs";
 import path from "path";
@@ -87,7 +87,7 @@ describe("TaskDetail Refactoring & taskService Architecture", () => {
 
   describe("Architectural Boundary Enforcement", () => {
     it("verifies TaskDetail.jsx does NOT directly import or call mockApi", () => {
-      const taskDetailPath = path.resolve(__dirname, "../pages/TaskDetail.jsx");
+      const taskDetailPath = path.resolve(__dirname, "../src/pages/TaskDetail.jsx");
       const content = fs.readFileSync(taskDetailPath, "utf-8");
 
       expect(content).not.toMatch(/from\s+["'].*mockApi["']/);
@@ -95,7 +95,7 @@ describe("TaskDetail Refactoring & taskService Architecture", () => {
     });
 
     it("verifies none of the taskDetail subcomponents import or call mockApi", () => {
-      const subcomponentsDir = path.resolve(__dirname, "../components/taskDetail");
+      const subcomponentsDir = path.resolve(__dirname, "../src/components/taskDetail");
       const files = fs.readdirSync(subcomponentsDir);
 
       expect(files.length).toBeGreaterThanOrEqual(6);
@@ -111,12 +111,36 @@ describe("TaskDetail Refactoring & taskService Architecture", () => {
     });
 
     it("verifies useTaskDetail.js imports taskService instead of mockApi", () => {
-      const hookPath = path.resolve(__dirname, "../hooks/useTaskDetail.js");
+      const hookPath = path.resolve(__dirname, "../src/hooks/useTaskDetail.js");
       const content = fs.readFileSync(hookPath, "utf-8");
 
       expect(content).toMatch(/from\s+["'].*taskService["']/);
       expect(content).not.toMatch(/from\s+["'].*mockApi["']/);
       expect(content).not.toMatch(/mockApi\./);
+    });
+
+    it("verifies useTaskDetail.js tracks lastSavedTitleRef to persist title edits on blur", () => {
+      const hookPath = path.resolve(__dirname, "../src/hooks/useTaskDetail.js");
+      const content = fs.readFileSync(hookPath, "utf-8");
+
+      expect(content).toMatch(/lastSavedTitleRef/);
+      expect(content).toMatch(/handleTitleSave/);
+    });
+  });
+
+  describe("Task Title Mutation and Persistence", () => {
+    it("persists title updates via taskService.updateTask", async () => {
+      const initialTask = await taskService.getTaskById("task-1");
+      expect(initialTask.title).not.toBe("Persisted Title Update Test");
+
+      const updated = await taskService.updateTask("task-1", {
+        title: "Persisted Title Update Test",
+      });
+      expect(updated.title).toBe("Persisted Title Update Test");
+
+      // Verify that re-fetching (simulating page reload) retains the updated title
+      const reloaded = await taskService.getTaskById("task-1");
+      expect(reloaded.title).toBe("Persisted Title Update Test");
     });
   });
 
@@ -177,7 +201,7 @@ describe("TaskDetail Refactoring & taskService Architecture", () => {
 
   describe("Date Utilities & Domain Constants", () => {
     it("formats dates for date input correctly", async () => {
-      const { formatDateForInput, parseInputToIsoDate } = await import("../utils/date");
+      const { formatDateForInput, parseInputToIsoDate } = await import("../src/utils/date");
 
       expect(formatDateForInput("2026-09-15T10:30:00.000Z")).toBe("2026-09-15");
       expect(formatDateForInput(null)).toBe("");
@@ -189,7 +213,7 @@ describe("TaskDetail Refactoring & taskService Architecture", () => {
     });
 
     it("exposes standardized PRIORITIES and REMINDER_OPTIONS constants", async () => {
-      const { PRIORITIES, REMINDER_OPTIONS } = await import("../utils/constants");
+      const { PRIORITIES, REMINDER_OPTIONS } = await import("../src/utils/constants");
 
       expect(Array.isArray(PRIORITIES)).toBe(true);
       expect(PRIORITIES.map((p) => p.id)).toEqual(["low", "medium", "high"]);
@@ -201,7 +225,7 @@ describe("TaskDetail Refactoring & taskService Architecture", () => {
 
   describe("ConfirmDialog Adoption & Error Propagation", () => {
     it("verifies no window.confirm calls remain in taskDetail components", () => {
-      const subcomponentsDir = path.resolve(__dirname, "../components/taskDetail");
+      const subcomponentsDir = path.resolve(__dirname, "../src/components/taskDetail");
       const files = fs.readdirSync(subcomponentsDir);
 
       for (const file of files) {
@@ -215,11 +239,11 @@ describe("TaskDetail Refactoring & taskService Architecture", () => {
 
     it("verifies ConfirmDialog is imported in TaskActions and TaskChecklist", () => {
       const actionsContent = fs.readFileSync(
-        path.resolve(__dirname, "../components/taskDetail/TaskActions.jsx"),
+        path.resolve(__dirname, "../src/components/taskDetail/TaskActions.jsx"),
         "utf-8"
       );
       const checklistContent = fs.readFileSync(
-        path.resolve(__dirname, "../components/taskDetail/TaskChecklist.jsx"),
+        path.resolve(__dirname, "../src/components/taskDetail/TaskChecklist.jsx"),
         "utf-8"
       );
 

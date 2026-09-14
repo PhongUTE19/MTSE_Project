@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { mockApi } from "../services/mockApi";
+import { mockApi } from "../src/services/mockApi";
 
 describe("Main Project User Workflow - Integration Test", () => {
   beforeEach(async () => {

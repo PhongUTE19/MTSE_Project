@@ -1,5 +1,5 @@
 // src/hooks/useTaskDetail.js
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { taskService } from "../services/taskService";
 import { DEFAULT_STATUSES } from "../utils/constants";
 import { parseInputToIsoDate } from "../utils/date";
@@ -23,6 +23,7 @@ export default function useTaskDetail(taskId, locationState = {}) {
   const [labels, setLabels] = useState([]);
   const [statuses, setStatuses] = useState(DEFAULT_STATUSES);
   const [toast, setToast] = useState(null);
+  const lastSavedTitleRef = useRef("");
 
   // Synchronously reset lifecycle states when taskId changes during navigation
   if (taskId !== prevTaskId) {
@@ -40,6 +41,7 @@ export default function useTaskDetail(taskId, locationState = {}) {
   useEffect(() => {
     let isCurrent = true;
     const currentTaskId = taskId;
+    lastSavedTitleRef.current = "";
 
     taskService
       .getTaskById(currentTaskId)
@@ -53,6 +55,7 @@ export default function useTaskDetail(taskId, locationState = {}) {
         }
 
         setTask(taskData);
+        lastSavedTitleRef.current = taskData.title;
 
         const refData = await taskService.getProjectReferenceData(taskData.projectId);
         if (!isCurrent || currentTaskId !== taskId) return;
@@ -85,6 +88,9 @@ export default function useTaskDetail(taskId, locationState = {}) {
       try {
         const updated = await taskService.updateTask(task.id, updates);
         setTask(updated);
+        if (updated?.title) {
+          lastSavedTitleRef.current = updated.title;
+        }
         return updated;
       } catch (err) {
         setToast({
@@ -100,9 +106,25 @@ export default function useTaskDetail(taskId, locationState = {}) {
   const handleTitleSave = useCallback(
     (newTitle) => {
       if (!task) return;
-      const trimmed = newTitle.trim();
-      if (trimmed && trimmed !== task.title) {
-        updateTaskData({ title: trimmed });
+      const trimmed = newTitle?.trim();
+      if (!trimmed || trimmed.length < 3) {
+        if (trimmed && trimmed.length < 3) {
+          setToast({
+            message: "Task title must be at least 3 characters.",
+            type: "error",
+          });
+        }
+        setTask((prev) => (prev ? { ...prev, title: lastSavedTitleRef.current } : prev));
+        return;
+      }
+
+      if (trimmed !== lastSavedTitleRef.current) {
+        const previousTitle = lastSavedTitleRef.current;
+        lastSavedTitleRef.current = trimmed;
+        updateTaskData({ title: trimmed }).catch(() => {
+          lastSavedTitleRef.current = previousTitle;
+          setTask((prev) => (prev ? { ...prev, title: previousTitle } : prev));
+        });
       }
     },
     [task, updateTaskData]

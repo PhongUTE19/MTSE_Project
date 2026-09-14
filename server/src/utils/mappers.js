@@ -45,3 +45,28 @@ export function toApiDashboardStats(row) {
     overdueTasks: row.overdue_tasks,
   };
 }
+
+export function toApiMember(row) {
+  if (!row) return null;
+  return {
+    id: row.id,
+    projectId: row.project_id,
+    name: row.name,
+    mssv: row.mssv,
+    email: row.email,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+export function toApiLabel(row) {
+  if (!row) return null;
+  return {
+    id: row.id,
+    projectId: row.project_id,
+    name: row.name,
+    color: row.color,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}

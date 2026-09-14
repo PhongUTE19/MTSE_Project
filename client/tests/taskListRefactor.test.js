@@ -1,12 +1,12 @@
 // src/tests/taskListRefactor.test.js
 import { describe, it, expect, beforeEach } from "vitest";
-import { taskService } from "../services/taskService";
-import { mockApi } from "../services/mockApi";
+import { taskService } from "../src/services/taskService";
+import { mockApi } from "../src/services/mockApi";
 import {
   getChecklistProgress,
   isTaskOverdue,
   formatShortDate,
-} from "../utils/taskHelpers";
+} from "../src/utils/taskHelpers";
 import { fileURLToPath } from "url";
 import fs from "fs";
 import path from "path";
@@ -109,11 +109,11 @@ describe("TaskList Refactoring & Architecture", () => {
 
   describe("Architectural Boundaries & Separation of Concerns", () => {
     const taskListJsx = fs.readFileSync(
-      path.resolve(__dirname, "../pages/TaskList.jsx"),
+      path.resolve(__dirname, "../src/pages/TaskList.jsx"),
       "utf-8"
     );
     const useTaskListJs = fs.readFileSync(
-      path.resolve(__dirname, "../hooks/useTaskList.js"),
+      path.resolve(__dirname, "../src/hooks/useTaskList.js"),
       "utf-8"
     );
 

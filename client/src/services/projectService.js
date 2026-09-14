@@ -1,11 +1,16 @@
 // src/services/projectService.js
 import { mockApi } from "./mockApi";
+import { apiClient } from "./apiClient";
 import { DEFAULT_COURSE_NAME } from "../utils/constants";
 import { parseInputToIsoDate } from "../utils/date";
 
+const USE_MOCK =
+  import.meta.env?.VITE_USE_MOCK_DATA === "true" ||
+  import.meta.env?.MODE === "test";
+
 /**
  * Project Data Access Service
- * Abstraction layer separating UI components and hooks from mockApi.
+ * Abstraction layer separating UI components and hooks from data sources (HTTP API or mockApi).
  */
 export const projectService = {
   /**
@@ -17,19 +22,28 @@ export const projectService = {
       ? parseInputToIsoDate(projectData.deadline)
       : null;
 
-    return mockApi.createProject({
+    const payload = {
       name: projectData.name?.trim() || "",
       courseName: projectData.courseName?.trim() || DEFAULT_COURSE_NAME,
       description: projectData.description || "",
       deadline: formattedDeadline,
-    });
+    };
+
+    if (USE_MOCK) {
+      return mockApi.createProject(payload);
+    }
+
+    return apiClient.post("projects", payload);
   },
 
   /**
    * Fetch all active projects
    */
   async getProjects() {
-    return mockApi.getProjects();
+    if (USE_MOCK) {
+      return mockApi.getProjects();
+    }
+    return apiClient.get("projects");
   },
 
   /**
@@ -37,7 +51,10 @@ export const projectService = {
    * @param {string} projectId
    */
   async getProjectById(projectId) {
-    return mockApi.getProjectById(projectId);
+    if (USE_MOCK) {
+      return mockApi.getProjectById(projectId);
+    }
+    return apiClient.get(`projects/${projectId}`);
   },
 
   /**
@@ -45,14 +62,20 @@ export const projectService = {
    * @param {string} projectId
    */
   async deleteProject(projectId) {
-    return mockApi.deleteProject(projectId);
+    if (USE_MOCK) {
+      return mockApi.deleteProject(projectId);
+    }
+    return apiClient.delete(`projects/${projectId}`);
   },
 
   /**
    * Fetch aggregate statistics for dashboard
    */
   async getDashboardStats() {
-    return mockApi.getDashboardStats();
+    if (USE_MOCK) {
+      return mockApi.getDashboardStats();
+    }
+    return apiClient.get("dashboard/stats");
   },
 
   /**
@@ -60,8 +83,8 @@ export const projectService = {
    */
   async getDashboardData() {
     const [projects, stats] = await Promise.all([
-      mockApi.getProjects(),
-      mockApi.getDashboardStats(),
+      this.getProjects(),
+      this.getDashboardStats(),
     ]);
     return { projects, stats };
   },
@@ -72,7 +95,10 @@ export const projectService = {
    */
   async getMembers(projectId) {
     if (!projectId) return [];
-    return mockApi.getMembers(projectId);
+    if (USE_MOCK) {
+      return mockApi.getMembers(projectId);
+    }
+    return apiClient.get(`projects/${projectId}/members`);
   },
 
   /**
@@ -81,7 +107,10 @@ export const projectService = {
    * @param {{ name: string, mssv: string, email: string }} memberData
    */
   async createMember(projectId, memberData) {
-    return mockApi.createMember(projectId, memberData);
+    if (USE_MOCK) {
+      return mockApi.createMember(projectId, memberData);
+    }
+    return apiClient.post(`projects/${projectId}/members`, memberData);
   },
 
   /**
@@ -91,7 +120,10 @@ export const projectService = {
    * @param {{ name: string, mssv: string, email: string }} memberData
    */
   async updateMember(projectId, memberId, memberData) {
-    return mockApi.updateMember(projectId, memberId, memberData);
+    if (USE_MOCK) {
+      return mockApi.updateMember(projectId, memberId, memberData);
+    }
+    return apiClient.put(`projects/${projectId}/members/${memberId}`, memberData);
   },
 
   /**
@@ -100,6 +132,9 @@ export const projectService = {
    * @param {string} memberId
    */
   async deleteMember(projectId, memberId) {
-    return mockApi.deleteMember(projectId, memberId);
+    if (USE_MOCK) {
+      return mockApi.deleteMember(projectId, memberId);
+    }
+    return apiClient.delete(`projects/${projectId}/members/${memberId}`);
   },
 };
