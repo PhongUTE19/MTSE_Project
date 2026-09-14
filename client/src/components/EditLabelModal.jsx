@@ -1,21 +1,15 @@
 import { ArrowLeft, Check, X } from "lucide-react";
 import { useState } from "react";
-import { getLabelColor } from "../utils/constants";
+import { getLabelColor, LABEL_COLOR_PALETTE } from "../utils/constants";
+import ConfirmDialog from "./ConfirmDialog";
 import "../styles/EditLabelModal.css";
-
-const COLOR_PALETTE = [
-  "#baf3db", "#f8e6a0", "#f5cd47", "#fedec8", "#eac7f0",
-  "#4bce97", "#e2b203", "#f87462", "#9f8fef", "#1f845a",
-  "#946f00", "#b38600", "#ae2e24", "#5e4db2", "#cce0ff",
-  "#c1e5ff", "#fdd0ec", "#dcdfe4", "#579dff", "#94c748",
-  "#e774bb", "#8590a2", "#0c66e4", "#5b7f24", "#44546f",
-];
 
 export default function EditLabelModal({ label, onSave, onDelete, onClose }) {
   const [title, setTitle] = useState(label?.name || "");
   const [color, setColor] = useState(label?.color || "");
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
   const handleSave = async () => {
     if (title.trim().length < 2) {
@@ -34,15 +28,16 @@ export default function EditLabelModal({ label, onSave, onDelete, onClose }) {
     }
   };
 
-  const handleDelete = async () => {
-    if (!window.confirm("Delete this label? It will be removed from all tasks.")) return;
+  const handleConfirmDelete = async () => {
     setIsSaving(true);
     try {
       await onDelete();
+      setShowConfirmDelete(false);
       onClose();
     } catch (err) {
       setError(err.message);
       setIsSaving(false);
+      setShowConfirmDelete(false);
     }
   };
 
@@ -66,7 +61,7 @@ export default function EditLabelModal({ label, onSave, onDelete, onClose }) {
         <div className="form-group">
           <label>Select a color</label>
           <div className="color-palette">
-            {COLOR_PALETTE.map((paletteColor) => (
+            {LABEL_COLOR_PALETTE.map((paletteColor) => (
               <button
                 key={paletteColor}
                 type="button"
@@ -86,8 +81,31 @@ export default function EditLabelModal({ label, onSave, onDelete, onClose }) {
           <button type="button" className="btn-save" onClick={handleSave} disabled={!title.trim() || isSaving}>
             {isSaving ? "Saving..." : "Save"}
           </button>
-          {label && <button type="button" className="btn-delete" onClick={handleDelete} disabled={isSaving}>Delete</button>}
+          {label && (
+            <button
+              type="button"
+              className="btn-delete"
+              onClick={() => setShowConfirmDelete(true)}
+              disabled={isSaving}
+            >
+              Delete
+            </button>
+          )}
         </div>
+
+        <ConfirmDialog
+          isOpen={showConfirmDelete}
+          title="Delete Label"
+          message={
+            <>
+              Are you sure you want to delete label <strong>"{label?.name}"</strong>? It will be removed from all tasks.
+            </>
+          }
+          confirmText="Delete Label"
+          isLoading={isSaving}
+          onConfirm={handleConfirmDelete}
+          onCancel={() => !isSaving && setShowConfirmDelete(false)}
+        />
       </div>
     </div>
   );

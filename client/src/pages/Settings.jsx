@@ -1,90 +1,54 @@
-import { Pencil, Plus } from "lucide-react";
-import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import mockApi from "../services/mockApi";
+import { Pencil, Plus, Trash2 } from "lucide-react";
+import Avatar from "../components/Avatar";
+import ConfirmDialog from "../components/ConfirmDialog";
+import Toast from "../components/Toast";
+import { useSettings } from "../hooks/useSettings";
 import "../styles/Settings.css";
 
-const emptyMemberForm = { name: "", mssv: "", email: "" };
+export default function Settings() {
+  const {
+    projects,
+    selectedProjectId,
+    selectedProject,
+    members,
+    loading,
+    toast,
+    clearToast,
+    isAddingMember,
+    editingMember,
+    memberForm,
+    formErrors,
+    memberToDelete,
+    isDeleting,
+    handleSelectProject,
+    startAddMember,
+    startEditMember,
+    resetMemberForm,
+    handleMemberFormChange,
+    handleSaveMember,
+    setMemberToDelete,
+    handleConfirmDeleteMember,
+    cancelDeleteMember,
+  } = useSettings();
 
-const Settings = () => {
-  const location = useLocation();
-  const [projects, setProjects] = useState([]);
-  const [selectedProjectId, setSelectedProjectId] = useState("");
-  const [members, setMembers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [toast, setToast] = useState(null);
-  const [isAddingMember, setIsAddingMember] = useState(false);
-  const [editingMember, setEditingMember] = useState(null);
-  const [memberForm, setMemberForm] = useState(emptyMemberForm);
-
-  const showToast = (message, type = "success") => {
-    setToast({ message, type });
-    setTimeout(() => setToast(null), 3000);
-  };
-
-  useEffect(() => {
-    mockApi.getProjects().then((projectList) => {
-      setProjects(projectList);
-      const requestedProjectId = new URLSearchParams(location.search).get("project");
-      setSelectedProjectId(requestedProjectId || projectList[0]?.id || "");
-    }).catch((err) => showToast(err.message || "Failed to load projects.", "error"));
-  }, [location.search]);
-
-  useEffect(() => {
-    if (!selectedProjectId) return undefined;
-    let isMounted = true;
-    mockApi.getMembers(selectedProjectId)
-      .then((memberList) => {
-        if (isMounted) {
-          setMembers(memberList);
-          setLoading(false);
-        }
-      })
-      .catch((err) => {
-        if (isMounted) {
-          showToast(err.message || "Failed to load members.", "error");
-          setLoading(false);
-        }
-      });
-    return () => { isMounted = false; };
-  }, [selectedProjectId]);
-
-  const reloadMembers = async () => {
-    setMembers(await mockApi.getMembers(selectedProjectId));
-  };
-
-  const resetMemberForm = () => {
-    setIsAddingMember(false);
-    setEditingMember(null);
-    setMemberForm(emptyMemberForm);
-  };
-
-  const handleSaveMember = async () => {
-    try {
-      if (editingMember) {
-        await mockApi.updateMember(selectedProjectId, editingMember.id, memberForm);
-        showToast("Member updated successfully.");
-      } else {
-        await mockApi.createMember(selectedProjectId, memberForm);
-        showToast("Member added successfully.");
-      }
-      resetMemberForm();
-      await reloadMembers();
-    } catch (err) {
-      showToast(err.message, "error");
-    }
-  };
-
-  const selectedProject = projects.find((project) => project.id === selectedProjectId);
-
-  if (loading) return <div className="settings-container">Loading...</div>;
+  if (loading) {
+    return <div className="settings-container">Loading...</div>;
+  }
 
   return (
     <div className="settings-container">
       <div className="settings-header">
         <h1>Settings</h1>
-        <select className="settings-project-select" value={selectedProjectId} onChange={(event) => setSelectedProjectId(event.target.value)}>
-          {projects.map((project) => <option key={project.id} value={project.id}>{project.name}</option>)}
+        <select
+          className="settings-project-select"
+          value={selectedProjectId}
+          onChange={(event) => handleSelectProject(event.target.value)}
+        >
+          {projects.map((project) => (
+            <option key={project.id} value={project.id}>
+              {project.name}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -92,12 +56,13 @@ const Settings = () => {
         <div className="settings-section-header">
           <h2>Team Members</h2>
           {!isAddingMember && !editingMember && (
-            <button className="btn-primary" onClick={() => setIsAddingMember(true)}><Plus size={18} aria-hidden="true" /> Add Member</button>
+            <button className="btn-primary" onClick={startAddMember}>
+              <Plus size={18} aria-hidden="true" /> Add Member
+            </button>
           )}
         </div>
-        <p className="settings-project-subtitle">Members of {selectedProject?.name || "selected project"}</p>
-        <p className="member-history-note">
-          Members cannot be deleted to preserve task history. Edit if information changes.
+        <p className="settings-project-subtitle">
+          Members of {selectedProject?.name || "selected project"}
         </p>
 
         {(isAddingMember || editingMember) && (
@@ -105,19 +70,56 @@ const Settings = () => {
             <h3>{editingMember ? "Edit Member" : "Add New Member"}</h3>
             <div className="form-group">
               <label htmlFor="member-name">Name*</label>
-              <input id="member-name" type="text" className="form-input" value={memberForm.name} onChange={(event) => setMemberForm({ ...memberForm, name: event.target.value })} />
+              <input
+                id="member-name"
+                type="text"
+                className="form-input"
+                value={memberForm.name}
+                onChange={(event) =>
+                  handleMemberFormChange("name", event.target.value)
+                }
+              />
+              {formErrors?.name && (
+                <span className="form-error">{formErrors.name}</span>
+              )}
             </div>
             <div className="form-group">
               <label htmlFor="member-mssv">MSSV*</label>
-              <input id="member-mssv" type="text" className="form-input" value={memberForm.mssv} onChange={(event) => setMemberForm({ ...memberForm, mssv: event.target.value })} />
+              <input
+                id="member-mssv"
+                type="text"
+                className="form-input"
+                value={memberForm.mssv}
+                onChange={(event) =>
+                  handleMemberFormChange("mssv", event.target.value)
+                }
+              />
+              {formErrors?.mssv && (
+                <span className="form-error">{formErrors.mssv}</span>
+              )}
             </div>
             <div className="form-group">
               <label htmlFor="member-email">Email*</label>
-              <input id="member-email" type="email" className="form-input" value={memberForm.email} onChange={(event) => setMemberForm({ ...memberForm, email: event.target.value })} />
+              <input
+                id="member-email"
+                type="email"
+                className="form-input"
+                value={memberForm.email}
+                onChange={(event) =>
+                  handleMemberFormChange("email", event.target.value)
+                }
+              />
+              {formErrors?.email && (
+                <span className="form-error">{formErrors.email}</span>
+              )}
             </div>
             <div className="form-actions">
-              <button className="btn-primary" onClick={handleSaveMember}>Save</button>
-              <button className="btn-secondary" onClick={resetMemberForm}>Cancel</button>
+              <button className="btn-primary" onClick={handleSaveMember}>
+                Save
+              </button>
+              <button className="btn-secondary" onClick={resetMemberForm}>
+                Cancel
+              </button>
             </div>
           </div>
         )}
@@ -127,17 +129,42 @@ const Settings = () => {
         ) : (
           <table className="settings-table">
             <thead>
-              <tr><th>Member</th><th>MSSV</th><th>Email</th><th>Actions</th></tr>
+              <tr>
+                <th>Member</th>
+                <th>MSSV</th>
+                <th>Email</th>
+                <th>Actions</th>
+              </tr>
             </thead>
             <tbody>
               {members.map((member) => (
                 <tr key={member.id}>
-                  <td><div className="avatar-cell"><div className="avatar">{member.name.charAt(0).toUpperCase()}</div><span>{member.name}</span></div></td>
+                  <td>
+                    <div className="avatar-cell">
+                      <Avatar name={member.name} className="avatar" />
+                      <span>{member.name}</span>
+                    </div>
+                  </td>
                   <td>{member.mssv}</td>
                   <td>{member.email}</td>
                   <td>
                     <div className="actions-cell">
-                      <button className="btn-icon" aria-label="Edit member" onClick={() => { setEditingMember(member); setMemberForm({ name: member.name, mssv: member.mssv, email: member.email }); }}><Pencil size={18} aria-hidden="true" /></button>
+                      <button
+                        className="btn-icon"
+                        aria-label="Edit member"
+                        title="Edit member"
+                        onClick={() => startEditMember(member)}
+                      >
+                        <Pencil size={18} aria-hidden="true" />
+                      </button>
+                      <button
+                        className="btn-icon danger"
+                        aria-label="Delete member"
+                        title="Delete member"
+                        onClick={() => setMemberToDelete(member)}
+                      >
+                        <Trash2 size={18} aria-hidden="true" />
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -147,9 +174,27 @@ const Settings = () => {
         )}
       </div>
 
-      {toast && <div className={`settings-toast ${toast.type === "error" ? "error" : "success"}`}>{toast.message}</div>}
+      <ConfirmDialog
+        isOpen={!!memberToDelete}
+        title="Delete Member"
+        message={
+          <>
+            Are you sure you want to delete member{" "}
+            <strong>"{memberToDelete?.name}"</strong> ({memberToDelete?.mssv})?
+            They will also be removed from any tasks assigned to them.
+          </>
+        }
+        confirmText="Delete Member"
+        isLoading={isDeleting}
+        onConfirm={handleConfirmDeleteMember}
+        onCancel={cancelDeleteMember}
+      />
+
+      <Toast
+        message={toast?.message}
+        type={toast?.type}
+        onClose={clearToast}
+      />
     </div>
   );
-};
-
-export default Settings;
+}

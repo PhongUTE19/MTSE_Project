@@ -31,3 +31,49 @@ export function validateTaskForm(values) {
 
   return errors;
 }
+
+/**
+ * Validate form Create Project.
+ * @param {{name?: string, courseName?: string, description?: string, deadline?: string}} values
+ * @returns {{name?: string}}
+ */
+export function validateProjectForm(values) {
+  const errors = {};
+
+  if (!values?.name || values.name.trim() === "") {
+    errors.name = "Project name is required.";
+  } else if (values.name.trim().length < 3) {
+    errors.name = "Project name must be at least 3 characters.";
+  }
+
+  return errors;
+}
+
+/**
+ * Validate Member Form in Settings.
+ * @param {{name?: string, mssv?: string, email?: string}} values
+ * @returns {{name?: string, mssv?: string, email?: string}}
+ */
+export function validateMemberForm(values) {
+  const errors = {};
+
+  if (!values?.name || values.name.trim() === "") {
+    errors.name = "Member name is required.";
+  } else if (values.name.trim().length < 2) {
+    errors.name = "Member name must be at least 2 characters.";
+  }
+
+  if (!values?.mssv || values.mssv.trim() === "") {
+    errors.mssv = "MSSV is required.";
+  } else if (!/^[0-9A-Za-z_-]{3,20}$/.test(values.mssv.trim())) {
+    errors.mssv = "MSSV must be between 3 and 20 alphanumeric characters.";
+  }
+
+  if (!values?.email || values.email.trim() === "") {
+    errors.email = "Email is required.";
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim())) {
+    errors.email = "Invalid email format.";
+  }
+
+  return errors;
+}

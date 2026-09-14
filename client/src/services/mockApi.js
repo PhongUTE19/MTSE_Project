@@ -7,6 +7,7 @@ const STORAGE_KEYS = {
   TASKS: "mana_tasks_v2",
   MEMBERS: "mana_members_v2",
   LABELS: "mana_labels_v2",
+  STATUSES: "mana_statuses_v2",
 };
 
 // Check if localStorage is supported in current environment
@@ -41,6 +42,15 @@ const initialLabelsData = [
     ["Logistics", "#e2b203"], ["Marketing", "#f87168"], ["Content", "#9f8fef"],
   ].map(([name, color], index) => ({ id: `label-2-${index + 1}`, projectId: "project-2", name, color })));
 
+const initialStatuses = [
+  { id: "todo", projectId: "project-1", name: "To Do" },
+  { id: "in_progress", projectId: "project-1", name: "In Progress" },
+  { id: "done", projectId: "project-1", name: "Done" },
+  { id: "todo", projectId: "project-2", name: "To Do" },
+  { id: "in_progress", projectId: "project-2", name: "In Progress" },
+  { id: "done", projectId: "project-2", name: "Done" },
+];
+
 const initialTasksV2 = initialTasks.map((task) => {
   const memberPrefix = task.projectId === "project-2" ? "member-2-" : "member-1-";
   return {
@@ -58,6 +68,7 @@ let inMemoryStorage = {
   tasks: JSON.parse(JSON.stringify(initialTasksV2)),
   members: JSON.parse(JSON.stringify(initialMembers)),
   labels: JSON.parse(JSON.stringify(initialLabelsData)),
+  statuses: JSON.parse(JSON.stringify(initialStatuses)),
 };
 
 function readCollection(key, defaultData) {
@@ -103,6 +114,7 @@ export const mockApi = {
     writeCollection(STORAGE_KEYS.TASKS, initialTasksV2);
     writeCollection(STORAGE_KEYS.MEMBERS, initialMembers);
     writeCollection(STORAGE_KEYS.LABELS, initialLabelsData);
+    writeCollection(STORAGE_KEYS.STATUSES, initialStatuses);
     return { success: true };
   },
 
@@ -175,6 +187,10 @@ export const mockApi = {
     writeCollection(
       STORAGE_KEYS.LABELS,
       readCollection(STORAGE_KEYS.LABELS, initialLabelsData).filter((label) => label.projectId !== projectId)
+    );
+    writeCollection(
+      STORAGE_KEYS.STATUSES,
+      readCollection(STORAGE_KEYS.STATUSES, initialStatuses).filter((status) => status.projectId !== projectId)
     );
 
     return {
@@ -404,6 +420,44 @@ export const mockApi = {
     return updated;
   },
 
+  async deleteMember(projectId, memberId) {
+    await delay();
+    if (memberId === undefined) {
+      memberId = projectId;
+      projectId = "project-1";
+    }
+    const allMembers = readCollection(STORAGE_KEYS.MEMBERS, initialMembers);
+    const index = allMembers.findIndex((member) => member.id === memberId && member.projectId === projectId);
+    if (index === -1) {
+      throw new Error("Member not found in this project.");
+    }
+
+    const memberToDelete = allMembers[index];
+    allMembers.splice(index, 1);
+    writeCollection(STORAGE_KEYS.MEMBERS, allMembers);
+
+    // CASCADE: Remove member assignment from all tasks in this project
+    const allTasks = readCollection(STORAGE_KEYS.TASKS, initialTasksV2);
+    let tasksUpdated = false;
+    allTasks.forEach((task) => {
+      if (task.projectId === projectId && Array.isArray(task.assigneeIds)) {
+        const initialLen = task.assigneeIds.length;
+        task.assigneeIds = task.assigneeIds.filter(
+          (id) => id !== memberId && id !== memberToDelete.id
+        );
+        if (task.assigneeIds.length !== initialLen) {
+          tasksUpdated = true;
+        }
+      }
+    });
+
+    if (tasksUpdated) {
+      writeCollection(STORAGE_KEYS.TASKS, allTasks);
+    }
+
+    return { success: true, deletedId: memberId };
+  },
+
   // === LABELS ===
   async getLabels(projectId) {
     await delay();
@@ -541,6 +595,73 @@ export const mockApi = {
     }
 
     return { success: true, deletedId: labelId };
+  },
+
+  // === STATUSES ===
+  async getStatuses(projectId) {
+    await delay();
+    const allStatuses = readCollection(STORAGE_KEYS.STATUSES, initialStatuses);
+    const projectStatuses = projectId ? allStatuses.filter((status) => status.projectId === projectId) : allStatuses;
+    if (projectId && projectStatuses.length === 0) {
+      return [
+        { id: "todo", projectId, name: "To Do" },
+        { id: "in_progress", projectId, name: "In Progress" },
+        { id: "done", projectId, name: "Done" },
+      ];
+    }
+    return projectStatuses;
+  },
+
+  async createStatus(projectId, statusData) {
+    await delay();
+    if (typeof projectId === "object") {
+      statusData = projectId;
+      projectId = "project-1";
+    }
+    const allStatuses = readCollection(STORAGE_KEYS.STATUSES, initialStatuses);
+
+    const name = statusData.name?.trim();
+    if (!name || name.length < 2) {
+      throw new Error("Status name must be at least 2 characters.");
+    }
+
+    const existing = allStatuses.find(
+      (s) => s.projectId === projectId && s.name.toLowerCase() === name.toLowerCase()
+    );
+    if (existing) {
+      throw new Error(`Status '${name}' already exists in this project.`);
+    }
+
+    const rawSlug = name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "_")
+      .replace(/^_+|_+$/g, "");
+
+    const id =
+      statusData.id ||
+      (rawSlug && !allStatuses.some((s) => s.projectId === projectId && s.id === rawSlug)
+        ? rawSlug
+        : `status-${Date.now()}`);
+
+    // Ensure default statuses exist for project if this is first custom status
+    const hasExistingInProject = allStatuses.some((s) => s.projectId === projectId);
+    if (!hasExistingInProject) {
+      allStatuses.push(
+        { id: "todo", projectId, name: "To Do" },
+        { id: "in_progress", projectId, name: "In Progress" },
+        { id: "done", projectId, name: "Done" }
+      );
+    }
+
+    const newStatus = {
+      id,
+      projectId,
+      name,
+    };
+
+    allStatuses.push(newStatus);
+    writeCollection(STORAGE_KEYS.STATUSES, allStatuses);
+    return newStatus;
   }
 };
 

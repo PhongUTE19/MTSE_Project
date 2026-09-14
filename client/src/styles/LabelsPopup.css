@@ -1,25 +1,143 @@
 .labels-popup {
-  width: 320px;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 100;
+  width: 280px;
   max-width: calc(100vw - 24px);
-  background: #fff;
+  background: var(--bg-card, #fff);
   border: 1px solid var(--border-light);
-  border-radius: 8px;
-  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-md, 8px);
+  box-shadow: var(--shadow-md);
   padding: 12px;
   color: var(--text);
+  box-sizing: border-box;
 }
-.labels-popup-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-light); padding-bottom: 10px; }
-.labels-popup-header h3 { margin: 0; font-size: 16px; }
-.labels-popup-header button, .btn-edit-label { border: 0; background: transparent; cursor: pointer; color: var(--text-secondary); }
-.labels-search { padding: 10px 0; }
-.labels-search input { width: 100%; box-sizing: border-box; padding: 8px 10px; border: 1px solid #DDE2EE; border-radius: var(--radius-sm); }
-.labels-list-title { color: var(--text-secondary); font-size: 12px; font-weight: 600; margin-bottom: 6px; }
-.labels-list { max-height: 260px; overflow-y: auto; }
-.label-row { display: flex; align-items: center; gap: 8px; padding: 6px 4px; border-radius: var(--radius-sm); }
-.label-row:hover, .label-row.selected { background: var(--info-bg); }
-.popup-label-badge { flex: 1; color: var(--text-primary); padding: 4px 12px; border-radius: var(--radius-sm); font-weight: 500; text-align: left; }
-.btn-edit-label { padding: 4px; }
-.btn-create-label { width: 100%; margin-top: 10px; padding: 9px; border: 0; border-radius: var(--radius-sm); background: var(--bg-200); color: var(--primary-300); cursor: pointer; font-weight: 600; }
-.btn-create-label:hover { background: var(--border-soft); }
-.labels-empty, .labels-popup-error { color: var(--text-secondary); font-size: 13px; padding: 10px 4px; }
-.labels-popup-error { color: var(--danger-text); }
+
+.labels-popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 10px;
+}
+
+.labels-popup-header h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.labels-popup-header button,
+.btn-edit-label {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
+.labels-search {
+  padding: 10px 0 8px;
+}
+
+.labels-search input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 6px 10px;
+  border: 1px solid #DDE2EE;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  color: var(--text-primary);
+  background: #fff;
+}
+
+.labels-list-title {
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.labels-list {
+  max-height: 220px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.label-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+}
+
+.label-row:hover,
+.label-row.selected {
+  background: var(--info-bg);
+}
+
+.popup-label-badge {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm, 4px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 18px;
+}
+
+.btn-edit-label {
+  padding: 4px;
+}
+
+.btn-delete-label-row {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 4px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s, background-color 0.15s;
+}
+
+.btn-delete-label-row:hover {
+  color: var(--danger-text);
+  background: var(--danger-bg);
+}
+
+.btn-create-label {
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--bg-200);
+  color: var(--primary-300);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  transition: background 0.15s;
+}
+
+.btn-create-label:hover {
+  background: var(--border-soft);
+}
+
+.labels-empty,
+.labels-popup-error {
+  color: var(--text-secondary);
+  font-size: 12px;
+  padding: 10px 4px;
+}
+
+.labels-popup-error {
+  color: var(--danger-text);
+}

@@ -106,8 +106,6 @@
 .color-swatch .lucide { color: var(--text-primary); background: white; border-radius: 50%; }
 .state-icon { color: var(--periwinkle); display: flex; justify-content: center; }
 .state-icon .lucide { width: 32px; height: 32px; }
-.settings-toast.success { background: var(--success-bg); color: var(--success-text); border: 1px solid var(--success-border); }
-.settings-toast.error { background: var(--danger-bg); color: var(--danger-text); border: 1px solid var(--danger-border); }
 .toast-notification { min-width: 0; max-width: min(420px, calc(100vw - 32px)); right: 16px; }
 .edit-label-modal { max-height: calc(100dvh - 24px); overflow-y: auto; }
 @media (max-width: 768px) {
@@ -117,7 +115,6 @@
   .board-container { padding: 0; }
   .board-columns { margin-right: 0; }
   .popover-menu { max-width: calc(100vw - 64px); }
-  .settings-toast { right: 16px; left: 16px; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
@@ -126,8 +123,11 @@
 .btn-add-task { white-space: nowrap; }
 .btn-add-task:hover, .btn-save:hover { background: var(--primary-200); }
 .btn-icon { color: var(--atlantis); }
-.header-icon { flex-shrink: 0; }
-.sidebar-btn-wrapper > .popover-menu { left: auto; right: 0; }
+.sidebar-btn-wrapper > .popover-menu,
+.sidebar-btn-wrapper > .labels-popup {
+  left: auto;
+  right: 0;
+}
 @media (max-width: 768px) {
   .settings-table { min-width: 540px; }
   .create-task-modal, .task-detail-modal, .stat-card, .projects-section { border-radius: var(--radius-lg); }

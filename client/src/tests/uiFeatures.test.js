@@ -2,8 +2,8 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { mockApi } from "../services/mockApi";
 import {
-  PREDEFINED_MEMBERS,
-  PREDEFINED_LABELS,
+  INITIAL_MEMBERS,
+  INITIAL_LABELS,
   getLabelColor,
   getStudentName,
 } from "../utils/constants";
@@ -14,18 +14,18 @@ describe("UI Features & Consistency Tests", () => {
   });
 
   describe("Constants & Shared Helpers", () => {
-    it("should have correct predefined members and labels", () => {
-      expect(PREDEFINED_MEMBERS).toHaveLength(3);
-      expect(PREDEFINED_MEMBERS.map((m) => m.id)).toEqual([
+    it("should have correct initial members and labels", () => {
+      expect(INITIAL_MEMBERS).toHaveLength(3);
+      expect(INITIAL_MEMBERS.map((m) => m.id)).toEqual([
         "student-1",
         "student-2",
         "student-3",
       ]);
 
-      expect(PREDEFINED_LABELS).toContain("Frontend");
-      expect(PREDEFINED_LABELS).toContain("Backend");
-      expect(PREDEFINED_LABELS).toContain("Bug");
-      expect(PREDEFINED_LABELS.length).toBeGreaterThanOrEqual(7);
+      expect(INITIAL_LABELS).toContain("Frontend");
+      expect(INITIAL_LABELS).toContain("Backend");
+      expect(INITIAL_LABELS).toContain("Bug");
+      expect(INITIAL_LABELS.length).toBeGreaterThanOrEqual(7);
     });
 
     it("should return consistent label colors", () => {
@@ -36,8 +36,8 @@ describe("UI Features & Consistency Tests", () => {
     });
 
     it("should resolve student name correctly", () => {
-      expect(getStudentName(PREDEFINED_MEMBERS, "student-1")).toBe("Bùi Duy Phong");
-      expect(getStudentName(PREDEFINED_MEMBERS, "unknown-id")).toBe("unknown-id");
+      expect(getStudentName(INITIAL_MEMBERS, "student-1")).toBe("Bùi Duy Phong");
+      expect(getStudentName(INITIAL_MEMBERS, "unknown-id")).toBe("unknown-id");
     });
   });
 
@@ -171,6 +171,165 @@ describe("UI Features & Consistency Tests", () => {
       const statsAfter = await mockApi.getDashboardStats();
       expect(statsAfter.totalProjects).toBe(statsBefore.totalProjects - 1);
       expect(statsAfter.totalTasks).toBe(statsBefore.totalTasks - 2);
+    });
+  });
+
+  describe("Standardized Avatar Initials", () => {
+    it("should correctly extract the Firstname initial", async () => {
+      const { getAvatarInitial, getFirstName } = await import("../utils/avatar");
+
+      // Firstname extraction
+      expect(getFirstName("Bùi Duy Phong")).toBe("Phong");
+      expect(getFirstName("Trần Thị Tố Như")).toBe("Như");
+      expect(getFirstName("Văn Phạm Thảo Nhi")).toBe("Nhi");
+      expect(getFirstName("Phong")).toBe("Phong");
+
+      // Standardized initial extraction
+      expect(getAvatarInitial("Bùi Duy Phong")).toBe("P");
+      expect(getAvatarInitial("Trần Thị Tố Như")).toBe("N");
+      expect(getAvatarInitial("Văn Phạm Thảo Nhi")).toBe("N");
+      expect(getAvatarInitial("Phong")).toBe("P");
+      expect(getAvatarInitial("  Bùi   Duy   Phong  ")).toBe("P");
+      expect(getAvatarInitial("")).toBe("?");
+      expect(getAvatarInitial(null)).toBe("?");
+    });
+  });
+
+  describe("Delete Member - Task Assignment Cascading", () => {
+    it("should delete member and remove assignment from all tasks in project", async () => {
+      // 1. Create a member
+      const member = await mockApi.createMember("project-1", {
+        name: "Nguyễn Văn An",
+        mssv: "23110999",
+        email: "vanan@gmail.com",
+      });
+
+      // 2. Create a task assigned to this member
+      const task = await mockApi.createTask({
+        projectId: "project-1",
+        title: "Task with Member to Delete",
+        status: "todo",
+        assigneeIds: [member.id, "student-1"],
+      });
+
+      expect(task.assigneeIds).toContain(member.id);
+
+      // 3. Delete the member
+      const result = await mockApi.deleteMember("project-1", member.id);
+      expect(result.success).toBe(true);
+      expect(result.deletedId).toBe(member.id);
+
+      // 4. Verify member is removed from members collection
+      const membersAfter = await mockApi.getMembers("project-1");
+      expect(membersAfter.find((m) => m.id === member.id)).toBeUndefined();
+
+      // 5. Verify task no longer has this member in assigneeIds
+      const taskAfter = await mockApi.getTaskById(task.id);
+      expect(taskAfter.assigneeIds).not.toContain(member.id);
+      expect(taskAfter.assigneeIds).toContain("student-1");
+    });
+  });
+
+  describe("Delete Label - Task Labels Cascading", () => {
+    it("should delete label and remove it from tasks in project", async () => {
+      // 1. Create a label
+      const label = await mockApi.createLabel("project-1", {
+        name: "TemporaryLabel",
+        color: "#f87168",
+      });
+
+      // 2. Create a task with this label
+      const task = await mockApi.createTask({
+        projectId: "project-1",
+        title: "Task with Label to Delete",
+        status: "todo",
+        labels: ["TemporaryLabel", "Frontend"],
+      });
+
+      expect(task.labels).toContain("TemporaryLabel");
+
+      // 3. Delete the label
+      const result = await mockApi.deleteLabel("project-1", label.id);
+      expect(result.success).toBe(true);
+      expect(result.deletedId).toBe(label.id);
+
+      // 4. Verify label is removed from labels list
+      const labelsAfter = await mockApi.getLabels("project-1");
+      expect(labelsAfter.find((l) => l.id === label.id)).toBeUndefined();
+
+      // 5. Verify task no longer has this label
+      const taskAfter = await mockApi.getTaskById(task.id);
+      expect(taskAfter.labels).not.toContain("TemporaryLabel");
+      expect(taskAfter.labels).toContain("Frontend");
+    });
+  });
+
+  describe("Status Constants & Centralized Helpers", () => {
+    it("should resolve status labels consistently", async () => {
+      const { DEFAULT_STATUSES, getStatusLabel } = await import("../utils/constants");
+
+      expect(DEFAULT_STATUSES).toHaveLength(3);
+      expect(DEFAULT_STATUSES.map((s) => s.id)).toEqual(["todo", "in_progress", "done"]);
+
+      expect(getStatusLabel(DEFAULT_STATUSES, "todo")).toBe("To Do");
+      expect(getStatusLabel(DEFAULT_STATUSES, "in_progress")).toBe("In Progress");
+      expect(getStatusLabel(DEFAULT_STATUSES, "done")).toBe("Done");
+
+      const customStatuses = [
+        ...DEFAULT_STATUSES,
+        { id: "review", name: "Code Review" },
+        { id: "qa", name: "QA Testing" },
+      ];
+      expect(getStatusLabel(customStatuses, "review")).toBe("Code Review");
+      expect(getStatusLabel(customStatuses, "qa")).toBe("QA Testing");
+      expect(getStatusLabel(customStatuses, "unregistered")).toBe("unregistered");
+      expect(getStatusLabel([], "")).toBe("");
+    });
+  });
+
+  describe("Custom Status Management & Task Movement", () => {
+    it("should retrieve default statuses and create custom statuses", async () => {
+      const initial = await mockApi.getStatuses("project-1");
+      expect(initial.length).toBeGreaterThanOrEqual(3);
+      expect(initial.map((s) => s.id)).toContain("todo");
+      expect(initial.map((s) => s.id)).toContain("in_progress");
+      expect(initial.map((s) => s.id)).toContain("done");
+
+      // Create new status
+      const created = await mockApi.createStatus("project-1", {
+        name: "Code Review",
+      });
+      expect(created.id).toBeDefined();
+      expect(created.name).toBe("Code Review");
+      expect(created.projectId).toBe("project-1");
+
+      const statusesAfter = await mockApi.getStatuses("project-1");
+      expect(statusesAfter.find((s) => s.id === created.id)).toBeDefined();
+    });
+
+    it("should allow moving a task to a newly created status (drag & drop simulation)", async () => {
+      // 1. Create a custom status
+      const reviewStatus = await mockApi.createStatus("project-1", {
+        name: "Design QA",
+      });
+
+      // 2. Create a task in 'todo'
+      const task = await mockApi.createTask({
+        projectId: "project-1",
+        title: "Draggable Task",
+        status: "todo",
+      });
+      expect(task.status).toBe("todo");
+
+      // 3. Move task to the new custom status (as drag & drop does)
+      const moved = await mockApi.updateTask(task.id, {
+        status: reviewStatus.id,
+      });
+      expect(moved.status).toBe(reviewStatus.id);
+
+      // 4. Verify fetched task reflects the new status
+      const fetched = await mockApi.getTaskById(task.id);
+      expect(fetched.status).toBe(reviewStatus.id);
     });
   });
 });
