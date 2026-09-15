@@ -1,0 +1,14 @@
+services:
+  backend:
+    build: ./server
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./server/.env
+    environment:
+      NODE_ENV: development
+
+  frontend:
+    build: ./client
+    ports:
+      - "5173:80"
