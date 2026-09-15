@@ -1,7 +1,7 @@
 // src/hooks/useDashboard.js
 import { useState, useEffect, useCallback } from "react";
-import { useLocation } from "react-router-dom";
 import { projectService } from "../services/projectService";
+import { useToast } from "../context/ToastContext";
 
 const INITIAL_STATS = {
   totalProjects: 0,
@@ -14,13 +14,11 @@ const INITIAL_STATS = {
  * Custom hook encapsulating Dashboard data loading, deletion flow, and state orchestration.
  */
 export function useDashboard() {
-  const location = useLocation();
+  const { showError, showSuccess } = useToast();
 
   const [projectsList, setProjectsList] = useState([]);
   const [stats, setStats] = useState(INITIAL_STATS);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [toast, setToast] = useState(location.state?.toast || null);
   const [projectToDelete, setProjectToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -35,23 +33,18 @@ export function useDashboard() {
         setProjectsList(projects || []);
         setStats(statsData || INITIAL_STATS);
         setLoading(false);
-        setError(null);
       })
       .catch((err) => {
         if (!active) return;
         console.error("[useDashboard] Error loading dashboard data:", err);
-        setError(err?.message || "Failed to load dashboard data.");
+        showError(err?.message || "Failed to load dashboard data.");
         setLoading(false);
       });
 
     return () => {
       active = false;
     };
-  }, []);
-
-  const clearToast = useCallback(() => {
-    setToast(null);
-  }, []);
+  }, [showError]);
 
   // Handle project deletion with automatic data refresh
   const handleConfirmDelete = useCallback(async () => {
@@ -66,19 +59,13 @@ export function useDashboard() {
       setProjectsList(projects || []);
       setStats(updatedStats || INITIAL_STATS);
       setProjectToDelete(null);
-      setToast({
-        message: `Project "${target.name}" and its tasks were deleted successfully.`,
-        type: "success",
-      });
+      showSuccess(`Project "${target.name}" and its tasks were deleted successfully.`);
     } catch (err) {
-      setToast({
-        message: "Failed to delete project: " + (err?.message || "Unknown error"),
-        type: "error",
-      });
+      showError("Failed to delete project: " + (err?.message || "Unknown error"));
     } finally {
       setIsDeleting(false);
     }
-  }, [projectToDelete]);
+  }, [projectToDelete, showError, showSuccess]);
 
   const handleCancelDelete = useCallback(() => {
     if (!isDeleting) {
@@ -90,9 +77,6 @@ export function useDashboard() {
     projectsList,
     stats,
     loading,
-    error,
-    toast,
-    clearToast,
     projectToDelete,
     setProjectToDelete,
     isDeleting,
@@ -100,3 +84,4 @@ export function useDashboard() {
     handleCancelDelete,
   };
 }
+

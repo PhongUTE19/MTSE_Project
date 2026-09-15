@@ -1,5 +1,5 @@
 // src/pages/TaskDetail.jsx
-import { AlertCircle, X } from "lucide-react";
+import { X } from "lucide-react";
 import { useParams, Link, useLocation, useNavigate } from "react-router-dom";
 import useTaskDetail from "../hooks/useTaskDetail";
 import TaskDetailHeader from "../components/taskDetail/TaskDetailHeader";
@@ -7,7 +7,6 @@ import TaskQuickInfo from "../components/taskDetail/TaskQuickInfo";
 import TaskDescription from "../components/taskDetail/TaskDescription";
 import TaskChecklist from "../components/taskDetail/TaskChecklist";
 import TaskSidebar from "../components/taskDetail/TaskSidebar";
-import Toast from "../components/Toast";
 import "../styles/TaskDetail.css";
 
 export default function TaskDetail() {
@@ -23,9 +22,6 @@ export default function TaskDetail() {
     statuses,
     isLoading,
     isNotFound,
-    error,
-    toast,
-    clearToast,
     projectId,
     projectName,
     handleTitleSave,
@@ -81,26 +77,6 @@ export default function TaskDetail() {
       <div className="task-detail-container">
         <div className="task-detail-modal task-detail-modal-center">
           <p style={{ color: "var(--text-secondary)" }}>Loading task details...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="task-detail-container">
-        <div className="task-detail-modal">
-          <div className="task-error-msg">
-            <h3 className="task-error-title">
-              <AlertCircle size={20} aria-hidden="true" /> Failed to load task
-            </h3>
-            <p className="task-error-text">{error}</p>
-            <div>
-              <Link to={projectId ? `/tasks?projectId=${projectId}` : "/tasks"} state={{ projectId, projectName }} className="btn-secondary">
-                Back to board
-              </Link>
-            </div>
-          </div>
         </div>
       </div>
     );
@@ -183,12 +159,6 @@ export default function TaskDetail() {
           />
         </div>
       </div>
-
-      <Toast
-        message={toast?.message}
-        type={toast?.type}
-        onClose={clearToast}
-      />
     </div>
   );
 }

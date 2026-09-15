@@ -1,28 +1,28 @@
 import { ArrowLeft, Check, X } from "lucide-react";
 import { useState } from "react";
 import { getLabelColor, LABEL_COLOR_PALETTE } from "../utils/constants";
+import { useToast } from "../context/ToastContext";
 import ConfirmDialog from "./ConfirmDialog";
 import "../styles/EditLabelModal.css";
 
 export default function EditLabelModal({ label, onSave, onDelete, onClose }) {
+  const { showError } = useToast();
   const [title, setTitle] = useState(label?.name || "");
   const [color, setColor] = useState(label?.color || "");
   const [isSaving, setIsSaving] = useState(false);
-  const [error, setError] = useState("");
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
 
   const handleSave = async () => {
     if (title.trim().length < 2) {
-      setError("Label name must be at least 2 characters.");
+      showError("Label name must be at least 2 characters.");
       return;
     }
     setIsSaving(true);
-    setError("");
     try {
       await onSave({ name: title.trim(), color: color || getLabelColor(title) });
       onClose();
     } catch (err) {
-      setError(err.message);
+      showError(err.message || "Failed to save label.");
     } finally {
       setIsSaving(false);
     }
@@ -35,7 +35,7 @@ export default function EditLabelModal({ label, onSave, onDelete, onClose }) {
       setShowConfirmDelete(false);
       onClose();
     } catch (err) {
-      setError(err.message);
+      showError(err.message || "Failed to delete label.");
       setIsSaving(false);
       setShowConfirmDelete(false);
     }
@@ -76,7 +76,6 @@ export default function EditLabelModal({ label, onSave, onDelete, onClose }) {
           </div>
         </div>
         {color && <button type="button" className="btn-remove-color" onClick={() => setColor("")}><X size={18} aria-hidden="true" /> Remove color</button>}
-        {error && <p className="edit-label-error">{error}</p>}
         <div className="edit-label-actions">
           <button type="button" className="btn-save" onClick={handleSave} disabled={!title.trim() || isSaving}>
             {isSaving ? "Saving..." : "Save"}

@@ -1,8 +1,7 @@
 import { Calendar, Flag, ListChecks, Plus } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import Toast from "../components/Toast";
 import Avatar from "../components/Avatar";
-import { LoadingState, EmptyState, ErrorState } from "../components/TaskListStates";
+import { LoadingState, EmptyState } from "../components/TaskListStates";
 import { useTaskList } from "../hooks/useTaskList";
 import { getChecklistProgress, isTaskOverdue } from "../utils/taskHelpers";
 import { formatShortDate } from "../utils/date";
@@ -15,8 +14,6 @@ export default function TaskList() {
     projectId,
     projectName,
     state,
-    toast,
-    clearToast,
     draggedTaskId,
     dragOverColumnId,
     isAddingStatus,
@@ -35,47 +32,24 @@ export default function TaskList() {
     getStudent,
     getLabel,
   } = useTaskList();
+  void retry;
 
   // ----- Loading -----
   if (state.status === "loading") {
     return <LoadingState />;
   }
 
-  // ----- Error -----
-  if (state.status === "error") {
-    return (
-      <>
-        <ErrorState
-          message={state.error?.message || "Unable to load tasks."}
-          onRetry={retry}
-        />
-        <Toast
-          message={toast?.message}
-          type={toast?.type}
-          onClose={clearToast}
-        />
-      </>
-    );
-  }
-
   // ----- Empty -----
   if (!state.data || state.data.length === 0) {
     return (
-      <>
-        <EmptyState
-          onCreate={() =>
-            navigate(
-              projectId ? `/tasks/new?projectId=${projectId}` : "/tasks/new",
-              { state: { projectId, projectName } }
-            )
-          }
-        />
-        <Toast
-          message={toast?.message}
-          type={toast?.type}
-          onClose={clearToast}
-        />
-      </>
+      <EmptyState
+        onCreate={() =>
+          navigate(
+            projectId ? `/tasks/new?projectId=${projectId}` : "/tasks/new",
+            { state: { projectId, projectName } }
+          )
+        }
+      />
     );
   }
 
@@ -254,12 +228,6 @@ export default function TaskList() {
           )}
         </div>
       </div>
-
-      <Toast
-        message={toast?.message}
-        type={toast?.type}
-        onClose={clearToast}
-      />
     </div>
   );
 }

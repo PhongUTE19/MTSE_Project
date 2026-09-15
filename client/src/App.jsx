@@ -1,6 +1,7 @@
 // src/App.jsx
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
+import { ToastProvider } from "./context/ToastContext";
 import Dashboard from "./pages/Dashboard";
 import TaskList from "./pages/TaskList";
 import TaskDetail from "./pages/TaskDetail";
@@ -12,12 +13,13 @@ import "./styles/App.css";
 function App() {
   return (
     <BrowserRouter>
-      <div className="app-container">
-        {/* Navbar hiển thị như sidebar */}
-        <Navbar />
+      <ToastProvider>
+        <div className="app-container">
+          {/* Navbar hiển thị như sidebar */}
+          <Navbar />
 
-        <main className="app-main">
-          <Routes>
+          <main className="app-main">
+            <Routes>
             {/* Redirect mặc định */}
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
@@ -34,6 +36,7 @@ function App() {
           </Routes>
         </main>
       </div>
+      </ToastProvider>
     </BrowserRouter>
   );
 }

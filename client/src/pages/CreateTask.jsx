@@ -2,7 +2,6 @@ import { ChevronDown, ClipboardList, Plus, Tags, Users, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getStatusLabel, PRIORITIES } from "../utils/constants";
 import { getMemberById, resolveLabelColor } from "../utils/taskHelpers";
-import Toast from "../components/Toast";
 import LabelsPopup from "../components/LabelsPopup";
 import MembersPopup from "../components/MembersPopup";
 import Avatar from "../components/Avatar";
@@ -21,8 +20,6 @@ export default function CreateTask() {
     errors,
     touched,
     isSubmitting,
-    toast,
-    clearToast,
     showMembersPopup,
     showLabelsPopup,
     membersWrapperRef,
@@ -293,12 +290,6 @@ export default function CreateTask() {
           </button>
         </form>
       </div>
-
-      <Toast
-        message={toast?.message}
-        type={toast?.type}
-        onClose={clearToast}
-      />
     </div>
   );
 }

@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import Toast from "../components/Toast";
 import ConfirmDialog from "../components/ConfirmDialog";
 import {
   AlertTriangle,
@@ -18,9 +17,6 @@ export default function Dashboard() {
     projectsList,
     stats,
     loading,
-    error,
-    toast,
-    clearToast,
     projectToDelete,
     setProjectToDelete,
     isDeleting,
@@ -120,11 +116,7 @@ export default function Dashboard() {
               ) : (
                 <tr>
                   <td colSpan="5" className="empty-row">
-                    {loading
-                      ? "Loading projects..."
-                      : error
-                      ? `Error: ${error}`
-                      : "No projects found."}
+                    {loading ? "Loading projects..." : "No projects found."}
                   </td>
                 </tr>
               )}
@@ -149,12 +141,6 @@ export default function Dashboard() {
         isLoading={isDeleting}
         onConfirm={handleConfirmDelete}
         onCancel={handleCancelDelete}
-      />
-
-      <Toast
-        message={toast?.message}
-        type={toast?.type}
-        onClose={clearToast}
       />
     </div>
   );

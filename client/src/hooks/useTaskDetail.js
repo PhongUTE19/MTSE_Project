@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { taskService } from "../services/taskService";
 import { DEFAULT_STATUSES } from "../utils/constants";
 import { parseInputToIsoDate } from "../utils/date";
+import { useToast } from "../context/ToastContext";
 import {
   toggleArrayItem,
   toggleChecklistItem,
@@ -15,14 +16,13 @@ export default function useTaskDetail(taskId, locationState = {}) {
   const [prevTaskId, setPrevTaskId] = useState(taskId);
   const [isLoading, setIsLoading] = useState(true);
   const [isNotFound, setIsNotFound] = useState(false);
-  const [error, setError] = useState(null);
 
   const [task, setTask] = useState(null);
   const [project, setProject] = useState(null);
   const [members, setMembers] = useState([]);
   const [labels, setLabels] = useState([]);
   const [statuses, setStatuses] = useState(DEFAULT_STATUSES);
-  const [toast, setToast] = useState(null);
+  const { showError } = useToast();
   const lastSavedTitleRef = useRef("");
 
   // Synchronously reset lifecycle states when taskId changes during navigation
@@ -30,7 +30,6 @@ export default function useTaskDetail(taskId, locationState = {}) {
     setPrevTaskId(taskId);
     setIsLoading(true);
     setIsNotFound(false);
-    setError(null);
     setTask(null);
   }
 
@@ -73,14 +72,15 @@ export default function useTaskDetail(taskId, locationState = {}) {
         if (message.toLowerCase().includes("not found")) {
           setIsNotFound(true);
         } else {
-          setError(message || "An unexpected error occurred while loading the task.");
+          showError(message || "An unexpected error occurred while loading the task.");
+          setIsNotFound(true);
         }
       });
 
     return () => {
       isCurrent = false;
     };
-  }, [taskId]);
+  }, [taskId, showError]);
 
   const updateTaskData = useCallback(
     async (updates) => {
@@ -93,14 +93,11 @@ export default function useTaskDetail(taskId, locationState = {}) {
         }
         return updated;
       } catch (err) {
-        setToast({
-          message: "Failed to update task: " + err.message,
-          type: "error",
-        });
+        showError("Failed to update task: " + err.message);
         throw err;
       }
     },
-    [task]
+    [task, showError]
   );
 
   const handleTitleSave = useCallback(
@@ -109,10 +106,7 @@ export default function useTaskDetail(taskId, locationState = {}) {
       const trimmed = newTitle?.trim();
       if (!trimmed || trimmed.length < 3) {
         if (trimmed && trimmed.length < 3) {
-          setToast({
-            message: "Task title must be at least 3 characters.",
-            type: "error",
-          });
+          showError("Task title must be at least 3 characters.");
         }
         setTask((prev) => (prev ? { ...prev, title: lastSavedTitleRef.current } : prev));
         return;
@@ -127,7 +121,7 @@ export default function useTaskDetail(taskId, locationState = {}) {
         });
       }
     },
-    [task, updateTaskData]
+    [task, updateTaskData, showError]
   );
 
   const handleDescriptionSave = useCallback(
@@ -217,13 +211,10 @@ export default function useTaskDetail(taskId, locationState = {}) {
           }));
         }
       } catch (err) {
-        setToast({
-          message: "Failed to refresh labels: " + err.message,
-          type: "error",
-        });
+        showError("Failed to refresh labels: " + err.message);
       }
     },
-    [taskProjectId]
+    [taskProjectId, showError]
   );
 
   const handleStatusChange = useCallback(
@@ -274,15 +265,10 @@ export default function useTaskDetail(taskId, locationState = {}) {
       await taskService.deleteTask(task.id);
       return { success: true, taskTitle: task.title };
     } catch (err) {
-      setToast({
-        message: "Failed to delete task: " + err.message,
-        type: "error",
-      });
+      showError("Failed to delete task: " + err.message);
       throw err;
     }
-  }, [task]);
-
-  const clearToast = useCallback(() => setToast(null), []);
+  }, [task, showError]);
 
   return {
     task,
@@ -295,10 +281,6 @@ export default function useTaskDetail(taskId, locationState = {}) {
     loading: isLoading,
     isNotFound,
     notFound: isNotFound,
-    error,
-    toast,
-    setToast,
-    clearToast,
     projectId,
     projectName,
     updateTaskData,

@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { projectService } from "../services/projectService";
 import { validateMemberForm } from "../utils/validators";
+import { useToast } from "../context/ToastContext";
 
 export const EMPTY_MEMBER_FORM = { name: "", mssv: "", email: "" };
 
@@ -17,7 +18,7 @@ export function useSettings() {
   const [selectedProjectId, setSelectedProjectId] = useState("");
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [toast, setToast] = useState(null);
+  const { showToast, showError } = useToast();
 
   // Form & delete dialog states
   const [isAddingMember, setIsAddingMember] = useState(false);
@@ -26,14 +27,6 @@ export function useSettings() {
   const [formErrors, setFormErrors] = useState({});
   const [memberToDelete, setMemberToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
-
-  const showToast = useCallback((message, type = "success") => {
-    setToast({ message, type });
-  }, []);
-
-  const clearToast = useCallback(() => {
-    setToast(null);
-  }, []);
 
   // Fetch projects on mount and select requested or first project
   useEffect(() => {
@@ -97,8 +90,9 @@ export function useSettings() {
       setMembers(freshMembers || []);
     } catch (err) {
       console.error("[useSettings] Failed to reload members:", err);
+      showError(err?.message || "Failed to reload members.");
     }
-  }, [selectedProjectId]);
+  }, [selectedProjectId, showError]);
 
   const handleSelectProject = useCallback(
     (projectId) => {
@@ -194,8 +188,6 @@ export function useSettings() {
     selectedProject,
     members,
     loading,
-    toast,
-    clearToast,
     isAddingMember,
     editingMember,
     memberForm,

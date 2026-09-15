@@ -4,40 +4,30 @@ import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { taskService } from "../services/taskService";
 import { DEFAULT_STATUSES } from "../utils/constants";
 import { getMemberById, resolveLabelColor } from "../utils/taskHelpers";
+import { useToast } from "../context/ToastContext";
 
 /**
- * Custom hook encapsulating TaskList board state, data loading, drag-and-drop orchestration,
- * status creation, and feedback.
+ * Custom hook encapsulating TaskList page state, board data loading,
+ * drag-and-drop operations, and optimistic status updates.
  */
 export function useTaskList() {
-  const navigate = useNavigate();
   const location = useLocation();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { showError, showSuccess } = useToast();
 
-  // Route context resolution
   const projectId = location.state?.projectId || searchParams.get("projectId") || null;
   const projectName = location.state?.projectName || (projectId ? "Team Workboard" : null);
 
-  // Board state - initialized directly based on projectId
-  const [state, setState] = useState(() => {
-    if (!projectId) {
-      return {
-        status: "error",
-        data: null,
-        error: { message: "No project selected. Please select a project from the Dashboard." },
-      };
-    }
-    return {
-      status: "loading",
-      data: null,
-      error: null,
-    };
-  });
+  const [state, setState] = useState(() => ({
+    status: projectId ? "loading" : "success",
+    data: projectId ? null : [],
+    error: null,
+  }));
 
   const [members, setMembers] = useState([]);
   const [labels, setLabels] = useState([]);
   const [statuses, setStatuses] = useState(DEFAULT_STATUSES);
-  const [toast, setToast] = useState(location.state?.toast || null);
 
   // Drag and drop state
   const [draggedTaskId, setDraggedTaskId] = useState(null);
@@ -66,17 +56,18 @@ export function useTaskList() {
       .catch((err) => {
         if (!active) return;
         console.error("[useTaskList] Failed to load board data:", err);
+        showError(err?.message || "Unable to load tasks.");
         setState({
-          status: "error",
-          data: null,
-          error: { message: err?.message || "Unable to load tasks." },
+          status: "success",
+          data: [],
+          error: null,
         });
       });
 
     return () => {
       active = false;
     };
-  }, [projectId]);
+  }, [projectId, showError]);
 
   // Clean retry callback without full page reload
   const retry = useCallback(() => {
@@ -96,17 +87,14 @@ export function useTaskList() {
         setState({ status: "success", data: boardData.tasks, error: null });
       })
       .catch((err) => {
+        showError(err?.message || "Unable to load tasks.");
         setState({
-          status: "error",
-          data: null,
-          error: { message: err?.message || "Unable to load tasks." },
+          status: "success",
+          data: [],
+          error: null,
         });
       });
-  }, [projectId, navigate]);
-
-  const clearToast = useCallback(() => {
-    setToast(null);
-  }, []);
+  }, [projectId, navigate, showError]);
 
   // Drag & drop handlers
   const handleDragStart = useCallback((e, taskId) => {
@@ -167,13 +155,10 @@ export function useTaskList() {
             t.id === taskId ? { ...t, status: previousStatus } : t
           ),
         }));
-        setToast({
-          message: "Failed to update status: " + (err?.message || "Unknown error"),
-          type: "error",
-        });
+        showError("Failed to update status: " + (err?.message || "Unknown error"));
       }
     },
-    [draggedTaskId, state.data]
+    [draggedTaskId, state.data, showError]
   );
 
   // Create new status column
@@ -190,20 +175,14 @@ export function useTaskList() {
         setStatuses((prev) => [...prev, created]);
         setNewStatusName("");
         setIsAddingStatus(false);
-        setToast({
-          message: `Status "${created.name}" created successfully.`,
-          type: "success",
-        });
+        showSuccess(`Status "${created.name}" created successfully.`);
       } catch (err) {
-        setToast({
-          message: err?.message || "Failed to create status.",
-          type: "error",
-        });
+        showError(err?.message || "Failed to create status.");
       } finally {
         setIsSubmittingStatus(false);
       }
     },
-    [newStatusName, projectId]
+    [newStatusName, projectId, showError, showSuccess]
   );
 
   // Group tasks into status columns
@@ -245,8 +224,6 @@ export function useTaskList() {
     labels,
     state,
     statuses,
-    toast,
-    clearToast,
     draggedTaskId,
     dragOverColumnId,
     isAddingStatus,

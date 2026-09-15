@@ -1,7 +1,6 @@
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import Avatar from "../components/Avatar";
 import ConfirmDialog from "../components/ConfirmDialog";
-import Toast from "../components/Toast";
 import { useSettings } from "../hooks/useSettings";
 import "../styles/Settings.css";
 
@@ -12,8 +11,6 @@ export default function Settings() {
     selectedProject,
     members,
     loading,
-    toast,
-    clearToast,
     isAddingMember,
     editingMember,
     memberForm,
@@ -188,12 +185,6 @@ export default function Settings() {
         isLoading={isDeleting}
         onConfirm={handleConfirmDeleteMember}
         onCancel={cancelDeleteMember}
-      />
-
-      <Toast
-        message={toast?.message}
-        type={toast?.type}
-        onClose={clearToast}
       />
     </div>
   );

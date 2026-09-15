@@ -8,7 +8,8 @@ import {
   DEFAULT_TASK_STATUS,
 } from "../utils/constants";
 import { parseChecklistInput, toggleArrayItem } from "../utils/taskHelpers";
-import useClickOutside from "./useClickOutside";
+import { useClickOutside } from "./useClickOutside";
+import { useToast } from "../context/ToastContext";
 
 const INITIAL_VALUES = {
   title: "",
@@ -46,7 +47,7 @@ export function useCreateTask() {
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [toast, setToast] = useState(null);
+  const { showError } = useToast();
 
   // Popup toggle states & click-outside handling
   const [showMembersPopup, setShowMembersPopup] = useState(false);
@@ -92,12 +93,13 @@ export function useCreateTask() {
         if (!active) return;
         console.error("[useCreateTask] Failed to fetch reference data:", err);
         setStatuses(DEFAULT_STATUSES);
+        showError(err?.message || "Failed to load project reference data.");
       });
 
     return () => {
       active = false;
     };
-  }, [projectId]);
+  }, [projectId, showError]);
 
   // Handle label updates (create, rename, delete)
   const handleLabelsChanged = useCallback(
@@ -108,6 +110,7 @@ export function useCreateTask() {
         setLabels(freshLabels);
       } catch (err) {
         console.error("[useCreateTask] Failed to refresh labels:", err);
+        showError(err?.message || "Failed to refresh labels.");
       }
 
       if (change?.oldName && change?.newName) {
@@ -125,7 +128,7 @@ export function useCreateTask() {
         }));
       }
     },
-    [projectId]
+    [projectId, showError]
   );
 
   // Form input change
@@ -160,10 +163,6 @@ export function useCreateTask() {
     }));
   }, []);
 
-  const clearToast = useCallback(() => {
-    setToast(null);
-  }, []);
-
   // Submit form
   const handleSubmit = async (e) => {
     if (e?.preventDefault) {
@@ -171,10 +170,7 @@ export function useCreateTask() {
     }
 
     if (!projectId) {
-      setToast({
-        message: "Cannot create task: No project selected.",
-        type: "error",
-      });
+      showError("Cannot create task: No project selected.");
       return;
     }
 
@@ -209,10 +205,7 @@ export function useCreateTask() {
         },
       });
     } catch (err) {
-      setToast({
-        message: "Failed to create task: " + (err?.message || "Unknown error"),
-        type: "error",
-      });
+      showError("Failed to create task: " + (err?.message || "Unknown error"));
     } finally {
       setIsSubmitting(false);
     }
@@ -229,8 +222,6 @@ export function useCreateTask() {
     errors,
     touched,
     isSubmitting,
-    toast,
-    clearToast,
     showMembersPopup,
     showLabelsPopup,
     membersWrapperRef,

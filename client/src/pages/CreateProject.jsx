@@ -1,6 +1,5 @@
 import { FolderPlus, X } from "lucide-react";
 import { Link } from "react-router-dom";
-import Toast from "../components/Toast";
 import { useCreateProject } from "../hooks/useCreateProject";
 import "../styles/CreateTask.css";
 
@@ -10,8 +9,6 @@ export default function CreateProject() {
     errors,
     touched,
     isSubmitting,
-    toast,
-    clearToast,
     handleChange,
     handleBlur,
     handleSubmit,
@@ -86,11 +83,6 @@ export default function CreateProject() {
           </button>
         </form>
       </div>
-      <Toast
-        message={toast?.message}
-        type={toast?.type}
-        onClose={clearToast}
-      />
     </div>
   );
 }

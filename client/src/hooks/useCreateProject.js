@@ -3,6 +3,7 @@ import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { validateProjectForm } from "../utils/validators";
 import { projectService } from "../services/projectService";
+import { useToast } from "../context/ToastContext";
 
 const INITIAL_VALUES = {
   name: "",
@@ -16,12 +17,12 @@ const INITIAL_VALUES = {
  */
 export function useCreateProject() {
   const navigate = useNavigate();
+  const { showError } = useToast();
 
   const [values, setValues] = useState(INITIAL_VALUES);
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [toast, setToast] = useState(null);
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
@@ -33,10 +34,6 @@ export function useCreateProject() {
     setTouched((prev) => ({ ...prev, [name]: true }));
     setErrors(validateProjectForm({ ...values }));
   }, [values]);
-
-  const clearToast = useCallback(() => {
-    setToast(null);
-  }, []);
 
   const handleSubmit = async (e) => {
     if (e?.preventDefault) {
@@ -64,10 +61,7 @@ export function useCreateProject() {
         },
       });
     } catch (err) {
-      setToast({
-        message: "Failed to create project: " + (err?.message || "Unknown error"),
-        type: "error",
-      });
+      showError("Failed to create project: " + (err?.message || "Unknown error"));
     } finally {
       setIsSubmitting(false);
     }
@@ -78,10 +72,9 @@ export function useCreateProject() {
     errors,
     touched,
     isSubmitting,
-    toast,
-    clearToast,
     handleChange,
     handleBlur,
     handleSubmit,
   };
 }
+

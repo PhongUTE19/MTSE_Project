@@ -1,6 +1,7 @@
 import { Pencil, Trash2, X } from "lucide-react";
 import { forwardRef, useEffect, useState } from "react";
 import { taskService } from "../services/taskService";
+import { useToast } from "../context/ToastContext";
 import EditLabelModal from "./EditLabelModal";
 import ConfirmDialog from "./ConfirmDialog";
 import "../styles/LabelsPopup.css";
@@ -9,20 +10,20 @@ const LabelsPopup = forwardRef(function LabelsPopup(
   { projectId, selectedLabelNames = [], onToggleLabel, onLabelsChanged, onClose },
   ref
 ) {
+  const { showError } = useToast();
   const [labels, setLabels] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [editingLabel, setEditingLabel] = useState(null);
   const [isCreating, setIsCreating] = useState(false);
   const [labelToDelete, setLabelToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [error, setError] = useState("");
 
   const refreshLabels = async () => {
     try {
       const freshLabels = await taskService.getLabels(projectId);
       setLabels(freshLabels || []);
     } catch (err) {
-      setError(err?.message || "Failed to refresh labels.");
+      showError(err?.message || "Failed to refresh labels.");
     }
   };
 
@@ -33,29 +34,44 @@ const LabelsPopup = forwardRef(function LabelsPopup(
         if (isMounted) setLabels(freshLabels || []);
       })
       .catch((err) => {
-        if (isMounted) setError(err.message);
+        if (isMounted) showError(err?.message || "Failed to load labels.");
       });
     return () => { isMounted = false; };
-  }, [projectId]);
+  }, [projectId, showError]);
 
   const handleCreateLabel = async (data) => {
-    await taskService.createLabel(projectId, data);
-    await refreshLabels();
-    onLabelsChanged?.();
+    try {
+      await taskService.createLabel(projectId, data);
+      await refreshLabels();
+      onLabelsChanged?.();
+    } catch (err) {
+      showError(err?.message || "Failed to create label.");
+      throw err;
+    }
   };
 
   const handleSaveLabel = async (data) => {
-    const oldName = editingLabel.name;
-    const updatedLabel = await taskService.updateLabel(projectId, editingLabel.id, data);
-    await refreshLabels();
-    onLabelsChanged?.({ oldName, newName: updatedLabel.name });
+    try {
+      const oldName = editingLabel.name;
+      const updatedLabel = await taskService.updateLabel(projectId, editingLabel.id, data);
+      await refreshLabels();
+      onLabelsChanged?.({ oldName, newName: updatedLabel.name });
+    } catch (err) {
+      showError(err?.message || "Failed to update label.");
+      throw err;
+    }
   };
 
   const handleDeleteLabel = async () => {
-    const deletedName = editingLabel.name;
-    await taskService.deleteLabel(projectId, editingLabel.id);
-    await refreshLabels();
-    onLabelsChanged?.({ deletedName });
+    try {
+      const deletedName = editingLabel.name;
+      await taskService.deleteLabel(projectId, editingLabel.id);
+      await refreshLabels();
+      onLabelsChanged?.({ deletedName });
+    } catch (err) {
+      showError(err?.message || "Failed to delete label.");
+      throw err;
+    }
   };
 
   const handleConfirmDeleteRow = async () => {
@@ -68,7 +84,7 @@ const LabelsPopup = forwardRef(function LabelsPopup(
       onLabelsChanged?.({ deletedName });
       setLabelToDelete(null);
     } catch (err) {
-      setError(err.message || "Failed to delete label.");
+      showError(err?.message || "Failed to delete label.");
     } finally {
       setIsDeleting(false);
     }
@@ -100,7 +116,6 @@ const LabelsPopup = forwardRef(function LabelsPopup(
         })}
         {!filteredLabels.length && <div className="labels-empty">No labels found.</div>}
       </div>
-      {error && <p className="labels-popup-error">{error}</p>}
       <button type="button" className="btn-create-label" onClick={() => setIsCreating(true)}>Create a new label</button>
       {editingLabel && (
         <EditLabelModal
