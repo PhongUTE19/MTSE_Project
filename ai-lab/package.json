@@ -1,0 +1,14 @@
+{
+  "name": "ai-lab",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MTSE Homework 5 - AI Readiness Laboratory smoke test experiment",
+  "type": "module",
+  "scripts": {
+    "test:llm": "node index.js"
+  },
+  "dependencies": {
+    "@google/genai": "^2.22.0",
+    "dotenv": "^17.4.2"
+  }
+}
