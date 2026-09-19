@@ -2,13 +2,27 @@
   "name": "ai-lab",
   "version": "1.0.0",
   "private": true,
-  "description": "MTSE Homework 5 - AI Readiness Laboratory smoke test experiment",
+  "description": "MTSE AI Lab - Homework 5A and Homework 6A",
   "type": "module",
   "scripts": {
-    "test:llm": "node index.js"
+    "test:5a": "node index.js",
+    "test:6a": "node homework6a.js",
+    "check": "npm run build",
+    "server": "node server.js",
+    "dev": "vite",
+    "build": "vite build"
   },
   "dependencies": {
     "@google/genai": "^2.22.0",
-    "dotenv": "^17.4.2"
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "multer": "^2.0.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-icons": "^5.5.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.1.1",
+    "vite": "^8.3.0"
   }
 }
