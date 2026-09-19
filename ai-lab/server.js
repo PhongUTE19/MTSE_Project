@@ -7,7 +7,7 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-const MODEL = process.env.GEMINI_MODEL || "gemini-3.6-flash";
+const MODEL = process.env.GEMINI_MODEL || "gemini-3.1-flash-lite";
 const REQUEST_TIMEOUT_MS = 30_000;
 const SUPPORTED_FILE_TYPES = new Set([
   "application/pdf",

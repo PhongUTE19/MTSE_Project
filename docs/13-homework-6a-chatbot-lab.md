@@ -27,7 +27,7 @@ Set the values below in the ignored `ai-lab/.env` file. Never commit this file.
 
 ```dotenv
 GEMINI_API_KEY=your_real_key_here
-GEMINI_MODEL=gemini-3.6-flash
+GEMINI_MODEL=gemini-3.1-flash-lite
 PORT=3001
 ```
 
@@ -66,7 +66,7 @@ npm run test:5a -- 1 # optional live request; consumes Gemini quota
 
 ## 5. Existing LLM evidence from Homework 5A
 
-The saved evidence uses Google Gemini Flash-Lite configurations through the Google Gen AI Interactions API. Five recorded requests succeeded, with a mean latency of **6,313.92 ms**. The most recent recorded request used `gemini-3.6-flash`; the remaining earlier evidence identifies its own model in `outputs/results.json`. Live results can vary with quota, network, provider availability, and the selected model.
+The default chatbot configuration uses `gemini-3.1-flash-lite` to reduce quota pressure. The saved evidence contains prior Gemini Flash-Lite configuration results; each result records its model name in `outputs/results.json`. Live latency and quota usage vary with the selected model, network, and provider availability.
 
 | 6A requirement | Evidence |
 |---|---|
