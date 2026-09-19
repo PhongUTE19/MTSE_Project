@@ -27,7 +27,7 @@ Set the values below in the ignored `ai-lab/.env` file. Never commit this file.
 
 ```dotenv
 GEMINI_API_KEY=your_real_key_here
-GEMINI_MODEL=gemini-3.1-flash-lite
+GEMINI_MODEL=gemini-3.6-flash
 PORT=3001
 ```
 
