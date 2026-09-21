@@ -1,5 +1,5 @@
 import { Calendar, Flag, ListChecks, Plus } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Avatar from "../components/Avatar";
 import { LoadingState, EmptyState } from "../components/TaskListStates";
 import { useTaskList } from "../hooks/useTaskList";
@@ -9,6 +9,7 @@ import "../styles/TaskList.css";
 
 export default function TaskList() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const {
     projectId,
@@ -46,7 +47,7 @@ export default function TaskList() {
         onCreate={() =>
           navigate(
             projectId ? `/tasks/new?projectId=${projectId}` : "/tasks/new",
-            { state: { projectId, projectName } }
+            { state: { projectId, projectName, backgroundLocation: location } }
           )
         }
       />
@@ -60,7 +61,7 @@ export default function TaskList() {
         <h1 className="board-title">{projectName}</h1>
         <Link
           to={projectId ? `/tasks/new?projectId=${projectId}` : "/tasks/new"}
-          state={{ projectId, projectName }}
+          state={{ projectId, projectName, backgroundLocation: location }}
           className="btn-add-task"
         >
           <Plus size={18} aria-hidden="true" /> Add Task
@@ -92,7 +93,7 @@ export default function TaskList() {
                   <Link
                     key={task.id}
                     to={`/tasks/${task.id}`}
-                    state={{ projectId, projectName }}
+                    state={{ projectId, projectName, backgroundLocation: location }}
                     className={`task-card ${draggedTaskId === task.id ? "is-dragging" : ""}`}
                     draggable={true}
                     onDragStart={(e) => handleDragStart(e, task.id)}
@@ -177,7 +178,7 @@ export default function TaskList() {
             {/* Add Card Button */}
             <Link
               to={projectId ? `/tasks/new?projectId=${projectId}` : "/tasks/new"}
-              state={{ status: col.id, projectId, projectName }}
+              state={{ status: col.id, projectId, projectName, backgroundLocation: location }}
               className="btn-add-card"
             >
               <Plus size={18} aria-hidden="true" /> Add a card

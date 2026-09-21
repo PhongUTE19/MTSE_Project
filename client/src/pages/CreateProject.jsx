@@ -15,8 +15,8 @@ export default function CreateProject() {
   } = useCreateProject();
 
   return (
-    <div className="create-task-container">
-      <div className="create-task-modal">
+    <div className="create-task-container" role="presentation">
+      <div className="create-task-modal" role="dialog" aria-modal="true" aria-label="Create project">
         <div className="btn-close-container">
           <Link to="/dashboard" className="btn-close" aria-label="Close">
             <X size={18} aria-hidden="true" />

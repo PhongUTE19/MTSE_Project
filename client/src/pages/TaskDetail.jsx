@@ -98,8 +98,8 @@ export default function TaskDetail() {
   }
 
   return (
-    <div className="task-detail-container">
-      <div className="task-detail-modal">
+    <div className="task-detail-container" role="presentation">
+      <div className="task-detail-modal" role="dialog" aria-modal="true" aria-label="Task details">
         <div className="btn-close-container">
           <Link
             to={projectId ? `/tasks?projectId=${projectId}` : "/tasks"}

@@ -1,16 +1,28 @@
 import { Link } from "react-router-dom";
 import ConfirmDialog from "../components/ConfirmDialog";
 import {
-  AlertTriangle,
-  ExternalLink,
   FolderKanban,
   ListTodo,
-  Trash2,
   CheckCircle2,
+  AlertTriangle,
+  ExternalLink,
+  Trash2,
 } from "lucide-react";
 import { useDashboard } from "../hooks/useDashboard";
 import { formatDisplayDate } from "../utils/date";
 import "../styles/Dashboard.css";
+
+function StatCard({ label, icon: Icon, value }) {
+  return (
+    <div className="stat-card">
+      <div className="stat-card-head">
+        <span>{label}</span>
+        <Icon size={16} strokeWidth={1.75} />
+      </div>
+      <div className="stat-value">{value}</div>
+    </div>
+  );
+}
 
 export default function Dashboard() {
   const {
@@ -25,44 +37,38 @@ export default function Dashboard() {
   } = useDashboard();
 
   return (
-    <div className="dashboard-container">
-      <h1 className="dashboard-title">Dashboard</h1>
-
-      {/* Statistics Cards */}
-      <div className="dashboard-stats">
-        <div className="stat-card">
-          <FolderKanban className="stat-icon" size={22} aria-hidden="true" />
-          <h3 className="stat-title">Total Projects</h3>
-          <div className="stat-value primary">
-            {loading ? "..." : stats.totalProjects}
-          </div>
-        </div>
-        <div className="stat-card">
-          <ListTodo className="stat-icon" size={22} aria-hidden="true" />
-          <h3 className="stat-title">Total Tasks</h3>
-          <div className="stat-value default">
-            {loading ? "..." : stats.totalTasks}
-          </div>
-        </div>
-        <div className="stat-card">
-          <CheckCircle2 className="stat-icon" size={22} aria-hidden="true" />
-          <h3 className="stat-title">Tasks Done</h3>
-          <div className="stat-value success">
-            {loading ? "..." : stats.doneTasks}
-          </div>
-        </div>
-        <div className="stat-card">
-          <AlertTriangle className="stat-icon" size={22} aria-hidden="true" />
-          <h3 className="stat-title">Overdue Tasks</h3>
-          <div className="stat-value danger">
-            {loading ? "..." : stats.overdueTasks}
-          </div>
-        </div>
+    <>
+      <div className="content-head">
+        <h1>Dashboard</h1>
       </div>
 
-      {/* Projects Table */}
-      <div className="projects-section">
-        <h2 className="projects-title">Active Projects</h2>
+      <div className="stat-grid">
+        <StatCard 
+          label="Total Projects" 
+          icon={FolderKanban} 
+          value={loading ? "..." : stats.totalProjects} 
+        />
+        <StatCard 
+          label="Total Tasks" 
+          icon={ListTodo} 
+          value={loading ? "..." : stats.totalTasks} 
+        />
+        <StatCard 
+          label="Tasks Done" 
+          icon={CheckCircle2} 
+          value={loading ? "..." : stats.doneTasks} 
+        />
+        <StatCard 
+          label="Overdue Tasks" 
+          icon={AlertTriangle} 
+          value={loading ? "..." : stats.overdueTasks} 
+        />
+      </div>
+
+      <div className="panel">
+        <div className="panel-head">
+          <h2>Active Projects</h2>
+        </div>
         <div className="table-responsive">
           <table className="projects-table">
             <thead>
@@ -99,7 +105,7 @@ export default function Dashboard() {
                           state={{ projectId: p.id, projectName: p.name }}
                           className="btn-view-board"
                         >
-                          <ExternalLink size={15} aria-hidden="true" /> View Board
+                          <ExternalLink size={14} /> View Board
                         </Link>
                         <button
                           type="button"
@@ -107,7 +113,7 @@ export default function Dashboard() {
                           onClick={() => setProjectToDelete(p)}
                           title={`Delete project ${p.name}`}
                         >
-                          <Trash2 size={15} aria-hidden="true" /> Delete
+                          <Trash2 size={14} /> Delete
                         </button>
                       </div>
                     </td>
@@ -115,7 +121,7 @@ export default function Dashboard() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="5" className="empty-row">
+                  <td colSpan="5" className="empty-row" style={{ textAlign: "center", padding: "32px", color: "var(--muted)" }}>
                     {loading ? "Loading projects..." : "No projects found."}
                   </td>
                 </tr>
@@ -142,6 +148,6 @@ export default function Dashboard() {
         onConfirm={handleConfirmDelete}
         onCancel={handleCancelDelete}
       />
-    </div>
+    </>
   );
 }
