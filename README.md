@@ -464,4 +464,46 @@ npm run preview
 ### 8.4. Tài liệu liên quan
 - [📡 Đặc tả API Contract (Sample Request & Response)](docs/07-api-endpoints.md)
 - [🧪 Kịch bản kiểm thử chấp nhận (Acceptance Tests)](docs/08-acceptance-tests.md)
-- [📝 Nhật ký sử dụng AI (AI Usage Log)](docs/06-ai-usage-log.md)
+- [📝 Nhật ký sử dụng AI (AI Usage Log)](docs/06-ai-usage-log.md)
+- [🤖 Baseline AI Feature Specification (Homework 6B)](docs/14-homework-6b-baseline-ai-feature.md)
+- [📊 AI Evaluation Report (10 Test Cases)](ai-lab/evaluations/hw6b-evaluation-report.md)
+
+---
+
+## 9. Homework 6B – Baseline AI Feature: AI Task Assistant
+
+### 9.1. Tổng quan tính năng
+Tích hợp tính năng **AI Task Assistant** vào quy trình tạo task (`/tasks/new`):
+1. Người dùng nhập mô tả công việc bằng ngôn ngữ tự nhiên (tiếng Việt hoặc tiếng Anh).
+2. Client gửi prompt đến backend Express (`POST /api/v1/ai/parse-task`).
+3. Backend gọi LLM (`gemini-3.5-flash-lite`) với system prompt phiên bản hóa (`task-assistant.v1.js`) và response schema.
+4. Backend chuẩn hóa và xác thực dữ liệu trả về bằng Zod schema (`aiValidator.js`).
+5. Client hiển thị kết quả và tự động điền vào form tạo task theo luồng **Review-Before-Save**.
+6. Người dùng kiểm tra, chỉnh sửa tùy ý trước khi bấm "Create Task" lưu vào CSDL.
+7. Toàn bộ 7 trạng thái UI (`IDLE`, `LOADING`, `SUCCESS`, `TIMEOUT`, `UNAVAILABLE`, `INVALID_OUTPUT`, `ERROR`) được xử lý tường minh.
+
+### 9.2. Hướng dẫn chạy & kiểm thử
+
+#### 1. Backend:
+```bash
+cd server
+npm install
+npm test            # Chạy 27 unit & integration tests
+npm start           # Chạy server tại http://localhost:5000
+```
+
+#### 2. Frontend:
+```bash
+cd client
+npm install
+npm test            # Chạy 122 unit & integration tests
+npm run lint        # Kiểm tra ESLint (0 errors, 0 warnings)
+npm run dev         # Chạy Vite dev server tại http://localhost:5173
+```
+
+#### 3. Chạy bộ đánh giá AI (10 Test Cases):
+```bash
+cd ai-lab
+npm run eval:6b     # Chạy bộ 10 test case đánh giá tính năng AI
+```
+

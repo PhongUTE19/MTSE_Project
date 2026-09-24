@@ -5,6 +5,7 @@ import { getMemberById, resolveLabelColor } from "../utils/taskHelpers";
 import LabelsPopup from "../components/LabelsPopup";
 import MembersPopup from "../components/MembersPopup";
 import Avatar from "../components/Avatar";
+import AiTaskAssistant from "../components/AiTaskAssistant";
 import { useCreateTask } from "../hooks/useCreateTask";
 import "../styles/CreateTask.css";
 
@@ -33,6 +34,7 @@ export default function CreateTask() {
     handleToggleMember,
     handleToggleLabel,
     handleLabelsChanged,
+    handleApplyAiSuggestion,
     handleSubmit,
   } = useCreateTask();
 
@@ -81,6 +83,13 @@ export default function CreateTask() {
             in {getStatusLabel(statuses, defaultStatus)}
           </span>
         </h1>
+
+        {/* AI Task Assistant Banner / Input */}
+        <AiTaskAssistant
+          onApplySuggestion={handleApplyAiSuggestion}
+          availableLabels={labels}
+          projectId={projectId}
+        />
 
         <form onSubmit={handleSubmit} className="create-task-form">
           {/* Title */}

@@ -68,3 +68,24 @@ export function formatShortDate(dateValue, fallback = "") {
     return fallback;
   }
 }
+
+/**
+ * Format an ISO string or Date into YYYY-MM-DDTHH:mm for <input type="datetime-local">.
+ */
+export function formatIsoToDatetimeLocal(dateValue) {
+  if (!dateValue) return "";
+  try {
+    const d = new Date(dateValue);
+    if (isNaN(d.getTime())) return "";
+    const pad = (n) => String(n).padStart(2, "0");
+    const year = d.getFullYear();
+    const month = pad(d.getMonth() + 1);
+    const day = pad(d.getDate());
+    const hours = pad(d.getHours());
+    const minutes = pad(d.getMinutes());
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  } catch {
+    return "";
+  }
+}
+

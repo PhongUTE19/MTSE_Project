@@ -19,6 +19,14 @@ export function errorHandler(err, req, res, next) {
     });
   }
 
+  if (err.name === "AiServiceError") {
+    return res.status(err.status || 500).json({
+      error: err.code || "AI_ERROR",
+      message: err.message,
+      ...(err.details ? { details: err.details } : {}),
+    });
+  }
+
   if (err.code === "PGRST116") {
     return res.status(404).json({ error: "NotFound", message: "Resource not found." });
   }

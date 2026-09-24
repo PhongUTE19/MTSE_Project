@@ -8,6 +8,7 @@ import {
   DEFAULT_TASK_STATUS,
 } from "../utils/constants";
 import { parseChecklistInput, toggleArrayItem } from "../utils/taskHelpers";
+import { formatIsoToDatetimeLocal } from "../utils/date";
 import { useClickOutside } from "./useClickOutside";
 import { useToast } from "../context/ToastContext";
 
@@ -211,6 +212,45 @@ export function useCreateTask() {
     }
   };
 
+  // Apply AI Task Assistant suggestions to the form
+  const handleApplyAiSuggestion = useCallback((suggestion) => {
+    if (!suggestion) return;
+
+    setValues((prev) => {
+      let deadline = prev.deadline;
+      if (suggestion.dueAt) {
+        const formatted = formatIsoToDatetimeLocal(suggestion.dueAt);
+        if (formatted) deadline = formatted;
+      }
+
+      let labels = prev.labels;
+      if (Array.isArray(suggestion.labels) && suggestion.labels.length > 0) {
+        labels = Array.from(new Set([...prev.labels, ...suggestion.labels]));
+      }
+
+      let checklist = prev.checklist;
+      if (Array.isArray(suggestion.checklist) && suggestion.checklist.length > 0) {
+        checklist = suggestion.checklist.join("\n");
+      }
+
+      return {
+        ...prev,
+        title: suggestion.title || prev.title,
+        description:
+          suggestion.description !== undefined
+            ? suggestion.description
+            : prev.description,
+        priority: suggestion.priority || prev.priority,
+        deadline,
+        labels,
+        checklist,
+      };
+    });
+
+    setTouched((prev) => ({ ...prev, title: true }));
+    setErrors({});
+  }, []);
+
   return {
     projectId,
     projectName,
@@ -235,6 +275,7 @@ export function useCreateTask() {
     handleToggleMember,
     handleToggleLabel,
     handleLabelsChanged,
+    handleApplyAiSuggestion,
     handleSubmit,
   };
 }

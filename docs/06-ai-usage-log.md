@@ -307,3 +307,34 @@
 
 **Trạng thái:** ✅ Đã review
 
+---
+
+## Task 6B — Tích hợp AI Task Assistant (Baseline AI Project Feature)
+
+**AI tool:** Antigravity (Gemini 3.8 Flash)
+
+**AI Generated / Modified:**
+- `server/src/config/ai.js` — Cấu hình Gemini model và request timeout 30s
+- `server/src/prompts/task-assistant.v1.js` — Versioned prompt v1.0.0, system instructions và JSON schema
+- `server/src/validators/aiValidator.js` — Zod schema xác thực prompt đầu vào và response có cấu trúc từ LLM
+- `server/src/services/aiService.js` — Service gọi `@google/genai` từ backend, xử lý timeout, sanitize date/enum, mapping lỗi
+- `server/src/controllers/aiController.js` — Controller parseTask và getHealth
+- `server/src/routes/aiRoutes.js` — Endpoint POST /api/v1/ai/parse-task và GET /api/v1/ai/health
+- `server/src/middlewares/errorHandler.js` — Xử lý lỗi `AiServiceError` với HTTP status 504, 503, 422, 429
+- `server/tests/aiEndpoints.test.js` & `server/tests/aiValidator.test.js` — 13 backend unit & integration tests
+- `client/src/services/aiService.js` — Client API service giao tiếp backend, phân loại lỗi UI (Timeout, Unavailable, Invalid Output, v.v.)
+- `client/src/components/AiTaskAssistant.jsx` & `client/src/styles/AiTaskAssistant.css` — Component trợ lý AI với 7 trạng thái UI rõ ràng
+- `client/src/pages/CreateTask.jsx` & `client/src/hooks/useCreateTask.js` — Tích hợp luồng Review-before-save
+- `client/tests/aiTaskAssistant.test.js` — 10 client unit & integration tests
+- `ai-lab/evaluations/run-evaluation.js` & `ai-lab/evaluations/hw6b-task-assistant-eval.json` — Bộ 10 test case đánh giá theo yêu cầu
+- `ai-lab/evaluations/hw6b-evaluation-report.md` — Báo cáo đánh giá chi tiết và phân tích failure mode
+
+**Human review:** [Bùi Duy Phong & Nhóm MANA]
+- Xác nhận toàn bộ cuộc gọi LLM chỉ thực hiện qua backend, tuyệt đối không lộ API key ra client.
+- Kiểm tra tính bảo toàn của luồng tạo task thủ công: form không bị khóa khi AI lỗi hoặc timeout.
+- Kiểm tra luồng Review-before-save: dữ liệu gợi ý điền vào form để sinh viên review, không tự động lưu vào DB.
+- Chạy toàn bộ tests: `server` (27/27 PASS), `client` (122/122 PASS, ESLint 0 errors).
+- Chạy bộ đánh giá 10 test case thực tế và ghi nhận failure mode (hallucination & timeout).
+
+**Trạng thái:** ✅ Đã review & hoàn thành
+
