@@ -1,23 +1,23 @@
 {
-  "timestamp": "2026-09-18T02:16:42.485Z",
-  "model": "gemini-3.5-flash-lite",
+  "timestamp": "2026-09-19T14:29:57.464Z",
+  "model": "gemini-3.6-flash",
   "provider": "Google Gen AI (Interactions API)",
   "summary": {
     "totalCompleted": 5,
     "succeeded": 5,
     "failed": 0,
-    "averageLatencyMs": 5218.87
+    "averageLatencyMs": 6313.92
   },
   "results": [
     {
-      "timestamp": "2026-09-18T02:16:09.681Z",
+      "timestamp": "2026-09-19T14:29:57.462Z",
       "testId": 1,
       "testName": "Normal Text Explanation",
       "category": "explanation",
       "prompt": "In 2-3 clear sentences, explain the difference between latency and throughput in client-server web applications.",
-      "model": "gemini-3.5-flash-lite",
-      "latencyMs": 4594.38,
-      "response": "**Latency** is the time it takes for a single request to travel from the client to the server and for the response to return, measured in milliseconds. In contrast, **throughput** is the total volume of data or number of requests the server can successfully handle and process per second. While latency focuses on speed and responsiveness for an individual user, throughput measures the overall capacity and efficiency of the system under a heavy load.",
+      "model": "gemini-3.6-flash",
+      "latencyMs": 10069.65,
+      "response": "**Latency** is the time delay it takes for a single client request to travel to the server and return a response, measuring the speed of an individual interaction. **Throughput**, on the other hand, is the total number of requests or volume of data the server can process in a given timeframe, measuring overall system capacity. In short, latency is *how fast* a single action completes, while throughput is *how much* work the system can handle at once.",
       "status": "SUCCESS"
     },
     {

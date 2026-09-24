@@ -4,7 +4,7 @@
 **Milestone:** Homework 5 — AI Readiness Laboratory  
 **Artifact Directory:** [`ai-lab/`](file:///d:/HCMUTE/2627S1/New_Technologies_In_Software_Engineering/MTSE_Project/ai-lab)  
 **Evidence Results:** [`ai-lab/outputs/results.json`](file:///d:/HCMUTE/2627S1/New_Technologies_In_Software_Engineering/MTSE_Project/ai-lab/outputs/results.json)  
-**Primary Report & Guide:** [`ai-lab/README.md`](file:///d:/HCMUTE/2627S1/New_Technologies_In_Software_Engineering/MTSE_Project/ai-lab/README.md)  
+**Primary Report & Guide:** This Homework 5 report. Homework 6A is documented separately in [`13-homework-6a-chatbot-lab.md`](13-homework-6a-chatbot-lab.md).
 
 ---
 
@@ -26,14 +26,14 @@
 
 ```bash
 # Display test menu without making API calls:
-npm run test:llm
+npm run test:5a
 
 # Run specific test cases (1 request per command):
-npm run test:llm -- 1    # Normal text explanation
-npm run test:llm -- 2    # Structured JSON output
-npm run test:llm -- 3    # Text transformation
-npm run test:llm -- 4    # Ambiguous prompt
-npm run test:llm -- 5    # Hallucination / Unsupported claims trap
+npm run test:5a -- 1    # Normal text explanation
+npm run test:5a -- 2    # Structured JSON output
+npm run test:5a -- 3    # Text transformation
+npm run test:5a -- 4    # Ambiguous prompt
+npm run test:5a -- 5    # Hallucination / Unsupported claims trap
 ```
 
 ---
