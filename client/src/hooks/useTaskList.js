@@ -1,5 +1,5 @@
 // src/hooks/useTaskList.js
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { taskService } from "../services/taskService";
 import { DEFAULT_STATUSES } from "../utils/constants";
@@ -38,11 +38,16 @@ export function useTaskList() {
   const [newStatusName, setNewStatusName] = useState("");
   const [isSubmittingStatus, setIsSubmittingStatus] = useState(false);
 
-  // Fetch board data with cancellation guard
+  // Track location key changes so we can detect navigation back from modal
+  const prevLocationKeyRef = useRef(location.key);
+  const hasLoadedRef = useRef(false);
+
+  // Initial fetch on mount (or when projectId changes)
   useEffect(() => {
     if (!projectId) return;
 
     let active = true;
+    hasLoadedRef.current = false;
 
     taskService
       .getBoardData(projectId)
@@ -52,6 +57,7 @@ export function useTaskList() {
         setLabels(boardData.labels);
         setStatuses(boardData.statuses);
         setState({ status: "success", data: boardData.tasks, error: null });
+        hasLoadedRef.current = true;
       })
       .catch((err) => {
         if (!active) return;
@@ -62,12 +68,80 @@ export function useTaskList() {
           data: [],
           error: null,
         });
+        hasLoadedRef.current = true;
       });
 
     return () => {
       active = false;
     };
   }, [projectId, showError]);
+
+  /**
+   * Replace a single task in the board state in-place (by ID), preserving
+   * the existing array order. If the task is not found it is appended.
+   */
+  const replaceTaskInBoard = useCallback((updatedTask) => {
+    if (!updatedTask?.id) return;
+    setState((prev) => {
+      const existing = prev.data || [];
+      const idx = existing.findIndex((t) => t.id === updatedTask.id);
+      if (idx === -1) {
+        return { ...prev, data: [...existing, updatedTask] };
+      }
+      const newData = [...existing];
+      newData[idx] = updatedTask;
+      return { ...prev, data: newData };
+    });
+  }, []);
+
+  /**
+   * Silent background refresh: re-fetches board data and merges the results
+   * in-place (by task ID) to preserve the existing display order.
+   * Called automatically when the user navigates back from the task detail modal.
+   */
+  const silentRefreshBoard = useCallback(async () => {
+    if (!projectId) return;
+    try {
+      const boardData = await taskService.getBoardData(projectId);
+      setMembers(boardData.members);
+      setLabels(boardData.labels);
+      setStatuses(boardData.statuses);
+      setState((prev) => {
+        const existing = prev.data || [];
+        if (existing.length === 0) {
+          return { ...prev, data: boardData.tasks };
+        }
+        // Map fresh tasks by ID for O(1) lookup
+        const freshMap = new Map((boardData.tasks || []).map((t) => [t.id, t]));
+        // Replace each existing task in-place with the fresh version (preserves order)
+        const merged = existing.map((t) => freshMap.get(t.id) || t);
+        // Append any brand-new tasks not yet in the board
+        const existingIds = new Set(existing.map((t) => t.id));
+        const newTasks = (boardData.tasks || []).filter((t) => !existingIds.has(t.id));
+        return { ...prev, data: [...merged, ...newTasks] };
+      });
+    } catch (err) {
+      // Silent — don't show an error toast for a background refresh
+      console.error("[useTaskList] Background refresh failed:", err);
+    }
+  }, [projectId]);
+
+  // When the location key changes (the user navigated somewhere and came back),
+  // silently refresh the board so any changes made in the task detail modal
+  // (labels, members, status, etc.) are reflected without reordering tasks.
+  useEffect(() => {
+    const prevKey = prevLocationKeyRef.current;
+    prevLocationKeyRef.current = location.key;
+
+    // Skip the very first render — the initial fetch effect handles that
+    if (!hasLoadedRef.current) return;
+    // No real navigation happened
+    if (prevKey === location.key) return;
+    // If we are currently inside a modal overlay, don't refresh the board
+    if (location.state?.backgroundLocation) return;
+
+    silentRefreshBoard();
+  }, [location.key, location.state, silentRefreshBoard]);
 
   // Clean retry callback without full page reload
   const retry = useCallback(() => {
@@ -136,7 +210,7 @@ export function useTaskList() {
 
       const previousStatus = targetTask.status;
 
-      // Optimistically update status
+      // Optimistically update status in-place (no reorder)
       setState((prev) => ({
         ...prev,
         data: (prev.data || []).map((t) =>
@@ -146,7 +220,9 @@ export function useTaskList() {
       setDraggedTaskId(null);
 
       try {
-        await taskService.updateTask(taskId, { status: targetStatusId });
+        const updated = await taskService.updateTask(taskId, { status: targetStatusId });
+        // Replace with server response in-place to stay up to date
+        if (updated) replaceTaskInBoard(updated);
       } catch (err) {
         // Rollback on failure
         setState((prev) => ({
@@ -158,7 +234,7 @@ export function useTaskList() {
         showError("Failed to update status: " + (err?.message || "Unknown error"));
       }
     },
-    [draggedTaskId, state.data, showError]
+    [draggedTaskId, state.data, showError, replaceTaskInBoard]
   );
 
   // Create new status column
@@ -233,6 +309,8 @@ export function useTaskList() {
     isSubmittingStatus,
     columnList,
     retry,
+    replaceTaskInBoard,
+    silentRefreshBoard,
     handleDragStart,
     handleDragEnd,
     handleDragOver,

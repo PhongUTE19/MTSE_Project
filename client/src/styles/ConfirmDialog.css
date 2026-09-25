@@ -12,7 +12,7 @@
 }
 
 .confirm-dialog-content {
-  background: var(--bg-card);
+  background-color: var(--card, #ffffff) !important;
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-soft);
   width: 100%;

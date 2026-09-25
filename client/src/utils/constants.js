@@ -17,11 +17,10 @@ export const INITIAL_LABELS = [
 ];
 
 export const LABEL_COLOR_PALETTE = [
-  "#baf3db", "#f8e6a0", "#f5cd47", "#fedec8", "#eac7f0",
-  "#4bce97", "#e2b203", "#f87462", "#9f8fef", "#1f845a",
-  "#946f00", "#b38600", "#ae2e24", "#5e4db2", "#cce0ff",
-  "#c1e5ff", "#fdd0ec", "#dcdfe4", "#579dff", "#94c748",
-  "#e774bb", "#8590a2", "#0c66e4", "#5b7f24", "#44546f",
+  "#fbc4c4", "#f8d7c4", "#fdf4c8", "#c8dfc8", "#c4dfdf",
+  "#c4d7f8", "#dcc8f8", "#f8c8df", "#e4e4e4", "#d4ecd4",
+  "#ffe5b4", "#ffd1dc", "#e6e6fa", "#b0e0e6", "#ffb6c1",
+  "#98fb98", "#afeeee", "#ffffe0", "#f08080", "#ffdab9"
 ];
 
 export const normalizeLabelName = (name) => {
