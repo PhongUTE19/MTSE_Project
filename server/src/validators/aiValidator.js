@@ -20,6 +20,16 @@ export const parseTaskInputSchema = z.object({
 });
 
 /**
+ * Validates optional multipart context for multimodal task extraction.
+ * Doc 15 permits a project ID to be either a UUID or another non-empty string.
+ */
+export const multimodalContextSchema = z.object({
+  projectId: z.string().trim().min(1).optional(),
+  nowIso: z.string().datetime({ offset: true }).optional(),
+  availableLabels: z.array(z.string().trim()).optional(),
+});
+
+/**
  * Validates the structured output returned by the LLM.
  * Throws if the LLM output violates constraints or produces malformed data.
  */

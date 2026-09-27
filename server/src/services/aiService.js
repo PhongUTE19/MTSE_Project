@@ -25,7 +25,7 @@ export class AiServiceError extends Error {
 /**
  * Maps raw model errors into standard AiServiceError instances.
  */
-function mapModelError(error) {
+export function mapAiModelError(error) {
   if (error instanceof AiServiceError) return error;
 
   const msg = String(error?.message || "");
@@ -140,7 +140,7 @@ export async function parseTaskPrompt(prompt, context = {}) {
       }),
     ]);
   } catch (rawError) {
-    throw mapModelError(rawError);
+    throw mapAiModelError(rawError);
   } finally {
     clearTimeout(timeoutId);
   }

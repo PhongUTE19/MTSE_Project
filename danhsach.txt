@@ -1,0 +1,248 @@
+Folder PATH listing for volume New Volume
+Volume serial number is 0000009F 7689:6BA8
+D:.
+¦   .gitattributes
+¦   .gitignore
+¦   compose.yaml
+¦   danhsach.txt
+¦   README.md
+¦   
++---agent
+¦       db.md
+¦       homework.md
+¦       rule.md
+¦       
++---ai-lab
+¦   ¦   .env.example
+¦   ¦   .gitignore
+¦   ¦   homework6a.js
+¦   ¦   index.html
+¦   ¦   index.js
+¦   ¦   package-lock.json
+¦   ¦   package.json
+¦   ¦   README.md
+¦   ¦   server.js
+¦   ¦   vite.config.js
+¦   ¦   
+¦   +---evaluations
+¦   ¦       hw6b-evaluation-report.md
+¦   ¦       hw6b-task-assistant-eval.json
+¦   ¦       run-evaluation.js
+¦   ¦       
+¦   +---outputs
+¦   ¦       results.json
+¦   ¦       
+¦   +---prompts
+¦   ¦       test-cases.js
+¦   ¦       
+¦   +---src
+¦       ¦   App.css
+¦       ¦   App.jsx
+¦       ¦   main.jsx
+¦       ¦   theme.css
+¦       ¦   
+¦       +---components
+¦               AttachmentPreview.jsx
+¦               ChatHeader.jsx
+¦               ChatInput.jsx
+¦               MarkdownContent.jsx
+¦               Message.jsx
+¦               WelcomeScreen.jsx
+¦               
++---client
+¦   ¦   .dockerignore
+¦   ¦   .env.example
+¦   ¦   Dockerfile
+¦   ¦   eslint.config.js
+¦   ¦   index.html
+¦   ¦   package-lock.json
+¦   ¦   package.json
+¦   ¦   README.md
+¦   ¦   vite.config.js
+¦   ¦   
+¦   +---public
+¦   ¦       favicon.svg
+¦   ¦       icons.svg
+¦   ¦       
+¦   +---src
+¦   ¦   ¦   App.jsx
+¦   ¦   ¦   index.css
+¦   ¦   ¦   main.jsx
+¦   ¦   ¦   
+¦   ¦   +---assets
+¦   ¦   ¦       hero.png
+¦   ¦   ¦       vite.svg
+¦   ¦   ¦       
+¦   ¦   +---components
+¦   ¦   ¦   ¦   AiTaskAssistant.jsx
+¦   ¦   ¦   ¦   Avatar.jsx
+¦   ¦   ¦   ¦   ConfirmDialog.jsx
+¦   ¦   ¦   ¦   EditLabelModal.jsx
+¦   ¦   ¦   ¦   LabelsPopup.jsx
+¦   ¦   ¦   ¦   MembersPopup.jsx
+¦   ¦   ¦   ¦   Sidebar.jsx
+¦   ¦   ¦   ¦   TaskListStates.jsx
+¦   ¦   ¦   ¦   Toast.jsx
+¦   ¦   ¦   ¦   Topbar.jsx
+¦   ¦   ¦   ¦   
+¦   ¦   ¦   +---taskDetail
+¦   ¦   ¦           TaskActions.jsx
+¦   ¦   ¦           TaskChecklist.jsx
+¦   ¦   ¦           TaskDescription.jsx
+¦   ¦   ¦           TaskDetailHeader.jsx
+¦   ¦   ¦           TaskMetadata.jsx
+¦   ¦   ¦           TaskQuickInfo.jsx
+¦   ¦   ¦           TaskSidebar.jsx
+¦   ¦   ¦           
+¦   ¦   +---config
+¦   ¦   ¦       index.js
+¦   ¦   ¦       
+¦   ¦   +---context
+¦   ¦   ¦       ToastContext.js
+¦   ¦   ¦       ToastProvider.jsx
+¦   ¦   ¦       useToast.js
+¦   ¦   ¦       
+¦   ¦   +---data
+¦   ¦   ¦       mockData.js
+¦   ¦   ¦       mockDataforEmptyTask
+¦   ¦   ¦       
+¦   ¦   +---hooks
+¦   ¦   ¦       useClickOutside.js
+¦   ¦   ¦       useCreateProject.js
+¦   ¦   ¦       useCreateTask.js
+¦   ¦   ¦       useDashboard.js
+¦   ¦   ¦       useLabelSync.js
+¦   ¦   ¦       useSettings.js
+¦   ¦   ¦       useTaskDetail.js
+¦   ¦   ¦       useTaskList.js
+¦   ¦   ¦       
+¦   ¦   +---pages
+¦   ¦   ¦       CreateProject.jsx
+¦   ¦   ¦       CreateTask.jsx
+¦   ¦   ¦       Dashboard.jsx
+¦   ¦   ¦       Settings.jsx
+¦   ¦   ¦       TaskDetail.jsx
+¦   ¦   ¦       TaskList.jsx
+¦   ¦   ¦       
+¦   ¦   +---services
+¦   ¦   ¦       aiService.js
+¦   ¦   ¦       apiClient.js
+¦   ¦   ¦       mockApi.js
+¦   ¦   ¦       projectService.js
+¦   ¦   ¦       taskService.js
+¦   ¦   ¦       
+¦   ¦   +---styles
+¦   ¦   ¦       AiTaskAssistant.css
+¦   ¦   ¦       App.css
+¦   ¦   ¦       ConfirmDialog.css
+¦   ¦   ¦       CreateTask.css
+¦   ¦   ¦       Dashboard.css
+¦   ¦   ¦       EditLabelModal.css
+¦   ¦   ¦       LabelsPopup.css
+¦   ¦   ¦       MembersPopup.css
+¦   ¦   ¦       Settings.css
+¦   ¦   ¦       TaskDetail.css
+¦   ¦   ¦       TaskList.css
+¦   ¦   ¦       TaskListStates.css
+¦   ¦   ¦       Toast.css
+¦   ¦   ¦       
+¦   ¦   +---utils
+¦   ¦           avatar.js
+¦   ¦           constants.js
+¦   ¦           date.js
+¦   ¦           taskHelpers.js
+¦   ¦           validators.js
+¦   ¦           
+¦   +---tests
+¦           aiTaskAssistant.test.js
+¦           createTaskRefactor.test.js
+¦           dashboardRefactor.test.js
+¦           mockApi.test.js
+¦           projectRefactor.test.js
+¦           settingsRefactor.test.js
+¦           taskDetailRefactor.test.js
+¦           taskListRefactor.test.js
+¦           toastStandardization.test.js
+¦           uiFeatures.test.js
+¦           validators.test.js
+¦           workflow.test.js
+¦           
++---docs
+¦       01-project-overview.md
+¦       02-architecture.md
+¦       03-team-guide.md
+¦       06-ai-usage-log.md
+¦       07-api-endpoints.md
+¦       08-acceptance-tests.md
+¦       09-fix-label-member.md
+¦       10-complete-workflow.md
+¦       11-homework-4a-health-api-tests.md
+¦       12-homework-5-ai-readiness-lab.md
+¦       13-homework-6a-chatbot-lab.md
+¦       14-homework-6b-baseline-ai-feature.md
+¦       
++---server
+    ¦   .dockerignore
+    ¦   .env.example
+    ¦   .gitignore
+    ¦   Dockerfile
+    ¦   package-lock.json
+    ¦   package.json
+    ¦   server.js
+    ¦   
+    +---src
+    ¦   ¦   app.js
+    ¦   ¦   
+    ¦   +---config
+    ¦   ¦       ai.js
+    ¦   ¦       supabase.js
+    ¦   ¦       
+    ¦   +---controllers
+    ¦   ¦       aiController.js
+    ¦   ¦       dashboardController.js
+    ¦   ¦       labelController.js
+    ¦   ¦       memberController.js
+    ¦   ¦       projectController.js
+    ¦   ¦       statusController.js
+    ¦   ¦       taskController.js
+    ¦   ¦       
+    ¦   +---middlewares
+    ¦   ¦       errorHandler.js
+    ¦   ¦       requestLogger.js
+    ¦   ¦       validate.js
+    ¦   ¦       
+    ¦   +---prompts
+    ¦   ¦       task-assistant.v1.js
+    ¦   ¦       
+    ¦   +---routes
+    ¦   ¦       aiRoutes.js
+    ¦   ¦       dashboardRoutes.js
+    ¦   ¦       projectRoutes.js
+    ¦   ¦       taskRoutes.js
+    ¦   ¦       
+    ¦   +---services
+    ¦   ¦       aiService.js
+    ¦   ¦       dashboardService.js
+    ¦   ¦       labelService.js
+    ¦   ¦       memberService.js
+    ¦   ¦       projectService.js
+    ¦   ¦       statusService.js
+    ¦   ¦       taskService.js
+    ¦   ¦       
+    ¦   +---utils
+    ¦   ¦       mappers.js
+    ¦   ¦       
+    ¦   +---validators
+    ¦           aiValidator.js
+    ¦           labelValidator.js
+    ¦           memberValidator.js
+    ¦           projectValidator.js
+    ¦           taskValidator.js
+    ¦           
+    +---tests
+            aiEndpoints.test.js
+            aiValidator.test.js
+            api.test.js
+            projectEndpoints.test.js
+            taskValidator.test.js
+            

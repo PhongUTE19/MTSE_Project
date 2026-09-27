@@ -8,7 +8,15 @@ export function errorHandler(err, req, res, next) {
     method: req.method,
     path: req.path,
     // Do not log raw database errors: they can contain submitted values.
-    code: ["23505", "23514", "23503", "PGRST116"].includes(err.code)
+    code: [
+      "23505",
+      "23514",
+      "23503",
+      "PGRST116",
+      "INVALID_INPUT",
+      "UNSUPPORTED_FILE_TYPE",
+      "FILE_TOO_LARGE",
+    ].includes(err.code)
       ? err.code : "UNEXPECTED_ERROR",
   }));
 
@@ -24,6 +32,13 @@ export function errorHandler(err, req, res, next) {
       error: err.code || "AI_ERROR",
       message: err.message,
       ...(err.details ? { details: err.details } : {}),
+    });
+  }
+
+  if (err.name === "UploadValidationError") {
+    return res.status(err.status || 400).json({
+      error: err.code || "INVALID_INPUT",
+      message: err.message,
     });
   }
 
