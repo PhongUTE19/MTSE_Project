@@ -1,20 +1,20 @@
 .edit-label-overlay { position: fixed; inset: 0; z-index: 1100; display: flex; align-items: center; justify-content: center; padding: 12px; background: rgba(14, 21, 94, 0.24); }
-.edit-label-modal { width: 400px; max-width: 100%; background: var(--bg-card); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); padding: 16px; color: var(--text); }
+.edit-label-modal { width: 400px; max-width: 100%; background-color: #ffffff !important; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); padding: 16px; color: var(--text); }
 .edit-label-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-light); padding-bottom: 12px; }
 .edit-label-header h3 { margin: 0; font-size: 16px; }
 .edit-label-header button { border: 0; background: transparent; cursor: pointer; font-size: 18px; color: var(--text-secondary); }
 .label-preview { display: flex; justify-content: center; padding: 20px 0; }
-.label-badge.large { padding: 8px 24px; border-radius: var(--radius-sm); color: var(--text-primary); font-weight: 600; }
+.label-badge.large { padding: 8px 24px; border-radius: var(--radius-sm); color: var(--text-primary); font-weight: 600; background-color: var(--label-color); }
 .edit-label-modal .form-group { margin-bottom: 16px; }
 .edit-label-modal label { display: block; margin-bottom: 6px; color: var(--text-secondary); font-size: 12px; font-weight: 600; }
 .edit-label-modal input:not([type="checkbox"]) { width: 100%; box-sizing: border-box; padding: 9px 10px; border: 1px solid #DDE2EE; border-radius: var(--radius-sm); }
 .color-palette { display: grid; grid-template-columns: repeat(5, 40px); gap: 8px; }
-.color-swatch { width: 40px; height: 40px; border: 2px solid transparent; border-radius: var(--radius-sm); cursor: pointer; transition: transform 0.15s ease; }
-.color-swatch.selected { border-color: var(--primary-300); transform: scale(1.05); }
+.color-swatch { width: 40px; height: 40px; background-color: var(--label-color); border: 2px solid transparent; border-radius: var(--radius-sm); cursor: pointer; transition: transform 0.15s ease; }
+.color-swatch.selected { border-color: var(--primary-300, #3b82f6); transform: scale(1.05); }
 .btn-remove-color { border: 0; background: transparent; color: var(--text-secondary); cursor: pointer; padding: 0; }
-.edit-label-error { color: var(--danger-text); font-size: 13px; }
+.edit-label-error { color: var(--danger-text, #ef4444); font-size: 13px; }
 .edit-label-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
 .btn-save, .btn-delete { border: 0; border-radius: var(--radius-sm); padding: 8px 16px; color: #fff; cursor: pointer; font-weight: 600; }
-.btn-save { background: var(--primary-300); }
-.btn-delete { background: var(--danger-text); }
+.btn-save { background: var(--primary-300, #3b82f6); }
+.btn-delete { background: var(--danger-text, #ef4444); }
 .btn-save:disabled, .btn-delete:disabled { opacity: 0.6; cursor: not-allowed; }

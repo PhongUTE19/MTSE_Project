@@ -2,14 +2,34 @@
 
 :root {
   --border: #e5e7eb;
+  --border-light: #f3f4f6;
+  --border-soft: #e5e7eb;
   --muted: #6b7280;
   --muted-foreground: #6b7280;
+  --text-secondary: #6b7280;
+  --text-200: #4b5563;
   --bg: #ffffff;
   --bg-page: #fafafa;
   --bg-soft: #f4f4f5;
+  --bg-200: #f3f4f6;
+  --bg-300: #e5e7eb;
+  --info-bg: #f8fafc;
   --text: #0f0f10;
   --card: #ffffff;
+  --bg-card: #ffffff;
   --radius: 8px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --primary-100: #dbeafe;
+  --primary-300: #3b82f6;
+  --danger-text: #ef4444;
+  --danger-bg: #fef2f2;
+  --phlox-soft: #eff6ff;
+  --atlantis: #10b981;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   
   --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
   --heading: var(--sans);

@@ -31,14 +31,15 @@ export async function updateLabel(projectId, labelId, payload) {
   if (payload.name !== undefined) dbPayload.name = payload.name;
   if (payload.color !== undefined) dbPayload.color = payload.color;
 
+  const { data: oldLabel } = await supabase
+    .from("labels")
+    .select("*")
+    .eq("id", labelId)
+    .eq("project_id", projectId)
+    .maybeSingle();
+
   if (Object.keys(dbPayload).length === 0) {
-    const { data } = await supabase
-      .from("labels")
-      .select("*")
-      .eq("id", labelId)
-      .eq("project_id", projectId)
-      .maybeSingle();
-    return toApiLabel(data);
+    return toApiLabel(oldLabel);
   }
 
   const { data, error } = await supabase
@@ -49,10 +50,37 @@ export async function updateLabel(projectId, labelId, payload) {
     .select()
     .maybeSingle();
   if (error) throw error;
+
+  // Cascade name change to tasks
+  if (oldLabel && payload.name && oldLabel.name !== payload.name) {
+    const { data: tasks } = await supabase
+      .from("tasks")
+      .select("id, labels")
+      .eq("project_id", projectId)
+      .contains("labels", [oldLabel.name]);
+      
+    if (tasks && tasks.length > 0) {
+      for (const task of tasks) {
+        const newLabels = task.labels.map(l => l === oldLabel.name ? payload.name : l);
+        await supabase.from("tasks").update({ labels: newLabels }).eq("id", task.id);
+      }
+    }
+  }
+
   return toApiLabel(data);
 }
 
 export async function deleteLabel(projectId, labelId) {
+  const { data: labelData } = await supabase
+    .from("labels")
+    .select("name")
+    .eq("id", labelId)
+    .eq("project_id", projectId)
+    .maybeSingle();
+
+  if (!labelData) return null;
+  const labelName = labelData.name;
+
   const { data, error } = await supabase
     .from("labels")
     .delete()
@@ -61,5 +89,22 @@ export async function deleteLabel(projectId, labelId) {
     .select("id")
     .maybeSingle();
   if (error) throw error;
+
+  // Cascade deletion to tasks
+  if (data) {
+    const { data: tasks } = await supabase
+      .from("tasks")
+      .select("id, labels")
+      .eq("project_id", projectId)
+      .contains("labels", [labelName]);
+      
+    if (tasks && tasks.length > 0) {
+      for (const task of tasks) {
+        const newLabels = task.labels.filter(l => l !== labelName);
+        await supabase.from("tasks").update({ labels: newLabels }).eq("id", task.id);
+      }
+    }
+  }
+
   return data ? { deletedId: data.id } : null;
 }

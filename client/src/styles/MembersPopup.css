@@ -4,7 +4,7 @@
   top: calc(100% + 4px);
   left: 0;
   width: 280px;
-  background: var(--bg-card);
+  background-color: #ffffff !important;
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
   border: 1px solid var(--border-light);

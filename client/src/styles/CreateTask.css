@@ -266,6 +266,7 @@ select.form-input option {
   font-weight: 500;
   color: var(--text);
   border: 1px solid var(--border);
+  background-color: var(--label-color, var(--bg-soft));
 }
 
 .chip-label {
