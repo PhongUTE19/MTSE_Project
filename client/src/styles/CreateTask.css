@@ -174,6 +174,118 @@ select.form-input option {
   opacity: 0.9;
 }
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.multimodal-input {
+  margin-bottom: 24px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-soft);
+}
+
+.multimodal-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 6px;
+  color: var(--text);
+  font-size: 15px;
+}
+
+.multimodal-help, .multimodal-file-status {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.multimodal-actions, .preview-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.btn-secondary, .btn-ai-parse {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 12px;
+  border-radius: var(--radius);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--border);
+}
+
+.btn-ai-parse {
+  color: #fff;
+  background: #2563eb;
+  border: 1px solid #2563eb;
+}
+
+.btn-secondary:disabled, .btn-ai-parse:disabled, .btn-submit:disabled {
+  cursor: not-allowed;
+  opacity: .55;
+}
+
+.multimodal-file-status { margin-top: 10px; }
+
+.spin { animation: multimodal-spin 0.8s linear infinite; }
+@keyframes multimodal-spin { to { transform: rotate(360deg); } }
+
+.preview-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(15, 23, 42, .5);
+}
+
+.preview-modal {
+  position: relative;
+  width: min(540px, 100%);
+  max-height: min(720px, calc(100vh - 32px));
+  overflow-y: auto;
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) * 1.5);
+  background: var(--card);
+  color: var(--text);
+  box-shadow: 0 20px 55px rgba(15, 23, 42, .3);
+}
+
+.preview-modal h2 { margin: 0 28px 18px 0; font-size: 20px; }
+.preview-close { position: absolute; top: 14px; right: 14px; border: 0; background: transparent; color: var(--muted-foreground); cursor: pointer; }
+.preview-content { display: grid; gap: 12px; }
+.preview-content p { display: grid; gap: 3px; margin: 0; line-height: 1.45; }
+.preview-content strong { color: var(--muted-foreground); font-size: 12px; text-transform: uppercase; letter-spacing: .03em; }
+.preview-warning { display: flex; align-items: flex-start; gap: 7px; margin: 14px 0 0; color: #a16207; font-size: 13px; line-height: 1.45; }
+
+@media (max-width: 480px) {
+  .multimodal-actions > button, .preview-actions > button { width: 100%; justify-content: center; }
+  .preview-modal { padding: 22px 18px; }
+}
+
 /* Pickers & Popovers for Members & Labels */
 .picker-wrapper {
   position: relative;
