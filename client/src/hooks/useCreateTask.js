@@ -164,6 +164,28 @@ export function useCreateTask() {
     }));
   }, []);
 
+  // A multimodal draft is never persisted here. It only pre-fills the existing
+  // form so the user can review and explicitly submit it.
+  const applyMultimodalDraft = useCallback((draft) => {
+    if (!draft?.isTask) return;
+    const deadline = draft.dueAt ? new Date(draft.dueAt) : null;
+    const toDateTimeLocal = deadline && !Number.isNaN(deadline.getTime())
+      ? `${deadline.getFullYear()}-${String(deadline.getMonth() + 1).padStart(2, "0")}-${String(deadline.getDate()).padStart(2, "0")}T${String(deadline.getHours()).padStart(2, "0")}:${String(deadline.getMinutes()).padStart(2, "0")}`
+      : "";
+
+    setValues((previous) => ({
+      ...previous,
+      title: draft.title || previous.title,
+      description: draft.description || previous.description,
+      deadline: toDateTimeLocal || previous.deadline,
+      priority: draft.priority || previous.priority,
+      labels: Array.isArray(draft.labels) ? draft.labels : previous.labels,
+      checklist: Array.isArray(draft.checklist) ? draft.checklist.join("\n") : previous.checklist,
+    }));
+    setErrors({});
+    setTouched({});
+  }, []);
+
   // Submit form
   const handleSubmit = async (e) => {
     if (e?.preventDefault) {
@@ -274,6 +296,7 @@ export function useCreateTask() {
     handleBlur,
     handleToggleMember,
     handleToggleLabel,
+    applyMultimodalDraft,
     handleLabelsChanged,
     handleApplyAiSuggestion,
     handleSubmit,

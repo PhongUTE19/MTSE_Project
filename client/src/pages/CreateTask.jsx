@@ -6,7 +6,11 @@ import LabelsPopup from "../components/LabelsPopup";
 import MembersPopup from "../components/MembersPopup";
 import Avatar from "../components/Avatar";
 import AiTaskAssistant from "../components/AiTaskAssistant";
+import MultimodalTaskInput from "../components/MultimodalTaskInput";
+import PreviewModal from "../components/PreviewModal";
 import { useCreateTask } from "../hooks/useCreateTask";
+import { useMultimodalTask } from "../hooks/useMultimodalTask";
+import { useToast } from "../context/ToastContext";
 import "../styles/CreateTask.css";
 
 export default function CreateTask() {
@@ -35,8 +39,18 @@ export default function CreateTask() {
     handleToggleLabel,
     handleLabelsChanged,
     handleApplyAiSuggestion,
+    applyMultimodalDraft,
     handleSubmit,
   } = useCreateTask();
+  const { showError } = useToast();
+  const {
+    selectedFile,
+    isParsing,
+    previewDraft,
+    selectFile,
+    parseSelectedImage,
+    clearPreview,
+  } = useMultimodalTask({ projectId, labels, showError });
 
   if (!projectId) {
     return (
@@ -92,6 +106,12 @@ export default function CreateTask() {
         />
 
         <form onSubmit={handleSubmit} className="create-task-form">
+          <MultimodalTaskInput
+            selectedFile={selectedFile}
+            isParsing={isParsing}
+            onFileSelected={selectFile}
+            onParse={parseSelectedImage}
+          />
           {/* Title */}
           <div className="form-group">
             <label className="form-label">Title *</label>
@@ -298,6 +318,14 @@ export default function CreateTask() {
             {isSubmitting ? "Creating..." : "Create Task"}
           </button>
         </form>
+        <PreviewModal
+          draft={previewDraft}
+          onClose={clearPreview}
+          onUseDraft={() => {
+            applyMultimodalDraft(previewDraft);
+            clearPreview();
+          }}
+        />
       </div>
     </div>
   );

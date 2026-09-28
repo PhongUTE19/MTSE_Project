@@ -1,0 +1,37 @@
+[
+  {
+    "id": "MM-NHI-01",
+    "scenario": "Valid Vietnamese assignment screenshot",
+    "expected": "Preview contains only accepted MANA fields; user must explicitly create the task."
+  },
+  {
+    "id": "MM-NHI-02",
+    "scenario": "PDF or GIF selected",
+    "expected": "Client rejects the file before a model request."
+  },
+  {
+    "id": "MM-NHI-03",
+    "scenario": "Image larger than 20 MB",
+    "expected": "Client rejects the file before a model request."
+  },
+  {
+    "id": "MM-NHI-04",
+    "scenario": "Model returns a task with an unknown label",
+    "expected": "Unknown label is not pre-filled and the preview warns the user."
+  },
+  {
+    "id": "MM-NHI-05",
+    "scenario": "Model returns no deadline",
+    "expected": "Preview warns the user and normal task validation requires a deadline before save."
+  },
+  {
+    "id": "MM-NHI-06",
+    "scenario": "Model returns isTask false",
+    "expected": "No fields are pre-filled; rejection reason is shown."
+  },
+  {
+    "id": "MM-NHI-07",
+    "scenario": "Model timeout, unavailable service, quota, or invalid output",
+    "expected": "An error is shown and the manual Create Task form remains usable."
+  }
+]
